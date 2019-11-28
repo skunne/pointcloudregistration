@@ -33,7 +33,7 @@ void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescrip
       sv_itr != sv_clusters.cend ();
       ++sv_itr)
   {
-    pcl::console::print_info ("    Supervoxel % 3d    size % 4d\n", sv_itr->first, sv_itr->second->voxels_->size());
+    //pcl::console::print_info ("    Supervoxel % 4d    size % 4d\n", sv_itr->first, sv_itr->second->voxels_->size());
     esf_descriptors[sv_itr->first] = ESFHist();
     esf_calculator.setInputCloud(sv_itr->second->voxels_); // feed point cloud corresponding to this supervoxel
     //pcl::console::print_info ("    Local input cloud set\n");

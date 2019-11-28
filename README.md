@@ -1,21 +1,21 @@
 ## Point Cloud Registration
-_Based on Huang et al, 2017 (1)_
+Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particular code from J. Papon and W. Wohlkinger.
 
  * Input: two point clouds
  * For each point cloud:
-    * Supervoxel Clustering following Papon et al, 2013 (2)
+    * Supervoxel Clustering following _Papon et al, 2013_ (2)
     * For each cluster:
-      * Compute the ESF descriptors of the cluster following Wohlkinger & Vincze, 2011 (3)
+      * Compute the 640 ESF descriptors of the cluster following _Wohlkinger & Vincze, 2011_ (3)
     * For each edge between adjacent clusters:
-      * Compute angle_x, angle_y, angle_z, distance following Huang et al, 2017 (1)
- * Match the two resulting graphs, with vertices labeled by ESF and edges labeled by angles and distance
- * Apply RANSAC algorithm (4) to the point clouds
- * Apply ICP algorithm (5, 6) to the point clouds
+      * TODO Compute the 4 descriptors `(angle_x, angle_y, angle_z, distance)` following _Huang et al, 2017_ (1)
+ * TODO Match the two resulting graphs, with vertices and edges labeled with their respective descriptors
+ * TODO Apply RANSAC algorithm (4) to the point clouds
+ * TODO Apply ICP algorithm (5, 6) to the point clouds
 
 
 ### Dependencies
 
- * Point cloud library http://pointclouds.org/
+ * Point Cloud Library http://pointclouds.org/
 
 ### References
 
@@ -30,4 +30,3 @@ _Based on Huang et al, 2017 (1)_
  (5) "A Method for Registration of 3-D Shapes", Besl, McKay, IEEE Trans. Pattern Anal. Mach. Intell., 1992
 
  (6) "Object modeling by registration of multiple range images", Chen, Medioni, 1991
- 
