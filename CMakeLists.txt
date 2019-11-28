@@ -11,7 +11,7 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-set(SRC src/main.cpp src/clustering.cpp src/features.cpp src/visualisation.cpp src/params.cpp)
+set(SRC src/main.cpp src/clustering.cpp src/features.cpp src/visualisation.cpp src/params.cpp src/loadfiles.cpp)
 
 include_directories("includes")
 

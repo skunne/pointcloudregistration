@@ -16,14 +16,16 @@ int set_params(int argc, char **argv, struct Params *params)
     return (1);
   }
 
+  params->is_pcd = pcl::console::find_switch (argc, argv, "--pcd");
+
   params->disable_transform = pcl::console::find_switch (argc, argv, "--nt");
 
-  params->voxel_resolution = 0.008f;
+  params->voxel_resolution = (params->is_pcd ? 0.008f : 10.0f);
   params->voxel_res_specified = pcl::console::find_switch (argc, argv, "-v");
   if (params->voxel_res_specified)
     pcl::console::parse (argc, argv, "-v", params->voxel_resolution);
 
-  params->seed_resolution = 0.1f;
+  params->seed_resolution = (params->is_pcd ? 0.1f : 30.0f);
   params->seed_res_specified = pcl::console::find_switch (argc, argv, "-s");
   if (params->seed_res_specified)
     pcl::console::parse (argc, argv, "-s", params->seed_resolution);

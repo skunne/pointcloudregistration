@@ -23,16 +23,16 @@
 #include <vtkPolyData.h>
 //#include <string>
 
-// Types
+// Types for points and point clouds
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 typedef pcl::PointNormal PointNT;
 typedef pcl::PointCloud<PointNT> PointNCloudT;
 typedef pcl::PointXYZL PointLT;
 typedef pcl::PointCloud<PointLT> PointLCloudT;
-typedef std::uint32_t KeyT;
 
 // Types for list of supervoxels and adjacency of supervoxels
+typedef std::uint32_t KeyT;
 typedef std::map <KeyT, pcl::Supervoxel<PointT>::Ptr> SupervoxelClusters;
 typedef std::multimap<KeyT, KeyT>   SupervoxelAdjacency;
 
@@ -46,17 +46,30 @@ typedef std::map<
                 std::tuple<double, double, double, double>
                 > EdgeDescriptors;
 
+/*
+** loadfiles.cpp
+*/
+int load_file(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
+int load_vtkfile(char const *filename, PointCloudT::Ptr cloud);
+int load_pcdfile(char const *filename, PointCloudT::Ptr cloud);
+
+/*
+** clustering.cpp
+*/
 int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
 void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
 
-// Calculate edge descriptors according to Huang et al 2017, Fig. 5
+/*
+** features.cpp
+*/
 void calculate_angles_and_length(PointT const p1, PointT const p2, double &angle_x, double &angle_y, double &angle_z, double &length);
 void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);
 void calculate_edges_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors);
 void calculate_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors);
 
-
-
+/*
+** visualisation.cpp
+*/
 void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency);
 void addSupervoxelConnectionsToViewer (PointT const &supervoxel_center,
                                        PointCloudT const &adjacent_supervoxel_centers,

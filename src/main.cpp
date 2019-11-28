@@ -7,47 +7,14 @@ int
 main (int argc, char ** argv)
 {
   struct Params params;
-  set_params(argc, argv, &params);
+  int syntax_error = set_params(argc, argv, &params);
+  if (syntax_error)
+    return (syntax_error);
 
   PointCloudT::Ptr cloud (new PointCloudT);
-
-  if (pcl::console::find_switch (argc, argv, "--pcd"))
-  {
-    pcl::console::print_highlight ("Loading point cloud from .pcd file...\n");
-    if (pcl::io::loadPCDFile<PointT> (argv[1], *cloud))
-    {
-      pcl::console::print_error ("Error loading cloud file!\n");
-      return (1);
-    }
-  }
-  else
-  {
-    //PointCloudT cloud (new PointCloudT);
-    vtkPolyData *polydata;
-    pcl::console::print_highlight ("Loading point cloud from .vtk file...\n");
-    // load vtk file
-    vtkSmartPointer<vtkGenericDataObjectReader> vtkReader =
-        vtkSmartPointer<vtkGenericDataObjectReader>::New();
-      vtkReader->SetFileName(argv[1]);
-    vtkReader->Update();
-    if(vtkReader->IsFilePolyData())
-    {
-      pcl::console::print_highlight ("Point cloud loaded.\n");
-      polydata = vtkReader->GetPolyDataOutput();
-      //std::cout << "Point cloud has " << polydata->GetNumberOfPoints() << " points." << std::endl;
-      pcl::console::print_info ("Point cloud has %d points.\n", polydata->GetNumberOfPoints());
-    }
-    else
-    {
-      pcl::console::print_error ("Error loading vtk cloud file!\n");
-      return (1);
-    }
-    pcl::io::vtkPolyDataToPointCloud(polydata, *cloud);
-  }
-
-
-
-
+  int error_loading_file = load_file(argv[1], params.is_pcd, cloud);
+  if (error_loading_file)
+    return (error_loading_file);
 
   //////////////////////////////  //////////////////////////////
   ////// This is how to use supervoxels
@@ -59,7 +26,7 @@ main (int argc, char ** argv)
   perform_clustering(cloud, super, &params, supervoxel_clusters, supervoxel_adjacency);
 
   //////////////////////////////  //////////////////////////////
-  ////// ESF descriptors calculation
+  ////// ESF and edge descriptors calculation
   //////////////////////////////  //////////////////////////////
 
   ESFDescriptors esf_descriptors;

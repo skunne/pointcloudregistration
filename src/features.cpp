@@ -1,6 +1,7 @@
 
 #include "main.h"
 
+// Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculate_angles_and_length(PointT const p1, PointT const p2, double &angle_x, double &angle_y, double &angle_z, double &length)
 {
   angle_x = 0.0;

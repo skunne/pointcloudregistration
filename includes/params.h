@@ -5,11 +5,12 @@
 
 struct Params
 {
-  bool disable_transform;
+  bool  is_pcd;
+  bool  disable_transform;
   float voxel_resolution;
-  bool voxel_res_specified;
+  bool  voxel_res_specified;
   float seed_resolution;
-  bool seed_res_specified;
+  bool  seed_res_specified;
   float color_importance;
   float spatial_importance;
   float normal_importance;
