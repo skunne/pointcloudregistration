@@ -1,13 +1,14 @@
 
 #include "main.h"
+#include <pcl/common/distances.h>
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
-void calculate_angles_and_length(PointT const p1, PointT const p2, double &angle_x, double &angle_y, double &angle_z, double &length)
+void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
 {
   angle_x = 0.0;
-  angle_x = 0.0;
-  angle_x = 0.0;
-  length = 1.0;
+  angle_y = 0.0;
+  angle_z = 0.0;
+  length = pcl::euclideanDistance(p1, p2);
 }
 
 void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors)

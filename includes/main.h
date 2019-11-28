@@ -62,7 +62,7 @@ void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT
 /*
 ** features.cpp
 */
-void calculate_angles_and_length(PointT const p1, PointT const p2, double &angle_x, double &angle_y, double &angle_z, double &length);
+void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
 void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);
 void calculate_edges_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors);
 void calculate_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors);
