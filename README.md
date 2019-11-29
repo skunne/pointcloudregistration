@@ -7,7 +7,7 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
     * For each cluster:
       * Compute the 640 ESF descriptors of the cluster following _Wohlkinger & Vincze, 2011_ (3)
     * For each edge between adjacent clusters:
-      * TODO Compute the 4 descriptors `(angle_x, angle_y, angle_z, distance)` following _Huang et al, 2017_ (1)
+      * Compute the 4 descriptors `(angle_x, angle_y, angle_z, distance)` following _Huang et al, 2017_ (1)
  * TODO Match the two resulting graphs, with vertices and edges labeled with their respective descriptors
  * TODO Apply RANSAC algorithm (4) to the point clouds
  * TODO Apply ICP algorithm (5, 6) to the point clouds
