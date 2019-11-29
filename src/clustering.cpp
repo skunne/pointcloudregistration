@@ -5,8 +5,11 @@
 int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
   int nbDissolvedClusters = 0;
-  for (SupervoxelClusters::iterator sv_itr = supervoxel_clusters.begin(); sv_itr != supervoxel_clusters.end(); )
+  int nbPointsTotal = 0;
+  for (SupervoxelClusters::iterator sv_itr = supervoxel_clusters.begin();
+      sv_itr != supervoxel_clusters.end(); )
   {
+    nbPointsTotal += supervoxel_clusters[sv_itr->first]->voxels_->size();
     if (supervoxel_clusters[sv_itr->first]->voxels_->size() < 4)
     {
       // TODO REDISPATCH POINTS AND UPDATE ADJACENCY
@@ -25,6 +28,7 @@ int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdj
       sv_itr++;
     }
   }
+  pcl::console::print_info("    (Total number of points in the clusters: %d)\n", nbPointsTotal);
   return nbDissolvedClusters;
 }
 
@@ -38,6 +42,12 @@ void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT
   super.setNormalImportance (params->normal_importance);
 
   pcl::console::print_highlight ("Extracting supervoxels!\n");
+  pcl::console::print_info("    Resolution:\n"
+                          "        voxel %.1f, seed %.1f\n"
+                          "    Weights:\n"
+                          "        color %.1f, spatial %.1f, normal %.1f\n",
+                          params->voxel_resolution, params->seed_resolution,
+                          params->color_importance, params->spatial_importance, params->normal_importance);
   super.extract (supervoxel_clusters);
   pcl::console::print_info ("    Found %d supervoxels\n", supervoxel_clusters.size ());
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");

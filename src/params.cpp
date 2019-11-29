@@ -20,7 +20,7 @@ int set_params(int argc, char **argv, struct Params *params)
 
   params->disable_transform = pcl::console::find_switch (argc, argv, "--nt");
 
-  params->voxel_resolution = (params->is_pcd ? 0.008f : 10.0f);
+  params->voxel_resolution = (params->is_pcd ? 0.008f : 5.0f);
   params->voxel_res_specified = pcl::console::find_switch (argc, argv, "-v");
   if (params->voxel_res_specified)
     pcl::console::parse (argc, argv, "-v", params->voxel_resolution);
