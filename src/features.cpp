@@ -1,14 +1,24 @@
 
 #include "main.h"
-#include <pcl/common/distances.h>
+#include <pcl/common/geometry.h>
+#include <pcl/common/copy_point.h>
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
 {
-  angle_x = 0.0;
-  angle_y = 0.0;
-  angle_z = 0.0;
-  length = pcl::euclideanDistance(p1, p2);
+  Eigen::Vector3f ux(1.0,0.0,0.0);
+  Eigen::Vector3f uy(0.0,1.0,0.0);
+  Eigen::Vector3f uz(0.0,0.0,1.0);
+  //PointT p2_projected;
+  Eigen::Vector3f v(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+  Eigen::Vector3f v_projected(p2.x - p1.x, p2.y - p1.y, 0);
+
+  //pcl::geometry::project (p2, p1, uz, p2_projected);
+
+  angle_x = pcl::getAngle3D(ux, v_projected);
+  angle_y = pcl::getAngle3D(uy, v_projected);
+  angle_z = pcl::getAngle3D(uz, v);
+  length = pcl::geometry::distance(p1, p2);
 }
 
 void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors)
