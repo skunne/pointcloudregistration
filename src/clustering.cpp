@@ -55,10 +55,10 @@ void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT
   super.getSupervoxelAdjacency (supervoxel_adjacency);
 
   //////////////////////////////  //////////////////////////////
-  ////// Getting rid of clusters of size 1 or 2 (ESF descriptor requires >= 3 points per cloud)
+  ////// Getting rid of clusters of size 1, 2 or 3(ESF descriptor requires > 3 points per cloud)
   //////////////////////////////  //////////////////////////////
 
-  pcl::console::print_highlight ("Dissolving small supervoxels\n");
-  int nbDissolvedClusters = dissolveSmallClusters(supervoxel_clusters, supervoxel_adjacency);
-  pcl::console::print_info ("    Dissolved %d supervoxels. Left with %d supervoxels\n", nbDissolvedClusters, supervoxel_clusters.size ());
+  //pcl::console::print_highlight ("Dissolving small supervoxels\n");
+  //int nbDissolvedClusters = dissolveSmallClusters(supervoxel_clusters, supervoxel_adjacency);
+  //pcl::console::print_info ("    Dissolved %d supervoxels. Left with %d supervoxels\n", nbDissolvedClusters, supervoxel_clusters.size ());
 }

@@ -47,28 +47,37 @@ void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescrip
   {
     //pcl::console::print_info ("    Supervoxel % 4d    size % 4d\n", sv_itr->first, sv_itr->second->voxels_->size());
     esf_descriptors[sv_itr->first] = ESFHist();
-    esf_calculator.setInputCloud(sv_itr->second->voxels_); // feed point cloud corresponding to this supervoxel
-    //pcl::console::print_info ("    Local input cloud set\n");
-    esf_calculator.compute(esf_singlepoint_pointcloud);
-    //pcl::console::print_info ("    Histogram calculated\n");
-    //for (std::size_t d = 0; d < esf_singlepoint_pointcloud.points[0].histogram.size (); ++d)
-    for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
+
+    if (sv_clusters.at(sv_itr->first)->voxels_->size() < 4) // cannot compute ESF for small clusters
     {
-      //pcl::console::print_info("        Copying bin %d...\n", d);
-      //KeyT label = sv_itr->first;
-      //pcl::console::print_info("          Got label\n");
-      //ESFHist hist = esf_descriptors[label];
-      //pcl::console::print_info("          Got hist\n");
-      //auto singlepoint = esf_singlepoint_pointcloud[0];
-      //pcl::console::print_info("          Got point 0\n");
-      //float tobecopied = singlepoint.histogram[d];
-      //pcl::console::print_info("          Got bin %d\n", d);
-      //hist.push_back(tobecopied);
-      //pcl::console::print_info("          Copied!\n");
-      esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
+      for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
+        esf_descriptors[sv_itr->first].push_back(0);
     }
-    //esf_calculator->computeESF(sv_itr->second->voxels_, esf_descriptors[sv_itr->first]);
-    //pcl::console::print_info ("    Histogram copied\n");
+    else  // size >= 4 : compute ESF
+    {
+      esf_calculator.setInputCloud(sv_itr->second->voxels_); // feed point cloud corresponding to this supervoxel
+      //pcl::console::print_info ("    Local input cloud set\n");
+      esf_calculator.compute(esf_singlepoint_pointcloud);
+      //pcl::console::print_info ("    Histogram calculated\n");
+      //for (std::size_t d = 0; d < esf_singlepoint_pointcloud.points[0].histogram.size (); ++d)
+      for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
+      {
+        //pcl::console::print_info("        Copying bin %d...\n", d);
+        //KeyT label = sv_itr->first;
+        //pcl::console::print_info("          Got label\n");
+        //ESFHist hist = esf_descriptors[label];
+        //pcl::console::print_info("          Got hist\n");
+        //auto singlepoint = esf_singlepoint_pointcloud[0];
+        //pcl::console::print_info("          Got point 0\n");
+        //float tobecopied = singlepoint.histogram[d];
+        //pcl::console::print_info("          Got bin %d\n", d);
+        //hist.push_back(tobecopied);
+        //pcl::console::print_info("          Copied!\n");
+        esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
+      }
+      //esf_calculator->computeESF(sv_itr->second->voxels_, esf_descriptors[sv_itr->first]);
+      //pcl::console::print_info ("    Histogram copied\n");
+    }
   }
 
 }
