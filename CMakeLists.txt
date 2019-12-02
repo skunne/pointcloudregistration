@@ -11,10 +11,10 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-set(SRC src/main.cpp src/clustering.cpp src/features.cpp src/visualisation.cpp src/params.cpp src/loadfiles.cpp)
+set(SRC src/main.cpp src/clustering.cpp src/connectedcomponents.cpp src/features.cpp src/visualisation.cpp src/params.cpp src/loadfiles.cpp)
 
 include_directories("includes")
 
 add_executable (${NAME} ${SRC})
 target_link_libraries (${NAME} PUBLIC ${PCL_LIBRARIES})
-target_compile_options(${NAME} PRIVATE -Werror -Wall -Wextra)
+target_compile_options(${NAME} PRIVATE -Wall -Wextra)
