@@ -6,7 +6,7 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
                           std::vector<std::vector<KeyT>> &cc_list,
                           std::map<KeyT, std::size_t> &cc_membership)
 {
-  std::vector<KeyT> nonvisited_vertices;
+  std::vector<KeyT> nonvisited_vertices;  // std::vector is not a very good type for this
 
   for (auto v_itr = vertices.begin(); v_itr != vertices.end(); v_itr++)
     nonvisited_vertices.push_back(v_itr->first);
@@ -33,3 +33,21 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
   }
   return (cc_index);
 }
+
+/*void makeGraphConnected(SupervoxelClusters &vertices,
+                        SupervoxelAdjacency &edges,
+                        std::vector<std::vector<KeyT>> &cc_list,
+                        std::map<KeyT, std::size_t> &cc_membership)
+{
+  KeyT nextFreeLabel = 0;
+  for (v_itr = vertices.begin(); v_itr != vertices.end(); v_itr++)
+    nextFreeLabel = max(nextFreeLabel, v_itr->first);
+  nextFreeLabel++;
+
+  for (cc_itr = cc_list.begin(); cc_itr != cc_list.end(); cc_itr++)
+  {
+    // get center of mass
+
+  }
+}
+*/

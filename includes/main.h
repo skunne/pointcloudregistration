@@ -60,6 +60,14 @@ int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdj
 void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
 
 /*
+** connectedcomponents.cpp
+*/
+int getConnectedComponents(SupervoxelClusters const &vertices,
+                          SupervoxelAdjacency const &edges,
+                          std::vector<std::vector<KeyT>> &cc_list,
+                          std::map<KeyT, std::size_t> &cc_membership);
+                          
+/*
 ** features.cpp
 */
 void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);

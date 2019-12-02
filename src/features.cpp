@@ -70,8 +70,8 @@ void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescrip
       esf_calculator.compute(esf_singlepoint_pointcloud);
       //pcl::console::print_info ("    Histogram calculated\n");
       //for (std::size_t d = 0; d < esf_singlepoint_pointcloud.points[0].histogram.size (); ++d)
-      if (sv_itr->first % 30 == 0)
-        print_histogram(esf_singlepoint_pointcloud);
+      //if (sv_itr->first % 30 == 0)
+      //  print_histogram(esf_singlepoint_pointcloud);
       for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
         esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
 
