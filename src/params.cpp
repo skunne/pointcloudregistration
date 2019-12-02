@@ -7,12 +7,12 @@ int set_params(int argc, char **argv, struct Params *params)
 {
   if (argc < 2)
   {
-    pcl::console::print_error ("Syntax is: %s <vtk-file> \n "
-                                "--nt Disables the single cloud transform \n"
-                                "-v <voxel resolution>\n-s <seed resolution>\n"
-                                "-c <color weight> \n-z <spatial weight> \n"
-                                "-n <normal_weight>\n"
-                                "Or: %s <pcd-file> --pcd [--nt] [-v <voxel resolution>] [...]", argv[0], argv[0]);
+    pcl::console::print_error ("Syntax is: %s <vtk-file> \n"
+                                " --nt Disables the single cloud transform \n"
+                                " -v <voxel resolution>\n-s <seed resolution>\n"
+                                " -c <color weight> \n-z <spatial weight> \n"
+                                " -n <normal_weight>\n"
+                                "Or: %s <pcd-file> --pcd [--nt] [...]\n", argv[0], argv[0]);
     return (1);
   }
 

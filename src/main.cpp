@@ -31,7 +31,9 @@ main (int argc, char ** argv)
 
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
+  //SimilarityMatrix m;
   calculate_descriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
+  //calculate_similarity_matrix(m);
 
   //////////////////////////////  //////////////////////////////
   ////// This is the visualisation part

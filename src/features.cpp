@@ -2,6 +2,7 @@
 #include "main.h"
 #include <pcl/common/geometry.h>
 #include <pcl/common/copy_point.h>
+#include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
@@ -19,6 +20,15 @@ void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &ang
   angle_y = pcl::getAngle3D(uy, v_projected);
   angle_z = pcl::getAngle3D(uz, v);
   length = pcl::geometry::distance(p1, p2);
+}
+
+void print_histogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
+{
+  pcl::visualization::PCLHistogramVisualizer visu;
+
+  visu.addFeatureHistogram(pc_histo, 640);
+
+  visu.spin();
 }
 
 void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors)
@@ -60,8 +70,12 @@ void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescrip
       esf_calculator.compute(esf_singlepoint_pointcloud);
       //pcl::console::print_info ("    Histogram calculated\n");
       //for (std::size_t d = 0; d < esf_singlepoint_pointcloud.points[0].histogram.size (); ++d)
+      if (sv_itr->first % 30 == 0)
+        print_histogram(esf_singlepoint_pointcloud);
       for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
-      {
+        esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
+
+      //{
         //pcl::console::print_info("        Copying bin %d...\n", d);
         //KeyT label = sv_itr->first;
         //pcl::console::print_info("          Got label\n");
@@ -73,8 +87,7 @@ void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescrip
         //pcl::console::print_info("          Got bin %d\n", d);
         //hist.push_back(tobecopied);
         //pcl::console::print_info("          Copied!\n");
-        esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
-      }
+      //}
       //esf_calculator->computeESF(sv_itr->second->voxels_, esf_descriptors[sv_itr->first]);
       //pcl::console::print_info ("    Histogram copied\n");
     }
@@ -119,3 +132,27 @@ void calculate_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdja
   calculate_esf_descriptors(sv_clusters, esf_descriptors);
   calculate_edges_descriptors(sv_clusters, sv_adjacency, edge_descriptors);
 }
+
+/*void calculate_similarity_matrix(, SimilarityMatrix &m)
+{
+  for (SupervoxelAdjacency::const_iterator label_itr = sv_adjacency.cbegin (); label_itr != sv_adjacency.cend (); )
+  {
+    KeyT supervoxel1_label = label_itr->first;
+    pcl::Supervoxel<PointT>::Ptr supervoxel1 = sv_clusters.at(supervoxel1_label);
+
+    //Now we need to iterate through the adjacent supervoxels
+    for (auto adjacent_itr = sv_adjacency.equal_range (supervoxel1_label).first; adjacent_itr!=sv_adjacency.equal_range (supervoxel1_label).second; ++adjacent_itr)
+    {
+      KeyT supervoxel2_label = adjacent_itr->second;
+      pcl::Supervoxel<PointT>::Ptr supervoxel2 = sv_clusters.at (supervoxel2_label);
+      double angle_x;
+      double angle_y;
+      double angle_z;
+      double length;
+      calculate_angles_and_length(supervoxel1->centroid_, supervoxel2->centroid_, angle_x, angle_y, angle_z, length);
+      edge_descriptors[std::make_pair(supervoxel1_label, supervoxel2_label)] = std::make_tuple(angle_x, angle_y, angle_z, length);
+      //adjacent_supervoxel_centers.push_back (neighbor_supervoxel->centroid_);
+    }//Move iterator forward to next label
+    label_itr = sv_adjacency.upper_bound (supervoxel1_label);
+  }
+}*/
