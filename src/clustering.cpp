@@ -34,8 +34,8 @@ int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdj
 
 void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
-  if (params->disable_transform)
-    super.setUseSingleCameraTransform (false);
+  //if (params->disable_transform)
+  super.setUseSingleCameraTransform (false);
   super.setInputCloud (cloud);
   super.setColorImportance (params->color_importance);
   super.setSpatialImportance (params->spatial_importance);
@@ -51,8 +51,11 @@ void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT
   super.extract (supervoxel_clusters);
   pcl::console::print_info ("    Found %d supervoxels\n", supervoxel_clusters.size ());
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");
-
   super.getSupervoxelAdjacency (supervoxel_adjacency);
+  pcl::console::print_info ("    Found %d edges\n", supervoxel_adjacency.size() / 2);
+  //for (auto edge_itr = supervoxel_adjacency.begin(); edge_itr != supervoxel_adjacency.end(); edge_itr++)
+  //  pcl::console::print_info("        %d,%d\n", edge_itr->first, edge_itr->second);
+
 
   //////////////////////////////  //////////////////////////////
   ////// Getting rid of clusters of size 1, 2 or 3(ESF descriptor requires > 3 points per cloud)

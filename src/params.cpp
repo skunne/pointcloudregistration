@@ -8,7 +8,7 @@ int set_params(int argc, char **argv, struct Params *params)
   if (argc < 2)
   {
     pcl::console::print_error ("Syntax is: %s <vtk-file> \n"
-                                " --nt Disables the single cloud transform \n"
+                                //" --nt Disables the single camera transform \n"
                                 " -v <voxel resolution>\n-s <seed resolution>\n"
                                 " -c <color weight> \n-z <spatial weight> \n"
                                 " -n <normal_weight>\n"
@@ -18,7 +18,7 @@ int set_params(int argc, char **argv, struct Params *params)
 
   params->is_pcd = pcl::console::find_switch (argc, argv, "--pcd");
 
-  params->disable_transform = pcl::console::find_switch (argc, argv, "--nt");
+  //params->disable_transform = pcl::console::find_switch (argc, argv, "--nt");
 
   params->voxel_resolution = (params->is_pcd ? 0.008f : 5.0f);
   params->voxel_res_specified = pcl::console::find_switch (argc, argv, "-v");

@@ -34,7 +34,8 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
   return (cc_index);
 }
 
-/*void makeGraphConnected(SupervoxelClusters &vertices,
+/*
+void makeGraphConnected(SupervoxelClusters &vertices,
                         SupervoxelAdjacency &edges,
                         std::vector<std::vector<KeyT>> &cc_list,
                         std::map<KeyT, std::size_t> &cc_membership)
@@ -44,8 +45,11 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
     nextFreeLabel = max(nextFreeLabel, v_itr->first);
   nextFreeLabel++;
 
+
   for (cc_itr = cc_list.begin(); cc_itr != cc_list.end(); cc_itr++)
   {
+    PointT cc_centre = getCentreOfMass(*cc_itr);
+
     // get center of mass
 
   }

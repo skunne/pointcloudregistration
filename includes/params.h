@@ -6,7 +6,7 @@
 struct Params
 {
   bool  is_pcd;
-  bool  disable_transform;
+  //bool  disable_transform;
   float voxel_resolution;
   bool  voxel_res_specified;
   float seed_resolution;
