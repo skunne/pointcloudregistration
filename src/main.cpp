@@ -43,7 +43,7 @@ main (int argc, char ** argv)
   EdgeDescriptors edge_descriptors;
   //SimilarityMatrix m;
   calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
-  //descriptors_to_csv()
+  descriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);
 
 

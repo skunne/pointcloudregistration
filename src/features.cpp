@@ -3,6 +3,7 @@
 #include <pcl/common/geometry.h>
 #include <pcl/common/copy_point.h>
 #include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
+#include <fstream>    // print features to csv file
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
@@ -156,3 +157,30 @@ void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjac
     label_itr = sv_adjacency.upper_bound (supervoxel1_label);
   }
 }*/
+
+void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors)
+{
+  std::stringstream filename;
+  std::fstream output;
+  filename << "output/descriptors_" << name << ".csv";
+  output.open(filename.str().c_str(), std::fstream::out | std::fstream::trunc);
+  if (!output)
+  {
+    pcl::console::print_error("Failed to open file: ");
+    pcl::console::print_error(filename.str().c_str());
+    pcl::console::print_error("\n");
+    return;
+  }
+  for (ESFDescriptors::const_iterator esf_itr = esf_descriptors.cbegin();
+        esf_itr != esf_descriptors.cend(); esf_itr++)
+  {
+    ESFHist const &histo = esf_itr->second;
+    output << histo[0];
+    for (std::size_t i = 1; i < 640; ++i)
+    {
+      output << ',';
+      output << histo[i];
+    }
+    output << std::endl;
+  }
+}
