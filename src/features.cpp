@@ -158,6 +158,9 @@ void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjac
   }
 }*/
 
+/*
+** WARNING for now, only prints ESF descriptors
+*/
 void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors)
 {
   std::stringstream filename;

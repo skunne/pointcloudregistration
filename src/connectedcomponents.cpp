@@ -3,8 +3,8 @@
 
 int getConnectedComponents(SupervoxelClusters const &vertices,
                           SupervoxelAdjacency const &edges,
-                          std::vector<std::vector<KeyT>> &cc_list,
-                          std::map<KeyT, std::size_t> &cc_membership)
+                          std::vector<std::vector<KeyT>> &cc_list)
+                          //std::map<KeyT, std::size_t> &cc_membership)
 {
   std::vector<KeyT> nonvisited_vertices;  // std::vector is not a very good type for this
 
@@ -38,7 +38,7 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
         //pcl::console::print_info("    getCC() inner loop: found to erase\n");
         nonvisited_vertices.erase(x);   // could be optimized
         //pcl::console::print_info("    getCC() inner loop: erased\n");
-        cc_membership[v] = cc_index;
+        //cc_membership[v] = cc_index;
         current_cc.push_back(v);
         //pcl::console::print_info("    getCC() inner loop: added v to current_cc\n");
         for (auto adjacent_itr = edges.equal_range (v).first; adjacent_itr!=edges.equal_range (v).second; ++adjacent_itr)
@@ -83,8 +83,8 @@ PointT getCentreOfMass(std::vector<KeyT> const pointLabels, SupervoxelClusters c
 */
 void makeGraphConnected(SupervoxelClusters &vertices,
                         SupervoxelAdjacency &edges,
-                        std::vector<std::vector<KeyT>> &cc_list,
-                        std::map<KeyT, std::size_t> &cc_membership)
+                        std::vector<std::vector<KeyT>> &cc_list)
+                        //std::map<KeyT, std::size_t> &cc_membership)
 {
   // get label names for insertion into SupervoxelClusters
   KeyT nextFreeLabel = 0;

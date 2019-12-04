@@ -27,12 +27,12 @@ main (int argc, char ** argv)
 
   pcl::console::print_highlight("Getting connected components\n");
   std::vector<std::vector<KeyT>> cc_list;
-  std::map<KeyT, std::size_t> cc_membership;
+  //std::map<KeyT, std::size_t> cc_membership;
   int nbCC = getConnectedComponents(supervoxel_clusters, supervoxel_adjacency,
-                            cc_list, cc_membership);
+                            cc_list);//, cc_membership);
   pcl::console::print_info("    Got %d connected components\n", nbCC);
   makeGraphConnected(supervoxel_clusters, supervoxel_adjacency,
-                            cc_list, cc_membership);
+                            cc_list);//, cc_membership);
   pcl::console::print_info("    Graph is now connected\n");
 
   //////////////////////////////  //////////////////////////////
