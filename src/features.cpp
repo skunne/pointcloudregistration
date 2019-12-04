@@ -20,7 +20,7 @@ void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_
   angle_x = pcl::getAngle3D(ux, v_projected);
   angle_y = pcl::getAngle3D(uy, v_projected);
   angle_z = pcl::getAngle3D(uz, v);
-  length = pcl::geometry::distance(p1, p2);
+  length = pcl::geometry::distance(p1, p2);   // TODO Huang says this should be normalized by params->voxelres??
 }
 
 void printHistogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
@@ -72,7 +72,7 @@ void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescripto
       //pcl::console::print_info ("    Histogram calculated\n");
       //for (std::size_t d = 0; d < esf_singlepoint_pointcloud.points[0].histogram.size (); ++d)
       //if (sv_itr->first % 30 == 0)
-      //  print_histogram(esf_singlepoint_pointcloud);
+      //  printHistogram(esf_singlepoint_pointcloud);
       for (std::size_t d = 0; d < HISTOGRAM_SIZE; ++d)
         esf_descriptors[sv_itr->first].push_back(esf_singlepoint_pointcloud.points[0].histogram[d]);
 
@@ -215,5 +215,6 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
     output << esf_itr->first;
     for (i = 0; i < 640; ++i)
       output << ',' << histo[i];
+    output << std::endl;
   }
 }

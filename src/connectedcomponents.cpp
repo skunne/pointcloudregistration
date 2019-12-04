@@ -54,16 +54,18 @@ int getConnectedComponents(SupervoxelClusters const &vertices,
   return (cc_index);
 }
 
-PointT getCentreOfMass(std::vector<KeyT> const pointLabels, SupervoxelClusters const &vertices)
+void getCentreOfMass(std::vector<KeyT> const pointLabels, SupervoxelClusters const &vertices, PointT &c)
 {
-  PointT c;
+  //PointT c;     // centre of mass
   c.x = 0;
   c.y = 0;
   c.z = 0;
   std::size_t nbPoints = 0;
-  for (auto lbl_itr = pointLabels.begin(); lbl_itr != pointLabels.end(); lbl_itr++)
+  for (std::vector<KeyT>::const_iterator lbl_itr = pointLabels.cbegin();
+      lbl_itr != pointLabels.cend();
+      lbl_itr++)
   {
-    PointT p;
+    PointT p;     // supervoxel with label (*lbl_itr)
     vertices.at(*lbl_itr)->getCentroidPoint(p);
     c.x += p.x;
     c.y += p.y;
@@ -73,7 +75,7 @@ PointT getCentreOfMass(std::vector<KeyT> const pointLabels, SupervoxelClusters c
   c.x = c.x / nbPoints;
   c.y = c.y / nbPoints;
   c.z = c.z / nbPoints;
-  return c;
+  //return c;
 }
 
 /*
@@ -97,7 +99,8 @@ void makeGraphConnected(SupervoxelClusters &vertices,
   for (auto cc_itr = cc_list.begin(); cc_itr != cc_list.end(); cc_itr++)
   {
     pcl::Supervoxel<PointT>::Ptr cc_centre(new pcl::Supervoxel<PointT>);
-    cc_centre->centroid_ = getCentreOfMass(*cc_itr, vertices);
+    //cc_centre->centroid_ = getCentreOfMass(*cc_itr, vertices);
+    getCentreOfMass(*cc_itr, vertices, cc_centre->centroid_);
     vertices[nextFreeLabel + clusterIndex] = cc_centre;
     for (auto lbl_itr = cc_itr->begin(); lbl_itr != cc_itr->end(); lbl_itr++)
     {
