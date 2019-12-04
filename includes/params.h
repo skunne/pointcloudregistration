@@ -16,6 +16,6 @@ struct Params
   float normal_importance;
 };
 
-int set_params(int argc, char **argv, struct Params *params);
+int setParams(int argc, char **argv, struct Params *params);
 
 #endif /* __DEF_PARAMS_H__ */

@@ -32,7 +32,7 @@ int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdj
   return nbDissolvedClusters;
 }
 
-void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
+void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
   //if (params->disable_transform)
   super.setUseSingleCameraTransform (false);

@@ -1,15 +1,15 @@
 
 #include "main.h"
 
-int load_file(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
+int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
 {
   if (is_pcd)
-    return load_pcdfile(filename, cloud);
+    return loadPCDFile(filename, cloud);
   else
-    return load_vtkfile(filename, cloud);
+    return loadVTKFile(filename, cloud);
 }
 
-int load_vtkfile(char const *filename, PointCloudT::Ptr cloud)
+int loadVTKFile(char const *filename, PointCloudT::Ptr cloud)
 {
   //PointCloudT cloud (new PointCloudT);
   vtkPolyData *polydata;
@@ -36,7 +36,7 @@ int load_vtkfile(char const *filename, PointCloudT::Ptr cloud)
   return (0);
 }
 
-int load_pcdfile(char const *filename, PointCloudT::Ptr cloud)
+int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
 {
   pcl::console::print_highlight ("Loading point cloud from .pcd file...\n");
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))

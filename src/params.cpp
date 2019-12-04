@@ -3,7 +3,7 @@
 #include "main.h"
 #include "params.h"
 
-int set_params(int argc, char **argv, struct Params *params)
+int setParams(int argc, char **argv, struct Params *params)
 {
   if (argc < 2)
   {
@@ -20,12 +20,12 @@ int set_params(int argc, char **argv, struct Params *params)
 
   //params->disable_transform = pcl::console::find_switch (argc, argv, "--nt");
 
-  params->voxel_resolution = (params->is_pcd ? 0.008f : 5.0f);
+  params->voxel_resolution = (params->is_pcd ? 0.008f : 10.0f);
   params->voxel_res_specified = pcl::console::find_switch (argc, argv, "-v");
   if (params->voxel_res_specified)
     pcl::console::parse (argc, argv, "-v", params->voxel_resolution);
 
-  params->seed_resolution = (params->is_pcd ? 0.1f : 30.0f);
+  params->seed_resolution = (params->is_pcd ? 0.1f : 15.0f);
   params->seed_res_specified = pcl::console::find_switch (argc, argv, "-s");
   if (params->seed_res_specified)
     pcl::console::parse (argc, argv, "-s", params->seed_resolution);

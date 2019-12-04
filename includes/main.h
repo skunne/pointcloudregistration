@@ -49,15 +49,15 @@ typedef std::map<
 /*
 ** loadfiles.cpp
 */
-int load_file(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
-int load_vtkfile(char const *filename, PointCloudT::Ptr cloud);
-int load_pcdfile(char const *filename, PointCloudT::Ptr cloud);
+int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
+int loadVTKFile(char const *filename, PointCloudT::Ptr cloud);
+int loadPCDFile(char const *filename, PointCloudT::Ptr cloud);
 
 /*
 ** clustering.cpp
 */
 int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
-void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
+void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
 
 /*
 ** connectedcomponents.cpp
@@ -76,10 +76,10 @@ void makeGraphConnected(SupervoxelClusters &vertices,
 /*
 ** features.cpp
 */
-void calculate_angles_and_length(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
-void calculate_esf_descriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);
-void calculate_edges_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors);
-void calculate_descriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors);
+void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
+void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);
+void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors);
+void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors);
 
 /*
 ** visualisation.cpp
