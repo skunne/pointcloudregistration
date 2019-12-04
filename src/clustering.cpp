@@ -50,6 +50,8 @@ void perform_clustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT
                           params->color_importance, params->spatial_importance, params->normal_importance);
   super.extract (supervoxel_clusters);
   pcl::console::print_info ("    Found %d supervoxels\n", supervoxel_clusters.size ());
+  //super.refineSupervoxels(5, supervoxel_clusters);
+  //pcl::console::print_info ("    Refined supervoxels\n", supervoxel_clusters.size ());
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");
   super.getSupervoxelAdjacency (supervoxel_adjacency);
   pcl::console::print_info ("    Found %d edges\n", supervoxel_adjacency.size() / 2);

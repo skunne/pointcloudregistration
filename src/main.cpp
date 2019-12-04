@@ -25,6 +25,16 @@ main (int argc, char ** argv)
   pcl::SupervoxelClustering<PointT> super (params.voxel_resolution, params.seed_resolution);
   perform_clustering(cloud, super, &params, supervoxel_clusters, supervoxel_adjacency);
 
+  pcl::console::print_highlight("Getting connected components\n");
+  std::vector<std::vector<KeyT>> cc_list;
+  std::map<KeyT, std::size_t> cc_membership;
+  int nbCC = getConnectedComponents(supervoxel_clusters, supervoxel_adjacency,
+                            cc_list, cc_membership);
+  pcl::console::print_info("    Got %d connected components\n", nbCC);
+  makeGraphConnected(supervoxel_clusters, supervoxel_adjacency,
+                            cc_list, cc_membership);
+  pcl::console::print_info("    Graph is now connected\n");
+
   //////////////////////////////  //////////////////////////////
   ////// ESF and edge descriptors calculation
   //////////////////////////////  //////////////////////////////
@@ -34,6 +44,9 @@ main (int argc, char ** argv)
   //SimilarityMatrix m;
   calculate_descriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);
+
+
+
 
   //////////////////////////////  //////////////////////////////
   ////// This is the visualisation part
