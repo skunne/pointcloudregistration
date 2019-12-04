@@ -181,8 +181,8 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
         esf_itr != esf_descriptors.cend(); esf_itr++)
   {
     ESFHist const &histo = esf_itr->second;
-    output << histo[0];
-    for (std::size_t i = 1; i < 640; ++i)
+    output << esf_itr->first;
+    for (std::size_t i = 0; i < 640; ++i)
     {
       output << ',';
       output << histo[i];

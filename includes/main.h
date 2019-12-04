@@ -91,7 +91,7 @@ void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClu
 void addSupervoxelConnectionsToViewer (PointT const &supervoxel_center,
                                        PointCloudT const &adjacent_supervoxel_centers,
                                        std::string supervoxel_name,
-                                       pcl::visualization::PCLVisualizer::Ptr & viewer);
+                                       pcl::visualization::PCLVisualizer::Ptr &viewer);
 
 
 
