@@ -164,9 +164,12 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
   std::fstream output;
   filename << "output/descriptors_" << name << ".csv";
   output.open(filename.str().c_str(), std::fstream::out | std::fstream::trunc);
+  pcl::console::print_info("    Saving ESF descriptors to:\n      ");
+  pcl::console::print_info(filename.str().c_str());
+  pcl::console::print_info("\n");
   if (!output)
   {
-    pcl::console::print_error("Failed to open file: ");
+    pcl::console::print_error("Failed to open file:\n    ");
     pcl::console::print_error(filename.str().c_str());
     pcl::console::print_error("\n");
     return;
