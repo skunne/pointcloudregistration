@@ -164,7 +164,11 @@ void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjac
 void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors)
 {
   std::stringstream filename;
-  std::fstream output;
+  std::fstream      output;
+  std::size_t       i;
+
+  /* open file */
+
   filename << "output/descriptors_" << name << ".csv";
   output.open(filename.str().c_str(), std::fstream::out | std::fstream::trunc);
   pcl::console::print_info("    Saving ESF descriptors to:\n      ");
@@ -177,16 +181,39 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
     pcl::console::print_error("\n");
     return;
   }
+
+  /* write header */
+  output << "supervoxelLabel";
+  for (i = 0; i < 64; ++i)
+    output << ",AngleIn" << i;
+  for (; i < 128; ++i)
+    output << ",AngleOut" << i - 64;
+  for (; i < 192; ++i)
+    output << ",AngleMixed" << i - 128;
+  for (; i < 256; ++i)
+    output << ",AreaIn" << i - 192;
+  for (; i < 320; ++i)
+    output << ",AreaOut" << i - 256;
+  for (; i < 384; ++i)
+    output << ",AreaMixed" << i - 320;
+  for (; i < 448; ++i)
+    output << ",DistIn" << i - 384;
+  for (; i < 512; ++i)
+    output << ",DistOut" << i - 448;
+  for (; i < 576; ++i)
+    output << ",DistMixed" << i - 512;
+  for (; i < 640; ++i)
+    output << ",DistRatio" << i - 576;
+  output << std::endl;
+
+  /* write one ESF histogram per row */
+
   for (ESFDescriptors::const_iterator esf_itr = esf_descriptors.cbegin();
         esf_itr != esf_descriptors.cend(); esf_itr++)
   {
     ESFHist const &histo = esf_itr->second;
     output << esf_itr->first;
-    for (std::size_t i = 0; i < 640; ++i)
-    {
-      output << ',';
-      output << histo[i];
-    }
-    output << std::endl;
+    for (i = 0; i < 640; ++i)
+      output << ',' << histo[i];
   }
 }
