@@ -2,6 +2,7 @@
 #include "main.h"
 #include "params.h"
 #include "loadfiles.h"
+#include "clustering.h"
 
 
 int

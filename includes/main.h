@@ -54,8 +54,6 @@ typedef std::map<
 /*
 ** clustering.cpp
 */
-int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
-void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
 
 /*
 ** connectedcomponents.cpp
