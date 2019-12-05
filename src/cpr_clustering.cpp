@@ -1,6 +1,7 @@
 
-#include "main.h"
-#include "params.h"
+#include "cpr_main.h"
+#include "cpr_params.h"
+#include "cpr_clustering.h"
 
 void renumberVertices(SupervoxelClusters *supervoxel_clusters, SupervoxelAdjacency *supervoxel_adjacency)
 {

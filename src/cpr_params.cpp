@@ -1,7 +1,7 @@
 
 
-#include "main.h"
-#include "params.h"
+#include "cpr_main.h"
+#include "cpr_params.h"
 
 int setParams(int argc, char **argv, struct Params *params)
 {

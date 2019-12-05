@@ -49,38 +49,11 @@ typedef std::map<
 /*
 ** loadfiles.cpp
 */
-int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
-int loadVTKFile(char const *filename, PointCloudT::Ptr cloud);
-int loadPCDFile(char const *filename, PointCloudT::Ptr cloud);
+
 
 /*
 ** clustering.cpp
 */
-int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
-void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency);
-
-/*
-** connectedcomponents.cpp
-*/
-int getConnectedComponents(SupervoxelClusters const &vertices,
-                          SupervoxelAdjacency const &edges,
-                          std::vector<std::vector<KeyT>> &cc_list);
-                          //std::map<KeyT, std::size_t> &cc_membership);
-
-// add one vertex at center of each cc, and edges from these centers to connect the graph
-void makeGraphConnected(SupervoxelClusters &vertices,
-                        SupervoxelAdjacency &edges,
-                        std::vector<std::vector<KeyT>> &cc_list);
-                        //std::map<KeyT, std::size_t> &cc_membership);
-
-/*
-** features.cpp
-*/
-void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
-void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);
-void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors);
-void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors);
-void writeDescriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors);
 
 /*
 ** visualisation.cpp

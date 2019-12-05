@@ -1,7 +1,7 @@
 
 #ifndef __DEF_PARAMS_H__
 # define __DEF_PARAMS_H__
-#include "main.h"
+#include "cpr_main.h"
 
 struct Params
 {

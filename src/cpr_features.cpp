@@ -1,9 +1,10 @@
 
-#include "main.h"
 #include <pcl/common/geometry.h>
 #include <pcl/common/copy_point.h>
 #include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
 #include <fstream>    // print features to csv file
+#include "cpr_main.h"
+#include "cpr_features.h"
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
