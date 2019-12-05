@@ -1,7 +1,7 @@
 
 #ifndef __DEF_CONNECTEDCOMPONENTS_H__
 # define __DEF_CONNECTEDCOMPONENTS_H__
-#include "main.h"
+#include "cpr_main.h"
 
 
 /*

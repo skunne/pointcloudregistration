@@ -1,10 +1,10 @@
 
-#include "main.h"
-#include "params.h"
-#include "loadfiles.h"
-#include "clustering.h"
-#include "connectedcomponents.h"
-#include "verticesandedges_features.h"
+#include "cpr_main.h"
+#include "cpr_params.h"
+#include "cpr_loadfiles.h"
+#include "cpr_clustering.h"
+#include "cpr_connectedcomponents.h"
+#include "cpr_features.h"
 
 
 int

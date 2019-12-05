@@ -2,7 +2,7 @@
 #ifndef __DEF_FEATURES_H__
 # define __DEF_FEATURES_H__
 
-#include "main.h"
+#include "cpr_main.h"
 
 
 /*
