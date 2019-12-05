@@ -1,6 +1,6 @@
 
-#ifndef __DEF_CLUSTERING_H__
-# define __DEF_CLUSTERING_H__
+#ifndef __DEF_CPR_CLUSTERING_H__
+# define __DEF_CPR_CLUSTERING_H__
 
 #include "cpr_main.h"
 
@@ -34,4 +34,4 @@ void performClustering(PointCloudT::Ptr cloud,
   SupervoxelAdjacency &supervoxel_adjacency);
 
 
-#endif /* __DEF_CLUSTERING_H__ */
+#endif /* __DEF_CPR_CLUSTERING_H__ */

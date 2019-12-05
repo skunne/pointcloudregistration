@@ -5,6 +5,9 @@
 #include "cpr_clustering.h"
 #include "cpr_connectedcomponents.h"
 #include "cpr_features.h"
+#include "cpr_matrices.h"
+
+#include <Eigen/Dense>    // matrices
 
 
 int
@@ -49,7 +52,7 @@ main (int argc, char ** argv)
   calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
 
   // save features to file
-  writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
+  //writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);
 
 
@@ -57,7 +60,10 @@ main (int argc, char ** argv)
   ////// Make adjacency matrix
   //////////////////////////////  //////////////////////////////
 
-
+  int nbVertices = supervoxel_clusters.size();
+  Eigen::MatrixXd adjacency_matrix(nbVertices,nbVertices);
+  buildAdjacencyMatrix(supervoxel_adjacency, adjacency_matrix);
+  printMatrixToFile("output/adjacencymatrix.txt", adjacency_matrix);
 
 
 
