@@ -17,6 +17,19 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
 
  * Point Cloud Library http://pointclouds.org/
 
+### Install
+
+~~~~
+git clone https://github.com/skunne/pointcloudregistration.git
+cd pointcloudregistration
+cmake .
+make
+~~~~
+
+### Usage
+
+// TODO
+
 ### References
 
  (1) "A Systematic Approach for Cross-Source Point Cloud Registration by Preserving Macro and Micro Structures", Huang, Zhang, Fan, Wu, Yuan, IEEE Transactions on Image Processing, 2017
