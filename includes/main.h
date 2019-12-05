@@ -49,9 +49,7 @@ typedef std::map<
 /*
 ** loadfiles.cpp
 */
-int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
-int loadVTKFile(char const *filename, PointCloudT::Ptr cloud);
-int loadPCDFile(char const *filename, PointCloudT::Ptr cloud);
+
 
 /*
 ** clustering.cpp

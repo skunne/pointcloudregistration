@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "loadfiles.h"
 
 int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
 {
