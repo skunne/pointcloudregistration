@@ -3,6 +3,7 @@
 #include "params.h"
 #include "loadfiles.h"
 #include "clustering.h"
+#include "connectedcomponents.h"
 
 
 int

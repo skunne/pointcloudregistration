@@ -55,19 +55,6 @@ typedef std::map<
 ** clustering.cpp
 */
 
-/*
-** connectedcomponents.cpp
-*/
-int getConnectedComponents(SupervoxelClusters const &vertices,
-                          SupervoxelAdjacency const &edges,
-                          std::vector<std::vector<KeyT>> &cc_list);
-                          //std::map<KeyT, std::size_t> &cc_membership);
-
-// add one vertex at center of each cc, and edges from these centers to connect the graph
-void makeGraphConnected(SupervoxelClusters &vertices,
-                        SupervoxelAdjacency &edges,
-                        std::vector<std::vector<KeyT>> &cc_list);
-                        //std::map<KeyT, std::size_t> &cc_membership);
 
 /*
 ** features.cpp

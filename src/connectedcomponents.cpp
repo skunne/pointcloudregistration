@@ -1,5 +1,6 @@
 #include <algorithm>  // find()
 #include "main.h"
+#include "connectedcomponents.h"
 
 int getConnectedComponents(SupervoxelClusters const &vertices,
                           SupervoxelAdjacency const &edges,
