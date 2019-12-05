@@ -66,6 +66,16 @@ main (int argc, char ** argv)
   printMatrixToFile("output/adjacencymatrix.txt", adjacency_matrix);
 
 
+  //////////////////////////////  //////////////////////////////
+  ////// Make similarity matrix
+  //////////////////////////////  //////////////////////////////
+
+  //int nbVertices = supervoxel_clusters.size();
+  //Eigen::MatrixXd esf_similarity_matrix(n_batman,n_robin);
+  //buildSimilarityMatrix(?????, supervoxel_adjacency, esf_similarity_matrix);
+  //printMatrixToFile("output/esfsimilaritymatrix.txt", similarity_matrix);
+
+
 
   //////////////////////////////  //////////////////////////////
   ////// This is the visualisation part
