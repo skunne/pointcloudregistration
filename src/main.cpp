@@ -17,7 +17,7 @@ main (int argc, char ** argv)
     return (error_loading_file);
 
   //////////////////////////////  //////////////////////////////
-  ////// This is how to use supervoxels
+  ////// Building the graph
   //////////////////////////////  //////////////////////////////
 
   SupervoxelClusters supervoxel_clusters;
@@ -44,9 +44,15 @@ main (int argc, char ** argv)
   //SimilarityMatrix m;
   calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
 
-  // save features to file (ignores edge descriptors for now)
-  descriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
+  // save features to file
+  writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);
+
+
+  //////////////////////////////  //////////////////////////////
+  ////// Make adjacency matrix
+  //////////////////////////////  //////////////////////////////
+
 
 
 

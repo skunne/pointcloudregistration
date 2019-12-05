@@ -161,7 +161,7 @@ void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjac
 /*
 ** WARNING for now, only prints ESF descriptors
 */
-void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors)
+void writeESFDescriptorsToCSV(char const *name, ESFDescriptors esf_descriptors)
 {
   std::stringstream filename;
   std::fstream      output;
@@ -169,7 +169,7 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
 
   /* open file */
 
-  filename << "output/descriptors_" << name << ".csv";
+  filename << "output/ESF_" << name << ".csv";
   output.open(filename.str().c_str(), std::fstream::out | std::fstream::trunc);
   pcl::console::print_info("    Saving ESF descriptors to:\n      ");
   pcl::console::print_info(filename.str().c_str());
@@ -217,4 +217,48 @@ void descriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDesc
       output << ',' << histo[i];
     output << std::endl;
   }
+}
+
+void writeEdgeDescriptorsToCSV(char const *name, EdgeDescriptors edge_descriptors)
+{
+    std::stringstream filename;
+    std::fstream      output;
+
+    /* open file */
+
+    filename << "output/edgefeatures_" << name << ".csv";
+    output.open(filename.str().c_str(), std::fstream::out | std::fstream::trunc);
+    pcl::console::print_info("    Saving Edge descriptors to:\n      ");
+    pcl::console::print_info(filename.str().c_str());
+    pcl::console::print_info("\n");
+    if (!output)
+    {
+      pcl::console::print_error("Failed to open file:\n    ");
+      pcl::console::print_error(filename.str().c_str());
+      pcl::console::print_error("\n");
+      return;
+    }
+
+    /* write header */
+
+    output << "vertex1,vertex2,angle_x,angle_y,angle_z,dist" << std::endl;
+
+    /* write features, one edge per row */
+
+    for (auto edge_itr = edge_descriptors.cbegin(); edge_itr != edge_descriptors.cend(); edge_itr++)
+    {
+      output << edge_itr->first.first << ','         // v1
+            << edge_itr->first.second << ','         // v2
+            << std::get<0>(edge_itr->second) << ','  // angle_x
+            << std::get<1>(edge_itr->second) << ','  // angle_y
+            << std::get<2>(edge_itr->second) << ','  // angle_z
+            << std::get<3>(edge_itr->second)         // dist
+            << std::endl;
+    }
+}
+
+void writeDescriptorsToCSV(char const *name, ESFDescriptors esf_descriptors, EdgeDescriptors edge_descriptors)
+{
+  writeESFDescriptorsToCSV(name, esf_descriptors);
+  writeEdgeDescriptorsToCSV(name, edge_descriptors);
 }

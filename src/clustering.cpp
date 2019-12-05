@@ -2,6 +2,31 @@
 #include "main.h"
 #include "params.h"
 
+void renumberVertices(SupervoxelClusters *supervoxel_clusters, SupervoxelAdjacency *supervoxel_adjacency)
+{
+  SupervoxelClusters new_supervoxel_clusters;
+  SupervoxelAdjacency new_supervoxel_adjacency;
+  std::map<KeyT, KeyT>  newIndexFromOld;
+  KeyT i = 0;
+  for (auto sv_itr = supervoxel_clusters->cbegin();
+      sv_itr != supervoxel_clusters->cend(); ++sv_itr)
+  {
+    new_supervoxel_clusters[i] = sv_itr->second;
+    newIndexFromOld[sv_itr->first] = i;
+    ++i;
+  }
+  for (auto edge_itr = supervoxel_adjacency->cbegin();
+      edge_itr != supervoxel_adjacency->cend(); ++edge_itr)
+  {
+    new_supervoxel_adjacency.insert(std::make_pair(newIndexFromOld[edge_itr->first], newIndexFromOld[edge_itr->second]));
+  }
+
+    supervoxel_clusters->clear();
+    supervoxel_adjacency->clear();
+    *supervoxel_clusters = new_supervoxel_clusters;
+    *supervoxel_adjacency = new_supervoxel_adjacency;
+}
+
 int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
   int nbDissolvedClusters = 0;
@@ -55,6 +80,13 @@ void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT>
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");
   super.getSupervoxelAdjacency (supervoxel_adjacency);
   pcl::console::print_info ("    Found %d edges\n", supervoxel_adjacency.size() / 2);
+
+  //////////////////////////////  //////////////////////////////
+  ////// Reindex vertices to remove holes introduced by SupervoxelClustering
+  //////////////////////////////  //////////////////////////////
+  renumberVertices(&supervoxel_clusters, &supervoxel_adjacency);
+
+
   //for (auto edge_itr = supervoxel_adjacency.begin(); edge_itr != supervoxel_adjacency.end(); edge_itr++)
   //  pcl::console::print_info("        %d,%d\n", edge_itr->first, edge_itr->second);
 
