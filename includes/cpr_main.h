@@ -51,9 +51,6 @@ typedef std::map<
 */
 
 
-/*
-** clustering.cpp
-*/
 
 /*
 ** visualisation.cpp
