@@ -4,6 +4,7 @@
 #include "loadfiles.h"
 #include "clustering.h"
 #include "connectedcomponents.h"
+#include "verticesandedges_features.h"
 
 
 int

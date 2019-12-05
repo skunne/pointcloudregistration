@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "verticesandedges_features.h"
 #include <pcl/common/geometry.h>
 #include <pcl/common/copy_point.h>
 #include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
