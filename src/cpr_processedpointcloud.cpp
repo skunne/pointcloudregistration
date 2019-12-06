@@ -37,7 +37,7 @@ int ProcessedPointCloud::build()
 
 void ProcessedPointCloud::buildGraph()
 {
-  pcl::SupervoxelClustering<PointT> super (params.voxel_resolution, params.seed_resolution);
+  //pcl::SupervoxelClustering<PointT> super (params.voxel_resolution, params.seed_resolution);
   performClustering(cloud, super, &params, supervoxel_clusters, supervoxel_adjacency);
 
   pcl::console::print_highlight("Getting connected components\n");

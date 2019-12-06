@@ -10,21 +10,28 @@ void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClu
   pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
   viewer->setBackgroundColor (0, 0, 0);
 
+    //pcl::console::print_highlight ("PRINT 10\n");
   PointCloudT::Ptr voxel_centroid_cloud = super.getVoxelCentroidCloud ();
+  //pcl::console::print_highlight ("PRINT 12\n");
   viewer->addPointCloud (voxel_centroid_cloud, "voxel centroids");
+  //pcl::console::print_highlight ("PRINT 14\n");
   viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,2.0, "voxel centroids");
+  //pcl::console::print_highlight ("PRINT 16\n");
   viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.95, "voxel centroids");
 
+  //pcl::console::print_highlight ("PRINT 20\n");
   PointLCloudT::Ptr labeled_voxel_cloud = super.getLabeledVoxelCloud ();
   viewer->addPointCloud (labeled_voxel_cloud, "labeled voxels");
   viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.8, "labeled voxels");
 
+  //pcl::console::print_highlight ("PRINT 30\n");
   PointNCloudT::Ptr sv_normal_cloud = super.makeSupervoxelNormalCloud (supervoxel_clusters);
   //We have this disabled so graph is easy to see, uncomment to see supervoxel normals
   //viewer->addPointCloudNormals<PointNormal> (sv_normal_cloud,1,0.05f, "supervoxel_normals");
 
   // moved from here "getting supervoxel adjacency"
 
+  //pcl::console::print_highlight ("JUST BEFORE THE ADJACENCY FOR LOOP\n");
   //To make a graph of the supervoxel adjacency, we need to iterate through the supervoxel adjacency multimap
   for (SupervoxelAdjacency::const_iterator label_itr = supervoxel_adjacency.cbegin ();
       label_itr != supervoxel_adjacency.cend (); )
