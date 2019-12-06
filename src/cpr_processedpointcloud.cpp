@@ -3,12 +3,12 @@
 #include "cpr_processedpointcloud.h"
 
 ProcessedPointCloud::ProcessedPointCloud(Params const &p)
-  : cloud(new PointCloudT), params(p)
+  : params(p), cloud(new PointCloudT), super (params.voxel_resolution, params.seed_resolution)
 {
 }
 
 ProcessedPointCloud::ProcessedPointCloud(char const *metadata_filename)
-  : cloud(new PointCloudT), params(metadata_filename)
+  : params(metadata_filename), cloud(new PointCloudT), super (params.voxel_resolution, params.seed_resolution)
 {
 }
 
@@ -70,4 +70,9 @@ void ProcessedPointCloud::buildFeatures()
   // save features to file
   //writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);
+}
+
+void ProcessedPointCloud::visualise()
+{
+  visualisation(super, supervoxel_clusters, supervoxel_adjacency);
 }

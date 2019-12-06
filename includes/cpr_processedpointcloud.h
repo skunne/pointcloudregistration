@@ -15,6 +15,7 @@ class ProcessedPointCloud
 private:
   Params params;
   PointCloudT::Ptr cloud;
+  pcl::SupervoxelClustering<PointT> super;
   int nbVertices;
   SupervoxelClusters supervoxel_clusters;
   SupervoxelAdjacency supervoxel_adjacency;
@@ -30,6 +31,8 @@ public:
   void buildGraph();
   void buildFeatures();
   int build();
+
+  void visualise();
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */

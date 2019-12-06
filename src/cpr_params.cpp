@@ -7,7 +7,7 @@
 #include "cpr_loadfiles.h"    //errorLoadingFile()
 #include "cpr_params.h"
 
-Params::Params(char const *metadata_filename)
+Params::Params(char const *metadata_filename) : error(0)
 {
   std::ifstream meta(metadata_filename);
 
@@ -57,7 +57,13 @@ Params::Params(char const *metadata_filename)
       }
     }
   }
-
+  if (error)
+  {
+    pcl::console::print_error("Error reading line from file ");
+    pcl::console::print_error(metadata_filename);
+    pcl::console::print_error("\n    ");
+    pcl::console::print_error(line.c_str());
+  }
   //return getParams(argc, argv, &params);
 }
 
