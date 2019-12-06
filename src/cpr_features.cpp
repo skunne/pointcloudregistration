@@ -6,6 +6,25 @@
 #include "cpr_main.h"
 #include "cpr_features.h"
 
+int esfDistance(ESFHist const &a, ESFHist const &b)
+{
+  int d = 0;
+  for (unsigned int i = 0; i < a.size(); ++i)
+    d += (a[i] - b[i]) * (a[i] - b[i]);
+  return d;
+}
+
+int edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
+{
+  float dx = (std::get<0>(a) - std::get<0>(b));
+  float dy = (std::get<1>(a) - std::get<1>(b));
+  float dz = (std::get<2>(a) - std::get<2>(b));
+  float dd = (std::get<3>(a) - std::get<3>(b));
+  return (dx*dx + dy*dy + dz*dz + dd*dd);
+}
+
+
+
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
 void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
 {

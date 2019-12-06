@@ -9,6 +9,11 @@
 ** features.cpp
 */
 
+int esfDistance(ESFHist const &a, ESFHist const &b);
+
+int edgeDistance(EdgeFeature const &a, EdgeFeature const &b);
+
+
 void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
 
 void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors);

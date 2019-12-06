@@ -17,8 +17,8 @@ class EdgeSimilarityMatrix
 public:
   Eigen::MatrixXd m;
 
-public:
-  EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest);
+//public:
+  //EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest);
 };
 
 void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency,

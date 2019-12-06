@@ -2,6 +2,7 @@
 
 #include <fstream>    // print matrix to file
 #include "cpr_loadfiles.h"  // print error message on open file
+#include "cpr_features.h"   // distance between two ESF descriptors or two edge descriptors
 #include "cpr_matrices.h"
 
 void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen::MatrixXd &adjacency_matrix)
@@ -17,12 +18,36 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
   : m(source.size(), dest.size())
 {
+  pcl::console::print_highlight("About to build vertex similarity matrix.\n");
+  for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
+  {
+    for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
+    {
+      m(s_itr->first, d_itr->first) = esfDistance(s_itr->second, d_itr->second);
+    }
+  }
+  // HERE NORMALIZE MATRIX m(i,j) = m(i,j) / max_m
+  pcl::console::print_highlight("Succesfully built vertex similarity matrix.\n");
 }
 
+/*
 EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest)
   : m(source.size(), dest.size())
 {
+  pcl::console::print_highlight("About to build edge similarity matrix.\n");
+  for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
+  {
+    for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
+    {
+      // REPLACE S_ITR->FIRST WITH INDEX OF EDGE
+      // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
+      m(s_itr->first, d_itr->first) = edgeDistance(s_itr->second, d_itr->second);
+    }
+  }
+  // HERE NORMALIZE MATRIX m(i,j) = m(i,j) / max_m
+  pcl::console::print_highlight("Succesfully built edge similarity matrix.\n");
 }
+*/
 
 void printMatrixToFile(char const *filename, Eigen::MatrixXd m)
 {

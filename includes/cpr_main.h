@@ -41,9 +41,10 @@ typedef std::vector<float>      ESFHist;
 typedef std::map<KeyT, ESFHist> ESFDescriptors;
 
 // Types for descriptors of edges between adjacent supervoxels
+typedef std::tuple<double, double, double, double> EdgeFeature;
 typedef std::map<
                 std::pair<KeyT, KeyT>,
-                std::tuple<double, double, double, double>
+                EdgeFeature
                 > EdgeDescriptors;
 
 
