@@ -13,7 +13,6 @@
 class ProcessedPointCloud
 {
 private:
-  char const *filename;
   Params params;
   PointCloudT::Ptr cloud;
   int nbVertices;
@@ -24,8 +23,8 @@ private:
   Eigen::MatrixXd adjacency_matrix;
 
 public:
-  ProcessedPointCloud(Params const &p) : ProcessedPointCloud(NULL, p) {}
-  ProcessedPointCloud(char const *filename, Params const &p);
+  ProcessedPointCloud(Params const &p);
+  ProcessedPointCloud(char const *metadata_filename);
   int setParams(int argc, char const *const *argv);
   int loadFile();
   void buildGraph();

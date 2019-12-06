@@ -6,9 +6,9 @@
 int ProcessedPointCloud::loadFile(void) //char const *filename, bool is_pc)//, PointCloudT::Ptr cloud)
 {
   if (params.is_pcd)
-    return loadPCDFile(filename, cloud);
+    return loadPCDFile(params.filename.c_str(), cloud);
   else
-    return loadVTKFile(filename, cloud);
+    return loadVTKFile(params.filename.c_str(), cloud);
 }
 
 int errorLoadingFile(char const *type, char const *name)

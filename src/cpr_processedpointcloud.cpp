@@ -2,10 +2,14 @@
 #include <fstream>
 #include "cpr_processedpointcloud.h"
 
-ProcessedPointCloud::ProcessedPointCloud(char const *filename, Params const &p)
-  : filename(filename), cloud(new PointCloudT), params(p)
+ProcessedPointCloud::ProcessedPointCloud(Params const &p)
+  : cloud(new PointCloudT), params(p)
 {
+}
 
+ProcessedPointCloud::ProcessedPointCloud(char const *metadata_filename)
+  : cloud(new PointCloudT), params(metadata_filename)
+{
 }
 
 int ProcessedPointCloud::build()
