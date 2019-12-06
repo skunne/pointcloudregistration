@@ -5,6 +5,7 @@
 #include "cpr_main.h"
 
 //int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
+int errorLoadingFile(char const *type, char const *name);
 int loadVTKFile(char const *filename, PointCloudT::Ptr cloud);
 int loadPCDFile(char const *filename, PointCloudT::Ptr cloud);
 

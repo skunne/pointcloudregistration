@@ -1,6 +1,7 @@
 
 
 #include <fstream>    // print matrix to file
+#include "cpr_loadfiles.h"  // print error message on open file
 #include "cpr_matrices.h"
 
 void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen::MatrixXd &adjacency_matrix)
@@ -21,11 +22,7 @@ void printMatrixToFile(char const *filename, Eigen::MatrixXd m)
   pcl::console::print_info(filename);
   pcl::console::print_info("\n");
   if (!output)
-  {
-    pcl::console::print_error("Failed to open file:\n    ");
-    pcl::console::print_error(filename);
-    pcl::console::print_error("\n");
-    return;
-  }
-  output << m << std::endl;
+    errorLoadingFile("output", filename);
+  else
+    output << m << std::endl;
 }
