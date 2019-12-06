@@ -9,9 +9,9 @@ int getParams(int argc, char const *const *argv, struct Params *params)
   {
     pcl::console::print_error ("Syntax is: %s <vtk-file> \n"
                                 //" --nt Disables the single camera transform \n"
-                                " -v <voxel resolution>\n-s <seed resolution>\n"
-                                " -c <color weight> \n-z <spatial weight> \n"
-                                " -n <normal_weight>\n"
+                                "  -v <voxel resolution>\n  -s <seed resolution>\n"
+                                "  -c <color weight>\n  -z <spatial weight>\n"
+                                "  -n <normal_weight>\n"
                                 "Or: %s <pcd-file> --pcd [--nt] [...]\n", argv[0], argv[0]);
     return (1);
   }
