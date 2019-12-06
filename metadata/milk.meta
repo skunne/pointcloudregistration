@@ -1,0 +1,6 @@
+filename milk_cartoon_all_small_clorox.pcd
+voxel_resolution 0.008
+seed_resolution 0.1
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0

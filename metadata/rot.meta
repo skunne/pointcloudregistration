@@ -1,0 +1,6 @@
+filename pointclouds/rotated30degrees_1um.vtk
+voxel_resolution 10.0
+seed_resolution 15.0
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
