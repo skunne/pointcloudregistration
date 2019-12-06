@@ -1,7 +1,77 @@
 
-
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "cpr_main.h"
+#include "cpr_loadfiles.h"    //errorLoadingFile()
 #include "cpr_params.h"
+
+Params::Params(char const *metadata_filename)
+{
+  std::ifstream meta(metadata_filename);
+
+  if (!meta)
+  {
+    error = errorLoadingFile("metadata", metadata_filename);
+    return ;
+  }
+
+  std::string wrong_line;
+  std::string line;
+  std::getline(meta, line);
+  std::istringstream iss(line);
+  std::string field;
+  std::string pointcloud_filename;
+  if (!(iss >> field >> pointcloud_filename) || field != "filename")
+  {
+    error = 1;
+    wrong_line = line;
+  }
+  else
+  {
+    filename = pointcloud_filename.c_str();
+
+    is_vtk = endsWith(filename, ".vtk");
+    is_pcd = !is_vtk && endsWith(filename, ".pcd");
+
+    while (std::getline(meta, line))
+    {
+      std::istringstream iss(line);
+      float value;
+      if (!(iss >> field >> value)) { break; } // error
+      if (field == "voxel_resolution" || field == "v")
+        voxel_resolution = value;
+      else if (field == "seed_resolution" || field == "s")
+        seed_resolution = value;
+      else if (field == "color_importance" || field == "c")
+        color_importance = value;
+      else if (field == "spatial_importance" || field == "z")
+        spatial_importance = value;
+      else if (field == "normal_importance" || field == "n")
+        normal_importance = value;
+      else
+      {
+          error = 1;
+          wrong_line = line;
+      }
+    }
+  }
+
+  //return getParams(argc, argv, &params);
+}
+
+bool endsWith(const std::string &a, const std::string &b)
+{
+    if (b.size() > a.size()) return false;
+    return std::equal(a.begin() + a.size() - b.size(), a.end(), b.begin());
+}
+
+int printUsage(char const *command)
+{
+  pcl::console::print_error("Syntax is: %s metadatafile1 metadatafile2.\n", command);
+  return 1;
+}
 
 int getParams(int argc, char const *const *argv, struct Params *params)
 {

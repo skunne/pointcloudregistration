@@ -24,8 +24,8 @@ private:
   Eigen::MatrixXd adjacency_matrix;
 
 public:
-  ProcessedPointCloud() : ProcessedPointCloud(NULL) {}
-  ProcessedPointCloud(char const *filename);
+  ProcessedPointCloud(Params const &p) : ProcessedPointCloud(NULL, p) {}
+  ProcessedPointCloud(char const *filename, Params const &p);
   int setParams(int argc, char const *const *argv);
   int loadFile();
   void buildGraph();

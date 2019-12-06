@@ -1,8 +1,9 @@
 
+#include <fstream>
 #include "cpr_processedpointcloud.h"
 
-ProcessedPointCloud::ProcessedPointCloud(char const *filename)
-  : filename(filename), cloud(new PointCloudT)
+ProcessedPointCloud::ProcessedPointCloud(char const *filename, Params const &p)
+  : filename(filename), cloud(new PointCloudT), params(p)
 {
 
 }
@@ -23,10 +24,7 @@ int ProcessedPointCloud::build()
   return (0);
 }
 
-int ProcessedPointCloud::setParams(int argc, char const *const *argv)
-{
-  return getParams(argc, argv, &params);
-}
+
 
 /*
 ** int ProcessedPointCloud::loadFile()

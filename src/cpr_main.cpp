@@ -13,10 +13,18 @@
 int
 main (int argc, char ** argv)
 {
-  struct Params params;
-  int syntax_error = getParams(argc, argv, &params);
-  if (syntax_error)
+  if (argc < 2)
+    return printUsage(argv[0]);
+    
+  Params params(argv[1]);
+  //int syntax_error = getParams(argc, argv, &params);
+  /*if (syntax_error)
     return (syntax_error);
+
+    if (argc != 3)
+      return printUsage(argv[0]);*/
+
+
 
   PointCloudT::Ptr cloud (new PointCloudT);
   int error_loading_file; //= loadFile(argv[1], params.is_pcd, cloud);
