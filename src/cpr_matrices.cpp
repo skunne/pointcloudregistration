@@ -14,6 +14,16 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen
   }
 }
 
+VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
+  : m(source.size(), dest.size())
+{
+}
+
+EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest)
+  : m(source.size(), dest.size())
+{
+}
+
 void printMatrixToFile(char const *filename, Eigen::MatrixXd m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);

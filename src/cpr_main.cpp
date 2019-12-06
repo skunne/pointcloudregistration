@@ -1,6 +1,7 @@
 
 #include "cpr_main.h"
 #include "cpr_processedpointcloud.h"
+#include "cpr_matrices.h"
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -15,86 +16,24 @@
 int
 main (int argc, char ** argv)
 {
-  if (argc < 2)
+  if (argc < 3)
     return printUsage(argv[0]);
 
   //Params params(argv[1]);
 
   ProcessedPointCloud ppc_source(argv[1]);
-  //ProcessedPointCloud ppc_dest(argv[2]);
+  ProcessedPointCloud ppc_dest(argv[2]);
 
   ppc_source.build();
 
-  //PointCloudT::Ptr cloud (new PointCloudT);
-  //int error_loading_file; //= loadFile(argv[1], params.is_pcd, cloud);
-  /*if (params.is_pcd)
-    error_loading_file = loadPCDFile(params.filename.c_str(), cloud);
-  else
-    error_loading_file = loadVTKFile(params.filename.c_str(), cloud);
-  if (error_loading_file)
-    return (error_loading_file);
-  */
-  //////////////////////////////  //////////////////////////////
-  ////// Building the graph
-  //////////////////////////////  //////////////////////////////
-  /*
-  SupervoxelClusters supervoxel_clusters;
-  SupervoxelAdjacency supervoxel_adjacency;
-  pcl::SupervoxelClustering<PointT> super (params.voxel_resolution, params.seed_resolution);
-  performClustering(cloud, super, &params, supervoxel_clusters, supervoxel_adjacency);
-  */
-  /*
-  pcl::console::print_highlight("Getting connected components\n");
-  std::vector<std::vector<KeyT>> cc_list;
-  //std::map<KeyT, std::size_t> cc_membership;
-  int nbCC = getConnectedComponents(supervoxel_clusters, supervoxel_adjacency,
-                            cc_list);//, cc_membership);
-  pcl::console::print_info("    Got %d connected components\n", nbCC);
-  makeGraphConnected(supervoxel_clusters, supervoxel_adjacency,
-                            cc_list);//, cc_membership);
-  pcl::console::print_info("    Graph is now connected\n");
-  */
-  //////////////////////////////  //////////////////////////////
-  ////// ESF and edge descriptors calculation
-  //////////////////////////////  //////////////////////////////
-
-  /*ESFDescriptors esf_descriptors;
-  EdgeDescriptors edge_descriptors;
-  //SimilarityMatrix m;
-  calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
-  */
-  // save features to file
-  //writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
-  //calculate_similarity_matrix(m);
-
-
-  //////////////////////////////  //////////////////////////////
-  ////// Make adjacency matrix
-  //////////////////////////////  //////////////////////////////
-
-  /*
-  int nbVertices = supervoxel_clusters.size();
-  Eigen::MatrixXd adjacency_matrix(nbVertices,nbVertices);
-  buildAdjacencyMatrix(supervoxel_adjacency, adjacency_matrix);
-  printMatrixToFile("output/adjacencymatrix.txt", adjacency_matrix);
-  */
-
-  //////////////////////////////  //////////////////////////////
-  ////// Make similarity matrix
-  //////////////////////////////  //////////////////////////////
-
-  //int nbVertices = supervoxel_clusters.size();
-  //Eigen::MatrixXd esf_similarity_matrix(n_batman,n_robin);
-  //buildSimilarityMatrix(?????, supervoxel_adjacency, esf_similarity_matrix);
-  //printMatrixToFile("output/esfsimilaritymatrix.txt", similarity_matrix);
-
-
-
-  //////////////////////////////  //////////////////////////////
-  ////// This is the visualisation part
-  //////////////////////////////  //////////////////////////////
-
   ppc_source.visualise();
-  //visualisation(super, supervoxel_clusters, supervoxel_adjacency);
+
+  ppc_dest.build();
+
+  ppc_dest.visualise();
+
+  VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
+  EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
+
   return (0);
 }

@@ -19,6 +19,8 @@ private:
   int nbVertices;
   SupervoxelClusters supervoxel_clusters;
   SupervoxelAdjacency supervoxel_adjacency;
+
+public:
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
   Eigen::MatrixXd adjacency_matrix;

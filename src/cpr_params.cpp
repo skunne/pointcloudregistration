@@ -75,7 +75,7 @@ bool endsWith(const std::string &a, const std::string &b)
 
 int printUsage(char const *command)
 {
-  pcl::console::print_error("Syntax is: %s metadatafile1 metadatafile2.\n", command);
+  pcl::console::print_error("Syntax is: %s metadatafile1 metadatafile2\n", command);
   return 1;
 }
 
