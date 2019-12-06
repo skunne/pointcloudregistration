@@ -14,12 +14,16 @@ int
 main (int argc, char ** argv)
 {
   struct Params params;
-  int syntax_error = setParams(argc, argv, &params);
+  int syntax_error = getParams(argc, argv, &params);
   if (syntax_error)
     return (syntax_error);
 
   PointCloudT::Ptr cloud (new PointCloudT);
-  int error_loading_file = loadFile(argv[1], params.is_pcd, cloud);
+  int error_loading_file; //= loadFile(argv[1], params.is_pcd, cloud);
+  if (params.is_pcd)
+    error_loading_file = loadPCDFile(argv[1], cloud);
+  else
+    error_loading_file = loadVTKFile(argv[1], cloud);
   if (error_loading_file)
     return (error_loading_file);
 

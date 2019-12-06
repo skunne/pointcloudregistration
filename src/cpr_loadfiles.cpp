@@ -1,10 +1,11 @@
 
 #include "cpr_main.h"
+#include "cpr_processedpointcloud.h"
 #include "cpr_loadfiles.h"
 
-int loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
+int ProcessedPointCloud::loadFile(void) //char const *filename, bool is_pc)//, PointCloudT::Ptr cloud)
 {
-  if (is_pcd)
+  if (params.is_pcd)
     return loadPCDFile(filename, cloud);
   else
     return loadVTKFile(filename, cloud);
@@ -29,7 +30,9 @@ int loadVTKFile(char const *filename, PointCloudT::Ptr cloud)
   }
   else
   {
-    pcl::console::print_error ("Error loading vtk cloud file!\n");
+    pcl::console::print_error ("Error loading vtk cloud file: ");
+    pcl::console::print_error(filename);
+    pcl::console::print_error("\n");
     return (1);
   }
   pcl::io::vtkPolyDataToPointCloud(polydata, *cloud);
@@ -42,7 +45,9 @@ int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
   pcl::console::print_highlight ("Loading point cloud from .pcd file...\n");
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))
   {
-    pcl::console::print_error ("Error loading cloud file!\n");
+    pcl::console::print_error ("Error loading pcd cloud file: ");
+    pcl::console::print_error(filename);
+    pcl::console::print_error("\n");
     return (1);
   }
 
