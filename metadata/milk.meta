@@ -1,4 +1,4 @@
-filename milk_cartoon_all_small_clorox.pcd
+filename pointclouds/milk_cartoon_all_small_clorox.pcd
 voxel_resolution 0.008
 seed_resolution 0.1
 color_importance 0.2

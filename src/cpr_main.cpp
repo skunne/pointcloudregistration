@@ -15,7 +15,7 @@ main (int argc, char ** argv)
 {
   if (argc < 2)
     return printUsage(argv[0]);
-    
+
   Params params(argv[1]);
   //int syntax_error = getParams(argc, argv, &params);
   /*if (syntax_error)
@@ -29,9 +29,9 @@ main (int argc, char ** argv)
   PointCloudT::Ptr cloud (new PointCloudT);
   int error_loading_file; //= loadFile(argv[1], params.is_pcd, cloud);
   if (params.is_pcd)
-    error_loading_file = loadPCDFile(argv[1], cloud);
+    error_loading_file = loadPCDFile(params.filename.c_str(), cloud);
   else
-    error_loading_file = loadVTKFile(argv[1], cloud);
+    error_loading_file = loadVTKFile(params.filename.c_str(), cloud);
   if (error_loading_file)
     return (error_loading_file);
 
