@@ -54,6 +54,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
     {
       // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
+      // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
       ++j;
     }
@@ -64,6 +65,18 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
 }
 
 void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)
+{
+  std::fstream output(filename, std::fstream::out | std::fstream::trunc);
+
+  pcl::console::print_info("    Saving adjacency matrix to:\n      ");
+  pcl::console::print_info(filename);
+  pcl::console::print_info("\n");
+  if (!output)
+    errorLoadingFile("output", filename);
+  else
+    output << m << std::endl;
+}
+void printMatrixToFile(char const *filename, Eigen::MatrixXd const &m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
