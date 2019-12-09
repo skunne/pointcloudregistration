@@ -22,8 +22,8 @@ public:
 };
 
 void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency,
-  Eigen::MatrixXd &adjacency_matrix);
+  Eigen::MatrixXi &adjacency_matrix);
 
-void printMatrixToFile(char const *filename, Eigen::MatrixXd m);
+void printMatrixToFile(char const *filename, Eigen::MatrixXi m);
 
 #endif /* __DEF_CPR_MATRICES_H__ */

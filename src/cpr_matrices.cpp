@@ -5,9 +5,9 @@
 #include "cpr_features.h"   // distance between two ESF descriptors or two edge descriptors
 #include "cpr_matrices.h"
 
-void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen::MatrixXd &adjacency_matrix)
+void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen::MatrixXi &adjacency_matrix)
 {
-  adjacency_matrix = Eigen::MatrixXd::Zero(adjacency_matrix.rows(), adjacency_matrix.cols());
+  adjacency_matrix = Eigen::MatrixXi::Zero(adjacency_matrix.rows(), adjacency_matrix.cols());
   for (auto edge_itr = supervoxel_adjacency.cbegin(); edge_itr != supervoxel_adjacency.cend(); ++edge_itr)
   {
     adjacency_matrix(edge_itr->first, edge_itr->second) = 1;
@@ -16,16 +16,16 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen
 }
 
 // assumes all coeffs are positive!!
-void normalizeMatrixTo0_100(Eigen::MatrixXd &mat)
+void normalizeMatrixTo01(Eigen::MatrixXd &mat)
 {
-  int coeffMax = 0;
+  double coeffMax = 0;
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
       coeffMax = (mat(i,j) > coeffMax ? mat(i,j) : coeffMax);
 
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
-      mat(i,j) = (100 * mat(i,j)) / coeffMax;   // 100* because integers
+      mat(i,j) = (mat(i,j)) / coeffMax;
 }
 
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
@@ -39,7 +39,7 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
       m(s_itr->first, d_itr->first) = esfDistance(s_itr->second, d_itr->second);
     }
   }
-  normalizeMatrixTo0_100(m);
+  normalizeMatrixTo01(m);
   pcl::console::print_highlight("Succesfully built vertex similarity matrix.\n");
 }
 
@@ -62,7 +62,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
 }
 */
 
-void printMatrixToFile(char const *filename, Eigen::MatrixXd m)
+void printMatrixToFile(char const *filename, Eigen::MatrixXi m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
