@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
   std::vector<Params *> params;
   std::vector<PointCloudT::Ptr> cloud;
-  std::vector<ESFMaker::PointCloudOut::Ptr> esfout;
+  std::vector<ESFMaker::PointCloudOut::Ptr> esf_out;
   ESFMaker esf_calculator;
 
   for (int i = 0; i < argc - 1; ++i)
@@ -81,14 +81,14 @@ int main(int argc, char **argv)
       return (error_loading_file);
 
     esf_calculator.setInputCloud(cloud[i]);
-    esfout.push_back(boost::shared_ptr<ESFMaker::PointCloudOut>(new (ESFMaker::PointCloudOut)));
-    esf_calculator.compute(*esfout[i]);
+    esf_out.push_back(boost::shared_ptr<ESFMaker::PointCloudOut>(new (ESFMaker::PointCloudOut)));
+    esf_calculator.compute(*esf_out[i]);
   }
 
   Eigen::MatrixXd dist_mat(argc - 1, argc - 1);
   for (int i = 0; i < argc - 1; ++i)
     for (int j = 0; j < argc - 1; ++j)
-      dist_mat(i, j) = esfDistance(esfout[i]->points[0].histogram, esfout[j]->points[0].histogram);
+      dist_mat(i, j) = esfDistance(esf_out[i]->points[0].histogram, esf_out[j]->points[0].histogram);
 
   std::cout << std::endl << std::endl;
   for (int i = 0; i < argc - 1; ++i)
