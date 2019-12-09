@@ -6,20 +6,20 @@
 #include "cpr_main.h"
 #include "cpr_features.h"
 
-float esfDistance(ESFHist const &a, ESFHist const &b)
+double esfDistance(ESFHist const &a, ESFHist const &b)
 {
-  float d = 0;
+  double d = 0;
   for (unsigned int i = 0; i < a.size(); ++i)
     d += (a[i] - b[i]) * (a[i] - b[i]);
   return d;
 }
 
-float edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
+double edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
 {
-  float dx = (std::get<0>(a) - std::get<0>(b));
-  float dy = (std::get<1>(a) - std::get<1>(b));
-  float dz = (std::get<2>(a) - std::get<2>(b));
-  float dd = (std::get<3>(a) - std::get<3>(b));
+  double dx = (std::get<0>(a) - std::get<0>(b));
+  double dy = (std::get<1>(a) - std::get<1>(b));
+  double dz = (std::get<2>(a) - std::get<2>(b));
+  double dd = (std::get<3>(a) - std::get<3>(b));
   return (dx*dx + dy*dy + dz*dz + dd*dd);
 }
 

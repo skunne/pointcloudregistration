@@ -9,9 +9,9 @@
 ** features.cpp
 */
 
-float esfDistance(ESFHist const &a, ESFHist const &b);
+double esfDistance(ESFHist const &a, ESFHist const &b);
 
-float edgeDistance(EdgeFeature const &a, EdgeFeature const &b);
+double edgeDistance(EdgeFeature const &a, EdgeFeature const &b);
 
 
 void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length);
