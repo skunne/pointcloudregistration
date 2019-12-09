@@ -15,6 +15,19 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen
   }
 }
 
+// assumes all coeffs are positive!!
+void normalizeMatrixTo0_100(Eigen::MatrixXd &mat)
+{
+  int coeffMax = 0;
+  for (int i = 0; i < mat.rows(); ++i)
+    for (int j = 0; j < mat.cols(); ++j)
+      coeffMax = (mat(i,j) > coeffMax ? mat(i,j) : coeffMax);
+
+  for (int i = 0; i < mat.rows(); ++i)
+    for (int j = 0; j < mat.cols(); ++j)
+      mat(i,j) = (100 * mat(i,j)) / coeffMax;   // 100* because integers
+}
+
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
   : m(source.size(), dest.size())
 {
@@ -26,7 +39,7 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
       m(s_itr->first, d_itr->first) = esfDistance(s_itr->second, d_itr->second);
     }
   }
-  // HERE NORMALIZE MATRIX m(i,j) = m(i,j) / max_m
+  normalizeMatrixTo0_100(m);
   pcl::console::print_highlight("Succesfully built vertex similarity matrix.\n");
 }
 
@@ -44,7 +57,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
       m(s_itr->first, d_itr->first) = edgeDistance(s_itr->second, d_itr->second);
     }
   }
-  // HERE NORMALIZE MATRIX m(i,j) = m(i,j) / max_m
+  normalizeMatrixTo0_100(m);
   pcl::console::print_highlight("Succesfully built edge similarity matrix.\n");
 }
 */
