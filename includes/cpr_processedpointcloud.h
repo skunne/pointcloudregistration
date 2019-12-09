@@ -23,7 +23,7 @@ private:
 public:
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
-  Eigen::MatrixXd adjacency_matrix;
+  Eigen::MatrixXi adjacency_matrix;
 
 public:
   ProcessedPointCloud(Params const &p);

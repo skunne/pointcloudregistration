@@ -6,15 +6,15 @@
 #include "cpr_main.h"
 #include "cpr_features.h"
 
-int esfDistance(ESFHist const &a, ESFHist const &b)
+float esfDistance(ESFHist const &a, ESFHist const &b)
 {
-  int d = 0;
+  float d = 0;
   for (unsigned int i = 0; i < a.size(); ++i)
     d += (a[i] - b[i]) * (a[i] - b[i]);
   return d;
 }
 
-int edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
+float edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
 {
   float dx = (std::get<0>(a) - std::get<0>(b));
   float dy = (std::get<1>(a) - std::get<1>(b));

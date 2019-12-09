@@ -11,6 +11,14 @@ int ProcessedPointCloud::loadFile(void) //char const *filename, bool is_pc)//, P
     return loadVTKFile(params.filename.c_str(), cloud);
 }
 
+int cpr_loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
+{
+  if (is_pcd)
+    return loadPCDFile(filename, cloud);
+  else
+    return loadVTKFile(filename, cloud);
+}
+
 int errorLoadingFile(char const *type, char const *name)
 {
   pcl::console::print_error ("Error loading ");
@@ -25,7 +33,7 @@ int loadVTKFile(char const *filename, PointCloudT::Ptr cloud)
 {
   //PointCloudT cloud (new PointCloudT);
   vtkPolyData *polydata;
-  pcl::console::print_highlight ("Loading point cloud from .vtk file...\n");
+  pcl::console::print_highlight ("Loading point cloud from vtk file %s\n", filename);
   // load vtk file
   vtkSmartPointer<vtkGenericDataObjectReader> vtkReader =
       vtkSmartPointer<vtkGenericDataObjectReader>::New();
@@ -47,7 +55,7 @@ int loadVTKFile(char const *filename, PointCloudT::Ptr cloud)
 
 int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
 {
-  pcl::console::print_highlight ("Loading point cloud from .pcd file...\n");
+  pcl::console::print_highlight ("Loading point cloud from .pcd file %s\n", filename);
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))
     return errorLoadingFile("pcd cloud", filename);
 
