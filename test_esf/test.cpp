@@ -10,9 +10,12 @@
 
 float esfDistance(float const *a, float const *b)
 {
-  float d = 0;
+  float d = 0.0;
   for (unsigned int i = 0; i < HISTOGRAM_SIZE; ++i)
+  {
     d += (a[i] - b[i]) * (a[i] - b[i]);
+    //pcl::console::print_info("bin %d, bin dist %f, accum dist %f\n", i, (a[i] - b[i]) * (a[i] - b[i]), d);
+  }
   return d;
 }
 
@@ -43,13 +46,13 @@ int main(int argc, char **argv)
   esf_calculator.setInputCloud(cloudbeta);
   esf_calculator.compute(esfbeta);
 
-  pcl::visualization::PCLHistogramVisualizer visu;
+  /*pcl::visualization::PCLHistogramVisualizer visu;
   visu.addFeatureHistogram(esfalpha, 640, "alpha");
   visu.spin();
   visu.addFeatureHistogram(esfbeta, 640, "beta");
-  visu.spin();
+  visu.spin();*/
 
-  int distance = esfDistance(esfalpha.points[0].histogram, esfbeta.points[0].histogram);
+  float distance = esfDistance(esfalpha.points[0].histogram, esfbeta.points[0].histogram);
 
   pcl::console::print_highlight("Distance between the two clouds in ESF space: \n    %f\n", distance);
 
