@@ -1,5 +1,5 @@
 
-
+#include <Eigen/Core>
 #include <fstream>    // print matrix to file
 #include "cpr_loadfiles.h"  // print error message on open file
 #include "cpr_features.h"   // distance between two ESF descriptors or two edge descriptors
@@ -43,26 +43,27 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
   pcl::console::print_highlight("Successfully built vertex similarity matrix.\n");
 }
 
-/*
 EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest)
   : m(source.size(), dest.size())
 {
   pcl::console::print_highlight("About to build edge similarity matrix.\n");
+  unsigned int i = 0;
   for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
   {
+    unsigned int j = 0;
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
     {
-      // REPLACE S_ITR->FIRST WITH INDEX OF EDGE
       // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
-      m(s_itr->first, d_itr->first) = edgeDistance(s_itr->second, d_itr->second);
+      m(i,j) = edgeDistance(s_itr->second, d_itr->second);
+      ++j;
     }
+    ++i;
   }
-  normalizeMatrixTo0_100(m);
+  normalizeMatrixTo01(m);
   pcl::console::print_highlight("Successfully built edge similarity matrix.\n");
 }
-*/
 
-void printMatrixToFile(char const *filename, Eigen::MatrixXi m)
+void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
