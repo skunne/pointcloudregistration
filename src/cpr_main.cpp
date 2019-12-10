@@ -32,10 +32,12 @@ main (int argc, char ** argv)
 
   ppc_dest.visualise();
 
+  //pcl::console::print_highlight("On est rendu ici.\n");
+
   VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
   EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
-  
+
 
   return (0);
 }

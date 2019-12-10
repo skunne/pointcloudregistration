@@ -1,4 +1,5 @@
 
+#include <cstdlib>    // std::atof
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -38,18 +39,20 @@ Params::Params(char const *metadata_filename) : error(0)
     while (std::getline(meta, line))
     {
       std::istringstream iss(line);
-      float value;
-      if (!(iss >> field >> value)) { break; } // error
-      if (field == "voxel_resolution" || field == "v")
-        voxel_resolution = value;
+      std::string value;
+      if (!(iss >> field >> value)) { error = 1; wrong_line = line; } // error
+      else if (field == "voxel_resolution" || field == "v")
+        voxel_resolution = std::atof(value.c_str());
       else if (field == "seed_resolution" || field == "s")
-        seed_resolution = value;
+        seed_resolution = std::atof(value.c_str());
       else if (field == "color_importance" || field == "c")
-        color_importance = value;
+        color_importance = std::atof(value.c_str());
       else if (field == "spatial_importance" || field == "z")
-        spatial_importance = value;
+        spatial_importance = std::atof(value.c_str());
       else if (field == "normal_importance" || field == "n")
-        normal_importance = value;
+        normal_importance = std::atof(value.c_str());
+      else if (field == "adjacency_filename")
+        adjacency_filename = value.c_str();
       else
       {
           error = 1;
@@ -61,8 +64,9 @@ Params::Params(char const *metadata_filename) : error(0)
   {
     pcl::console::print_error("Error reading line from file ");
     pcl::console::print_error(metadata_filename);
-    pcl::console::print_error("\n    ");
-    pcl::console::print_error(line.c_str());
+    pcl::console::print_error(":\n    ");
+    pcl::console::print_error(wrong_line.c_str());
+    pcl::console::print_error("\n");
   }
   //return getParams(argc, argv, &params);
 }
@@ -79,7 +83,7 @@ int printUsage(char const *command)
   return 1;
 }
 
-int getParams(int argc, char const *const *argv, struct Params *params)
+int setParams(int argc, char const *const *argv, struct Params *params)
 {
   if (argc < 2)
   {

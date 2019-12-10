@@ -7,10 +7,13 @@ class Params
 {
 public:
   int error;
+
+  // input point cloud
   std::string filename;
   bool  is_pcd;
   bool  is_vtk;
-  //bool  disable_transform;
+
+  // supervoxel clustering
   float voxel_resolution;
   bool  voxel_res_specified;
   float seed_resolution;
@@ -18,6 +21,10 @@ public:
   float color_importance;
   float spatial_importance;
   float normal_importance;
+
+  // output adjacency matrix
+  std::string adjacency_filename;
+
 
 public:
   Params(char const *metadata_filename);
@@ -28,6 +35,6 @@ bool endsWith(const std::string& a, const std::string& b);
 
 int printUsage(char const *command);
 
-int getParams(int argc, char const *const *argv, struct Params *params);
+int setParams(int argc, char const *const *argv, struct Params *params);
 
 #endif /* __DEF_CPR_PARAMS_H__ */

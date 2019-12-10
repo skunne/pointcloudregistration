@@ -28,7 +28,7 @@ public:
 public:
   ProcessedPointCloud(Params const &p);
   ProcessedPointCloud(char const *metadata_filename);
-  int setParams(int argc, char const *const *argv);
+  //int setParams(int argc, char const *const *argv);
   int loadFile();
   void buildGraph();
   void buildFeatures();
