@@ -40,7 +40,7 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
     }
   }
   normalizeMatrixTo01(m);
-  pcl::console::print_highlight("Successfully built vertex similarity matrix.\n");
+  pcl::console::print_info("    Successfully built vertex similarity matrix.\n");
 }
 
 EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest)
@@ -61,7 +61,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
     ++i;
   }
   normalizeMatrixTo01(m);
-  pcl::console::print_highlight("Successfully built edge similarity matrix.\n");
+  pcl::console::print_info("    Successfully built edge similarity matrix.\n");
 }
 
 void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)

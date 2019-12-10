@@ -74,6 +74,6 @@ void ProcessedPointCloud::buildFeatures()
 
 void ProcessedPointCloud::visualise()
 {
-  // maybe encapsulate this in Boost::Thread ?
+  // maybe encapsulate this in Boost::Thread or call fork() ?
   visualisation(super, supervoxel_clusters, supervoxel_adjacency);
 }

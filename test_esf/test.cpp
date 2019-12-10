@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 
   std::cout << std::endl << std::endl;
   for (int i = 0; i < argc - 1; ++i)
-    std::cout << i << ".  " << params[i]->filename << std::endl;
+    std::cout << i << ".  " << argv[i + 1] << std::endl;
 
   std::cout << std::endl << std::endl;
   std::cout << dist_mat;

@@ -16,4 +16,5 @@ If you use the metadata files from `../metadata`, then it is important to run bi
 ~~~~
 cd ..
 ./test_esf/test_esf metadata/big1.meta metadata/rot.meta
+./test_esf/test_esf metadata/*
 ~~~~
