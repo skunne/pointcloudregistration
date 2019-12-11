@@ -25,24 +25,30 @@ void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest)
 
 void ProcessedPointCloud::addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer)
 {
-    //pcl::console::print_highlight ("PRINT 10\n");
   PointCloudT::Ptr voxel_centroid_cloud = super.getVoxelCentroidCloud ();
-  //pcl::console::print_highlight ("PRINT 12\n");
-  viewer->addPointCloud (voxel_centroid_cloud, "voxel centroids");
-  //pcl::console::print_highlight ("PRINT 14\n");
-  viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,2.0, "voxel centroids");
-  //pcl::console::print_highlight ("PRINT 16\n");
-  viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.95, "voxel centroids");
+  {
+    std::stringstream ss;
+    ss << params.filename << "_voxelcentroids";
+    viewer->addPointCloud (voxel_centroid_cloud, ss.str());
+    viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,2.0, ss.str());
+    viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.95, ss.str());
+  }
 
-  //pcl::console::print_highlight ("PRINT 20\n");
   PointLCloudT::Ptr labeled_voxel_cloud = super.getLabeledVoxelCloud ();
-  viewer->addPointCloud (labeled_voxel_cloud, "labeled voxels");
-  viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.8, "labeled voxels");
+  {
+    std::stringstream ss;
+    ss << params.filename << "_labeledvoxels";
+    viewer->addPointCloud (labeled_voxel_cloud, ss.str());
+    viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.8, ss.str());
+  }
 
-  //pcl::console::print_highlight ("PRINT 30\n");
-  PointNCloudT::Ptr sv_normal_cloud = super.makeSupervoxelNormalCloud (supervoxel_clusters);
   //We have this disabled so graph is easy to see, uncomment to see supervoxel normals
-  //viewer->addPointCloudNormals<PointNormal> (sv_normal_cloud,1,0.05f, "supervoxel_normals");
+  //PointNCloudT::Ptr sv_normal_cloud = super.makeSupervoxelNormalCloud (supervoxel_clusters);
+  //{
+  //  std::stringstream ss;
+  //  ss << params.filename << "_supervoxel_normals";
+  //  viewer->addPointCloudNormals<PointNormal> (sv_normal_cloud,1,0.05f, ss.str().c_str());
+  //}
 
   // moved from here "getting supervoxel adjacency"
 
