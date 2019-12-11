@@ -2,6 +2,7 @@
 #include "cpr_main.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
+#include "cpr_visualisation.h"
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -26,18 +27,26 @@ main (int argc, char ** argv)
 
   ppc_source.build();
 
-  ppc_source.visualise();
+  //ppc_source.visualise();
 
   ppc_dest.build();
 
-  ppc_dest.visualise();
+  //ppc_dest.visualise();
 
   VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
   EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
   printMatrixToFile("output/similarity_matrix", vsim_mat.m);
 
+  visualisation(ppc_source, ppc_dest);
 
+  // TODO match graphs
+
+  // TODO find geometric transform corresponding to the matching
+
+  // TODO RanSaC
+
+  // TODO ICP
 
   return (0);
 }

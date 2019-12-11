@@ -1,5 +1,8 @@
 
 #include <fstream>
+#include "cpr_loadfiles.h"
+#include "cpr_clustering.h"
+#include "cpr_connectedcomponents.h"
 #include "cpr_visualisation.h"
 #include "cpr_processedpointcloud.h"
 
@@ -76,5 +79,15 @@ void ProcessedPointCloud::buildFeatures()
 void ProcessedPointCloud::visualise()
 {
   // maybe encapsulate this in Boost::Thread or call fork() ?
-  visualisation(super, supervoxel_clusters, supervoxel_adjacency);
+  pcl::console::print_highlight ("Initialising visualisation\n");
+
+  pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+  viewer->setBackgroundColor (0, 0, 0);
+
+  addToViewer(viewer);
+
+  while (!viewer->wasStopped ())
+  {
+    viewer->spinOnce (100);
+  }
 }

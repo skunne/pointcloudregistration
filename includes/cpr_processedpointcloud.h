@@ -2,11 +2,9 @@
 #ifndef __DEF_CPR_PROCESSEDPOINTCLOUD_H__
 # define __DEF_CPR_PROCESSEDPOINTCLOUD_H__
 
+#include <pcl/visualization/pcl_visualizer.h> // PCLVisualizer::Ptr viewer
 #include "cpr_main.h"
 #include "cpr_params.h"
-#include "cpr_loadfiles.h"
-#include "cpr_clustering.h"
-#include "cpr_connectedcomponents.h"
 #include "cpr_features.h"
 #include "cpr_matrices.h"
 
@@ -35,6 +33,7 @@ public:
   int build();
 
   void visualise();
+  void addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer);
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */

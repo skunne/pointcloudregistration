@@ -1,15 +1,30 @@
 
 
 #include "cpr_main.h"
+#include "cpr_processedpointcloud.h"
 #include "cpr_visualisation.h"
 
-void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency)
+void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest)
+//void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency)
 {
   pcl::console::print_highlight ("Initialising visualisation\n");
 
   pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
   viewer->setBackgroundColor (0, 0, 0);
 
+  source.addToViewer(viewer);
+  dest.addToViewer(viewer);
+  //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source.super, source.supervoxel_clusters, source.supervoxel_adjacency, colour1);
+  //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source, colour2);
+
+  while (!viewer->wasStopped ())
+  {
+    viewer->spinOnce (100);
+  }
+}
+
+void ProcessedPointCloud::addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer)
+{
     //pcl::console::print_highlight ("PRINT 10\n");
   PointCloudT::Ptr voxel_centroid_cloud = super.getVoxelCentroidCloud ();
   //pcl::console::print_highlight ("PRINT 12\n");
@@ -50,17 +65,14 @@ void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClu
     }
     //Now we make a name for this polygon
     std::stringstream ss;
-    ss << "supervoxel_" << supervoxel_label;
+    ss << params.filename << "_supervoxel_" << supervoxel_label;
     //This function is shown below, but is beyond the scope of this tutorial - basically it just generates a "star" polygon mesh from the points given
     addSupervoxelConnectionsToViewer (supervoxel->centroid_, adjacent_supervoxel_centers, ss.str (), viewer);
     //Move iterator forward to next label
     label_itr = supervoxel_adjacency.upper_bound (supervoxel_label);
   }
 
-  while (!viewer->wasStopped ())
-  {
-    viewer->spinOnce (100);
-  }
+
 }
 
 
