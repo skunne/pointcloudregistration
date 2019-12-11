@@ -27,18 +27,26 @@ main (int argc, char ** argv)
 
   ppc_source.build();
 
-  //ppc_source.visualise();
+  //pcl::visualization::PCLVisualizer::Ptr viewer_source =
+  ppc_source.visualise();
 
   ppc_dest.build();
 
-  //ppc_dest.visualise();
+  //pcl::visualization::PCLVisualizer::Ptr viewer_dest =
+  ppc_dest.visualise();
 
   VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
   EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
-  printMatrixToFile("output/similarity_matrix", vsim_mat.m);
+  printMatrixToFile("output/esf_similarity_matrix", vsim_mat.m);
+  printMatrixToFile("output/edge_similarity_matrix", esim_mat.m);
 
+  // pcl::visualization::PCLVisualizer::Ptr viewer =
   visualisation(ppc_source, ppc_dest);
+
+  //while (!(viewer->wasStopped() && viewer_source->wasStopped() && viewer_dest->wasStopped()))
+  //while (!(viewer_source->wasStopped() && viewer_dest->wasStopped()))
+  //  ;   // wait for user to close window before halting
 
   // TODO match graphs
 

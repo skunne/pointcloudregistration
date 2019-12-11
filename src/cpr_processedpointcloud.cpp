@@ -76,6 +76,7 @@ void ProcessedPointCloud::buildFeatures()
   //calculate_similarity_matrix(m);
 }
 
+//pcl::visualization::PCLVisualizer::Ptr
 void ProcessedPointCloud::visualise()
 {
   // maybe encapsulate this in Boost::Thread or call fork() ?
@@ -85,9 +86,11 @@ void ProcessedPointCloud::visualise()
   viewer->setBackgroundColor (0, 0, 0);
 
   addToViewer(viewer);
+  addSomeColours(viewer);
 
   while (!viewer->wasStopped ())
   {
     viewer->spinOnce (100);
   }
+  //return viewer;
 }

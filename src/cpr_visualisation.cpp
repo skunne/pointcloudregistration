@@ -4,6 +4,28 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_visualisation.h"
 
+void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer)
+{
+  if (params.filename == "pointclouds/biggerpointcloud.vtk")
+  {
+    viewer->addSphere(supervoxel_clusters[0]->centroid_, 3.0, 255.0, 0.0, 0.0, "big1_sphere0");
+    viewer->addSphere(supervoxel_clusters[9]->centroid_, 3.0, 0.0, 255.0, 0.0, "big1_sphere9");
+    viewer->addSphere(supervoxel_clusters[19]->centroid_, 3.0, 0.0, 0.0, 255.0, "big1_sphere19");
+    viewer->addSphere(supervoxel_clusters[49]->centroid_, 3.0, 255.0, 255.0, 0.0, "big1_sphere49");
+    viewer->addSphere(supervoxel_clusters[99]->centroid_, 3.0, 255.0, 0.0, 255.0, "big1_sphere99");
+  }
+  else if (params.filename == "pointclouds/rotated30degrees_1um.vtk")
+  {
+    viewer->addSphere(supervoxel_clusters[20]->centroid_, 3.0, 255.0, 0.0, 0.0, "rot_sphere20");
+    viewer->addSphere(supervoxel_clusters[10]->centroid_, 3.0, 0.0, 255.0, 0.0, "rot_sphere10");
+    viewer->addSphere(supervoxel_clusters[13]->centroid_, 3.0, 0.0, 0.0, 255.0, "rot_sphere13");
+    viewer->addSphere(supervoxel_clusters[128]->centroid_, 3.0, 255.0, 255.0, 0.0, "rot_sphere128");
+    viewer->addSphere(supervoxel_clusters[78]->centroid_, 3.0, 255.0, 0.0, 255.0, "rot_sphere78");
+    //viewer->addSphere(supervoxel_clusters[20]->centroid_, 3.0, 255.0, 0.0, 0.0, "rot_sphere20");
+  }
+}
+
+//pcl::visualization::PCLVisualizer::Ptr
 void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest)
 //void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency)
 {
@@ -17,22 +39,27 @@ void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest)
   //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source.super, source.supervoxel_clusters, source.supervoxel_adjacency, colour1);
   //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source, colour2);
 
+  source.addSomeColours(viewer);
+  dest.addSomeColours(viewer);
+
   while (!viewer->wasStopped ())
   {
     viewer->spinOnce (100);
   }
+
+  //return viewer;
 }
 
 void ProcessedPointCloud::addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer)
 {
   PointCloudT::Ptr voxel_centroid_cloud = super.getVoxelCentroidCloud ();
-  {
+  {  // scope for stringstream ss
     std::stringstream ss;
     ss << params.filename << "_voxelcentroids";
     viewer->addPointCloud (voxel_centroid_cloud, ss.str());
     viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,2.0, ss.str());
     viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_OPACITY,0.95, ss.str());
-  }
+  }  // end scope for stringstream ss
 
   PointLCloudT::Ptr labeled_voxel_cloud = super.getLabeledVoxelCloud ();
   {
@@ -52,7 +79,6 @@ void ProcessedPointCloud::addToViewer(pcl::visualization::PCLVisualizer::Ptr vie
 
   // moved from here "getting supervoxel adjacency"
 
-  //pcl::console::print_highlight ("JUST BEFORE THE ADJACENCY FOR LOOP\n");
   //To make a graph of the supervoxel adjacency, we need to iterate through the supervoxel adjacency multimap
   for (SupervoxelAdjacency::const_iterator label_itr = supervoxel_adjacency.cbegin ();
       label_itr != supervoxel_adjacency.cend (); )
@@ -73,7 +99,12 @@ void ProcessedPointCloud::addToViewer(pcl::visualization::PCLVisualizer::Ptr vie
     std::stringstream ss;
     ss << params.filename << "_supervoxel_" << supervoxel_label;
     //This function is shown below, but is beyond the scope of this tutorial - basically it just generates a "star" polygon mesh from the points given
+
     addSupervoxelConnectionsToViewer (supervoxel->centroid_, adjacent_supervoxel_centers, ss.str (), viewer);
+
+    //ss << "_sphere";
+    //viewer->addSphere(supervoxel->centroid_, 3.0, 255.0, 0.0, 0.0, ss.str());
+
     //Move iterator forward to next label
     label_itr = supervoxel_adjacency.upper_bound (supervoxel_label);
   }

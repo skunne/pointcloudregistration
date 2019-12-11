@@ -8,6 +8,7 @@
 ** visualisation.cpp
 */
 
+//pcl::visualization::PCLVisualizer::Ptr 
 void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest);
 //void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency);
 
