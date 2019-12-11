@@ -1,5 +1,6 @@
 
 #include <fstream>
+#include "cpr_visualisation.h"
 #include "cpr_processedpointcloud.h"
 
 ProcessedPointCloud::ProcessedPointCloud(Params const &p)

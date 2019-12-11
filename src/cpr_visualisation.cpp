@@ -1,7 +1,7 @@
 
 
 #include "cpr_main.h"
-
+#include "cpr_visualisation.h"
 
 void visualisation(pcl::SupervoxelClustering<PointT> const &super, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency const &supervoxel_adjacency)
 {
