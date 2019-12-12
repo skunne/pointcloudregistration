@@ -95,13 +95,18 @@ void makeGraphConnected(SupervoxelClusters &vertices,
     nextFreeLabel = (nextFreeLabel > v_itr->first) ? nextFreeLabel : v_itr->first;
   nextFreeLabel++;
 
-  // add center point for each cc and add edge from it to each point in cc
+  // add center of mass of the supervoxels for each cc
+  // add all voxels of all supervoxels of the cc to the local point cloud of the center of the center of mass (so it can get a meaningful ESF descriptor)
+  // add edge from the center to each supervoxel in cc
+  // add edges between all cc centers so the graph is connected
   KeyT clusterIndex = 0;
   for (auto cc_itr = cc_list.begin(); cc_itr != cc_list.end(); cc_itr++)
   {
     pcl::Supervoxel<PointT>::Ptr cc_centre(new pcl::Supervoxel<PointT>);
     //cc_centre->centroid_ = getCentreOfMass(*cc_itr, vertices);
     getCentreOfMass(*cc_itr, vertices, cc_centre->centroid_);
+    for (auto lbl_itr = cc_itr->cbegin(); lbl_itr != cc_itr->cend(); ++lbl_itr)
+      *cc_centre->voxels_ += *vertices[*lbl_itr]->voxels_;
     vertices[nextFreeLabel + clusterIndex] = cc_centre;
     for (auto lbl_itr = cc_itr->begin(); lbl_itr != cc_itr->end(); lbl_itr++)
     {
