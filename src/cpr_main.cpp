@@ -35,35 +35,36 @@ void insert_sorted(std::vector<int> &src, std::vector<int> &dst, int i, int j, V
 
 void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<int> &src, std::vector<int> &dst)
 {
-  /*
-  ** TODO: make sure the correspondance is one-to-one!!!
-  */
-
-  // initialise vectors with first 10 pairs
-  int nbInserted = 0;
-  for (int j = 0; nbInserted < 8 && j < vsim_mat.m.cols(); ++j)
+  // find prefered destination node for every source node
+  std::vector<int> preferedDest;
+  preferedDest.reserve(vsim_mat.m.rows());
+  for (Eigen::Index i = 0; i < vsim_mat.m.rows(); ++i)
   {
-    if (vsim_mat.m(0,j) > 0)
+    preferedDest.push_back(0);
+    for (Eigen::Index j = 1; j < vsim_mat.m.cols(); ++j)
     {
-      insert_sorted(src, dst, 0, j, vsim_mat);
-      nbInserted++;
+      if (vsim_mat.m(i, j) > 0 && ((vsim_mat.m(i, j) < vsim_mat.m(i, preferedDest[i])) || vsim_mat.m(i, preferedDest[i]) == 0))
+        preferedDest[i] = j;
     }
   }
-  pcl::console::print_info("Initialised with %d nodes\n", nbInserted);
 
-  // browse sim matrix and keep best 10 pairs
-  // a pair is better if it has a low score in vsim_mat
-  // but pairs with score 0 are left aside because they usually correspond to nodes with two dummy ESF
-  for (int i = 0; i < vsim_mat.m.rows(); ++i)
-    for (int j = 0; j < vsim_mat.m.cols(); ++j)
+  pcl::console::print_info("preferedDest size: %d\n", preferedDest.size());
+
+  src.clear();
+  dst.clear();
+  // find 8 smallest (source,dest) node pairs
+  std::size_t i;
+  for (i = 0; i < 8; ++i)
+    insert_sorted(src, dst, i, preferedDest[i], vsim_mat);
+  for (; i < preferedDest.size(); ++i)
+  {
+    if (vsim_mat.m(i, preferedDest[i]) < vsim_mat.m(src[7], dst[7]))  // TODO this should also check for duplicate nodes in dst
     {
-      if (vsim_mat.m(i, j) > 0 && vsim_mat.m(i, j) < vsim_mat.m(src[7], dst[7]))
-      {
-        src.pop_back();
-        dst.pop_back();
-        insert_sorted(src, dst, i, j, vsim_mat);
-      }
+      src.pop_back();
+      dst.pop_back();
+      insert_sorted(src, dst, i, preferedDest[i], vsim_mat);
     }
+  }
 
   pcl::console::print_highlight("Scores retenus: \n    ");
   for (std::size_t i = 0; i < src.size(); ++i)
