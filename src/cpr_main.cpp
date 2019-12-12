@@ -56,37 +56,23 @@ void insert_sorted(std::vector<KeyT> &src, std::vector<KeyT> &dst, int i, int j,
   pcl::console::print_info("\n");
 }
 
-void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<KeyT> &src, std::vector<KeyT> &dst)
+void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<KeyT> const &matching, std::vector<KeyT> &src, std::vector<KeyT> &dst)
 {
-  // find prefered destination node for every source node
-  std::vector<KeyT> preferedDest;
-  preferedDest.reserve(vsim_mat.m.rows());
-  for (Eigen::Index i = 0; i < vsim_mat.m.rows(); ++i)
-  {
-    preferedDest.push_back(0);
-    for (Eigen::Index j = 1; j < vsim_mat.m.cols(); ++j)
-    {
-      if (vsim_mat.m(i, j) > 0 && ((vsim_mat.m(i, j) < vsim_mat.m(i, preferedDest[i])) || vsim_mat.m(i, preferedDest[i]) == 0))
-        preferedDest[i] = j;
-    }
-  }
-
-  pcl::console::print_info("preferedDest size: %d\n", preferedDest.size());
-
   src.clear();
   dst.clear();
   // find 8 smallest (source,dest) node pairs
   std::size_t i;
   for (i = 0; i < 8; ++i)
-    insert_sorted(src, dst, i, preferedDest[i], vsim_mat);
-  for (; i < preferedDest.size(); ++i)
+    insert_sorted(src, dst, i, matching[i], vsim_mat);
+  for (; i < matching.size(); ++i)
   {
-    if (vsim_mat.m(i, preferedDest[i]) < vsim_mat.m(src[7], dst[7])
-      && std::find(dst.cbegin(), dst.cend(), preferedDest[i]) == dst.cend())  //avoid duplicates in dst
+    if (matching[i] < vsim_mat.m.cols()
+      && vsim_mat.m(i, matching[i]) < vsim_mat.m(src[7], dst[7]))
+      //&& std::find(dst.cbegin(), dst.cend(), matching[i]) == dst.cend())  //avoid duplicates in dst
     {
       src.pop_back();
       dst.pop_back();
-      insert_sorted(src, dst, i, preferedDest[i], vsim_mat);
+      insert_sorted(src, dst, i, matching[i], vsim_mat);
     }
   }
 
@@ -137,12 +123,13 @@ main (int argc, char ** argv)
   std::vector<KeyT> pointsToColour_source;
   std::vector<KeyT> pointsToColour_dest;
 
+  /* // select 8 arbitrary points
   for (std::size_t i = 0; i < 80; i += 10)
   {
     pointsToColour_source.push_back(i);
     pointsToColour_dest.push_back(graph_matching[i]);
-  }
-  //findSimilarNodes(vsim_mat, pointsToColour_source, pointsToColour_dest);
+  }*/
+  findSimilarNodes(vsim_mat, graph_matching, pointsToColour_source, pointsToColour_dest);
 
   ppc_source.addSomeColours(viewer_source, pointsToColour_source);
   ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);

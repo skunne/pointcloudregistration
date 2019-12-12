@@ -6,16 +6,18 @@
 
 void make_colour(int n, double &r, double &g, double &b)
 {
-  //if (n == 0)
-  //{
-  //  r = g = b = 80.0;    // replace black with grey for visibility
-  //}
-  //else
-  //{
+  if (n == 0)
+  {
+    r = 254.0;
+    g = 128.0;
+    b = 68.0;    // replace black with grey for visibility
+  }
+  else
+  {
     r = (n >> 2) * 255.0;         // 4 bit
     g = ((n >> 1) & 1) * 255.0;   // 2 bit
     b = (n & 1) * 255.0;          // unit bit
-  //}
+  }
 }
 
 void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes)
