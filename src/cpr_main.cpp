@@ -13,12 +13,35 @@
 
 #include <Eigen/Dense>    // matrices
 */
+#include <sstream>
+#include <string>
+#include "cpr_loadfiles.h"
+
+
+int loadGraphMatching(char const *filename, std::vector<KeyT> &mapping)
+{
+  std::ifstream infile(filename);
+  if (!infile)
+    return errorLoadingFile("graph matching", filename);
+  mapping.clear();
+  std::string line;
+  std::getline(infile, line); // skip header
+  while (std::getline(infile, line))
+  {
+      std::istringstream iss(line);
+      int i, u, rank, qcv, rand, path;
+      iss >> i >> u >> rank >> qcv >> rand >> path; // check for error
+      mapping.push_back(path - 1); // -1 because the graph matching algo returns indices starting at 1 instead of 0
+      // process pair (a,b)
+  }
+  return 0;
+}
 
 /* add new element in correct position */
-void insert_sorted(std::vector<int> &src, std::vector<int> &dst, int i, int j, VertexSimilarityMatrix const &score)
+void insert_sorted(std::vector<KeyT> &src, std::vector<KeyT> &dst, int i, int j, VertexSimilarityMatrix const &score)
 {
-  std::vector<int>::iterator src_itr = src.begin();
-  std::vector<int>::iterator dst_itr = dst.begin();
+  std::vector<KeyT>::iterator src_itr = src.begin();
+  std::vector<KeyT>::iterator dst_itr = dst.begin();
   while (src_itr != src.end() && score.m(i,j) > score.m(*src_itr, *dst_itr))
   {
     ++src_itr;
@@ -33,10 +56,10 @@ void insert_sorted(std::vector<int> &src, std::vector<int> &dst, int i, int j, V
   pcl::console::print_info("\n");
 }
 
-void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<int> &src, std::vector<int> &dst)
+void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<KeyT> &src, std::vector<KeyT> &dst)
 {
   // find prefered destination node for every source node
-  std::vector<int> preferedDest;
+  std::vector<KeyT> preferedDest;
   preferedDest.reserve(vsim_mat.m.rows());
   for (Eigen::Index i = 0; i < vsim_mat.m.rows(); ++i)
   {
@@ -108,10 +131,18 @@ main (int argc, char ** argv)
   pcl::visualization::PCLVisualizer::Ptr viewer_dest =
     ppc_dest.visualise();
 
-  std::vector<int> pointsToColour_source;
-  std::vector<int> pointsToColour_dest;
+  std::vector<KeyT> graph_matching;
+  loadGraphMatching("output/matching/big1_rot.match", graph_matching);
 
-  findSimilarNodes(vsim_mat, pointsToColour_source, pointsToColour_dest);
+  std::vector<KeyT> pointsToColour_source;
+  std::vector<KeyT> pointsToColour_dest;
+
+  for (std::size_t i = 0; i < 80; i += 10)
+  {
+    pointsToColour_source.push_back(i);
+    pointsToColour_dest.push_back(graph_matching[i]);
+  }
+  //findSimilarNodes(vsim_mat, pointsToColour_source, pointsToColour_dest);
 
   ppc_source.addSomeColours(viewer_source, pointsToColour_source);
   ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);

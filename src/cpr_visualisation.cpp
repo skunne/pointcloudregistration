@@ -18,10 +18,10 @@ void make_colour(int n, double &r, double &g, double &b)
   //}
 }
 
-void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<int> nodes)
+void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes)
 {
   int i = 0;
-  for (std::vector<int>::const_iterator nodes_itr = nodes.cbegin(); nodes_itr != nodes.cend(); ++nodes_itr)
+  for (std::vector<KeyT>::const_iterator nodes_itr = nodes.cbegin(); nodes_itr != nodes.cend(); ++nodes_itr)
   {
     std::stringstream ss;
     ss << params.filename << i;

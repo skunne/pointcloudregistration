@@ -37,7 +37,7 @@ public:
   void addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer);
 
   //void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer);
-  void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<int> nodes);
+  void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes);
 
 };
 
