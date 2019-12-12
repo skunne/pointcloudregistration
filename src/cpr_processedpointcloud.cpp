@@ -77,7 +77,7 @@ void ProcessedPointCloud::buildFeatures()
 }
 
 //pcl::visualization::PCLVisualizer::Ptr
-void ProcessedPointCloud::visualise()
+pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise()
 {
   // maybe encapsulate this in Boost::Thread or call fork() ?
   pcl::console::print_highlight ("Initialising visualisation\n");
@@ -86,11 +86,11 @@ void ProcessedPointCloud::visualise()
   viewer->setBackgroundColor (0, 0, 0);
 
   addToViewer(viewer);
-  addSomeColours(viewer);
+  //addSomeColours(viewer);
 
-  while (!viewer->wasStopped ())
-  {
-    viewer->spinOnce (100);
-  }
-  //return viewer;
+  //while (!viewer->wasStopped ())
+  //{
+  //  viewer->spinOnce (100);
+  //}
+  return viewer;
 }

@@ -4,9 +4,34 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_visualisation.h"
 
-void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer)
+void make_colour(int n, double &r, double &g, double &b)
 {
-  if (params.filename == "pointclouds/biggerpointcloud.vtk")
+  if (n == 0)
+  {
+    r = g = b = 80.0;    // replace black with grey for visibility
+  }
+  else
+  {
+    r = (n >> 2) * 255.0;         // 4 bit
+    g = ((n >> 1) & 1) * 255.0;   // 2 bit
+    b = (n & 1) * 255.0;          // unit bit
+  }
+}
+
+void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<int> nodes)
+{
+  int i = 0;
+  for (std::vector<int>::const_iterator nodes_itr = nodes.cbegin(); nodes_itr != nodes.cend(); ++nodes_itr)
+  {
+    std::stringstream ss;
+    ss << params.filename << i;
+    double r,g,b;
+    make_colour(i, r, g, b);
+    pcl::console::print_error("%d -> %d, %f, %f, %f.\n", *nodes_itr, i, r, g, b);
+    viewer->addSphere(supervoxel_clusters[*nodes_itr]->centroid_, 3.0, r, g, b, ss.str());
+    ++i;
+  }
+  /*if (params.filename == "pointclouds/biggerpointcloud.vtk")
   {
     viewer->addSphere(supervoxel_clusters[0]->centroid_, 3.0, 255.0, 0.0, 0.0, "big1_sphere0");
     viewer->addSphere(supervoxel_clusters[9]->centroid_, 3.0, 0.0, 255.0, 0.0, "big1_sphere9");
@@ -22,7 +47,7 @@ void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr 
     viewer->addSphere(supervoxel_clusters[128]->centroid_, 3.0, 255.0, 255.0, 0.0, "rot_sphere128");
     viewer->addSphere(supervoxel_clusters[78]->centroid_, 3.0, 255.0, 0.0, 255.0, "rot_sphere78");
     //viewer->addSphere(supervoxel_clusters[20]->centroid_, 3.0, 255.0, 0.0, 0.0, "rot_sphere20");
-  }
+  }*/
 }
 
 //pcl::visualization::PCLVisualizer::Ptr
@@ -39,8 +64,8 @@ void visualisation(ProcessedPointCloud &source, ProcessedPointCloud &dest)
   //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source.super, source.supervoxel_clusters, source.supervoxel_adjacency, colour1);
   //visualiseOne(pcl::visualization::PCLVisualizer::Ptr, source, colour2);
 
-  source.addSomeColours(viewer);
-  dest.addSomeColours(viewer);
+  //source.addSomeColours(viewer);
+  //dest.addSomeColours(viewer);
 
   while (!viewer->wasStopped ())
   {

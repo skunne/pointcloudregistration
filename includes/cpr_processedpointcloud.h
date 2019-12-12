@@ -32,11 +32,13 @@ public:
   void buildFeatures();
   int build();
 
-  //pcl::visualization::PCLVisualizer::Ptr
-  void visualise();
+  pcl::visualization::PCLVisualizer::Ptr
+    visualise();
   void addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer);
 
-  void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer);
+  //void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer);
+  void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<int> nodes);
+
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */
