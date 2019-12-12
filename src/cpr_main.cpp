@@ -58,7 +58,8 @@ void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<int> &
     insert_sorted(src, dst, i, preferedDest[i], vsim_mat);
   for (; i < preferedDest.size(); ++i)
   {
-    if (vsim_mat.m(i, preferedDest[i]) < vsim_mat.m(src[7], dst[7]))  // TODO this should also check for duplicate nodes in dst
+    if (vsim_mat.m(i, preferedDest[i]) < vsim_mat.m(src[7], dst[7])
+      && std::find(dst.cbegin(), dst.cend(), preferedDest[i]) == dst.cend())  //avoid duplicates in dst
     {
       src.pop_back();
       dst.pop_back();
