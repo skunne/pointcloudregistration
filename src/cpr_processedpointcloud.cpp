@@ -70,7 +70,7 @@ void ProcessedPointCloud::buildFeatures()
   ////// ESF and edge descriptors calculation
   //////////////////////////////  //////////////////////////////
 
-  calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, esf_descriptors, edge_descriptors);
+  calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, params.voxel_resolution, esf_descriptors, edge_descriptors);
   // save features to file
   //writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
   //calculate_similarity_matrix(m);

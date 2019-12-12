@@ -26,7 +26,7 @@ double edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
 
 
 // Calculate edge descriptors according to Huang et al 2017, Fig. 5
-void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length)
+void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_x, double &angle_y, double &angle_z, double &length, double const voxelres)
 {
   Eigen::Vector3f ux(1.0,0.0,0.0);
   Eigen::Vector3f uy(0.0,1.0,0.0);
@@ -40,7 +40,7 @@ void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_
   angle_x = pcl::getAngle3D(ux, v_projected);
   angle_y = pcl::getAngle3D(uy, v_projected);
   angle_z = pcl::getAngle3D(uz, v);
-  length = pcl::geometry::distance(p1, p2);   // TODO Huang says this should be normalized by params->voxelres??
+  length = pcl::geometry::distance(p1, p2) / voxelres; // normalized by params->voxelres
 }
 
 void printHistogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
@@ -116,7 +116,7 @@ void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescripto
 
 }
 
-void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, EdgeDescriptors &edge_descriptors)
+void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, double voxelres, EdgeDescriptors &edge_descriptors)
 {
   pcl::console::print_highlight ("Calculating edge descriptors\n");
 
@@ -140,7 +140,7 @@ void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, Supervoxel
       double angle_y;
       double angle_z;
       double length;
-      calculateAnglesAndLength(supervoxel1->centroid_, supervoxel2->centroid_, angle_x, angle_y, angle_z, length);
+      calculateAnglesAndLength(supervoxel1->centroid_, supervoxel2->centroid_, angle_x, angle_y, angle_z, length, voxelres);
       edge_descriptors[std::make_pair(supervoxel1_label, supervoxel2_label)] = std::make_tuple(angle_x, angle_y, angle_z, length);
       //adjacent_supervoxel_centers.push_back (neighbor_supervoxel->centroid_);
     }//Move iterator forward to next label
@@ -148,10 +148,10 @@ void calculateEdgesDescriptors(SupervoxelClusters const &sv_clusters, Supervoxel
   }
 }
 
-void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors)
+void calculateDescriptors(SupervoxelClusters const &sv_clusters, SupervoxelAdjacency const &sv_adjacency, double const voxelres, ESFDescriptors &esf_descriptors, EdgeDescriptors &edge_descriptors)
 {
   calculateESFDescriptors(sv_clusters, esf_descriptors);
-  calculateEdgesDescriptors(sv_clusters, sv_adjacency, edge_descriptors);
+  calculateEdgesDescriptors(sv_clusters, sv_adjacency, voxelres, edge_descriptors);
 }
 
 /*void calculate_similarity_matrix(, SimilarityMatrix &m)

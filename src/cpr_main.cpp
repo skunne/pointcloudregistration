@@ -31,7 +31,7 @@ int loadGraphMatching(char const *filename, std::vector<KeyT> &mapping)
       std::istringstream iss(line);
       int i, u, rank, qcv, rand, path;
       iss >> i >> u >> rank >> qcv >> rand >> path; // check for error
-      mapping.push_back(path - 1); // -1 because the graph matching algo returns indices starting at 1 instead of 0
+      mapping.push_back(qcv - 1); // -1 because the graph matching algo returns indices starting at 1 instead of 0
       // process pair (a,b)
   }
   return 0;
@@ -118,18 +118,18 @@ main (int argc, char ** argv)
     ppc_dest.visualise();
 
   std::vector<KeyT> graph_matching;
-  loadGraphMatching("output/matching/big1_rot.match", graph_matching);
+  loadGraphMatching("output/matching/big1_big1.match", graph_matching);
 
   std::vector<KeyT> pointsToColour_source;
   std::vector<KeyT> pointsToColour_dest;
 
-  /* // select 8 arbitrary points
-  for (std::size_t i = 0; i < 80; i += 10)
+   // select 8 arbitrary points
+  for (std::size_t i = 3; i < 83; i += 10)
   {
     pointsToColour_source.push_back(i);
     pointsToColour_dest.push_back(graph_matching[i]);
-  }*/
-  findSimilarNodes(vsim_mat, graph_matching, pointsToColour_source, pointsToColour_dest);
+  }
+  //findSimilarNodes(vsim_mat, graph_matching, pointsToColour_source, pointsToColour_dest);
 
   ppc_source.addSomeColours(viewer_source, pointsToColour_source);
   ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);
