@@ -1,0 +1,7 @@
+filename pointclouds/snowman.pcd
+voxel_resolution 1.0
+seed_resolution 1.5
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
+adjacency_filename output/snowman.adj
