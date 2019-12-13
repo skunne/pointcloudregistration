@@ -1,5 +1,5 @@
 filename pointclouds/snowman.pcd
-voxel_resolution 10.0
+voxel_resolution 3.0
 seed_resolution 15
 color_importance 0.2
 spatial_importance 1.0

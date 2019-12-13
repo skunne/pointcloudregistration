@@ -43,12 +43,12 @@ def drawSnowman():
     (xEye,yEye,zEye) = (10*math.sin(phiEye)*math.cos(-thetaEye),10*math.sin(phiEye)*math.sin(-thetaEye),120+10*math.cos(phiEye))
     addPointsOnSphere(xEye, -yEye, zEye, 2, 20, pointcloud)         # left eye
     addPointsOnSphere(xEye, yEye, zEye, 2, 20, pointcloud)          # right eye
-    addPointsOnHorizontalCone(-8,0,120, 2, -16, 25, pointcloud)    # nose
-    addPointsOnSegment(0,0,100, 0,50,100, 25, pointcloud)          # left arm
-    addPointsOnSegment(0,0,100, 0,-50,100, 25, pointcloud)         # right arm
+    addPointsOnHorizontalCone(-8,0,120, 2, -16, 50, pointcloud)    # nose
+    addPointsOnSegment(0,0,100, 0,50,100, 50, pointcloud)          # left arm
+    addPointsOnSegment(0,0,100, 0,-50,100, 50, pointcloud)         # right arm
     return pointcloud
 
-nbPointsTotal = 1600 + 400 + 100 + 20 + 20 + 25 + 25 + 25
+nbPointsTotal = 1600 + 400 + 100 + 20 + 20 + 50 + 50 + 50
 
 def printToPcd(outf, pointcloud):
     outf.write("VERSION 0.7\n")
@@ -66,7 +66,7 @@ def printToPcd(outf, pointcloud):
 
 def printToMeta(outf):
     outf.write('filename pointclouds/snowman.pcd\n')
-    outf.write('voxel_resolution 10.0\n')   # approx = sqrt(n / (4 pi r^2)) where r,n are params used in call to addPointsOnSphere(.,.,.,r,n,.)
+    outf.write('voxel_resolution 3.0\n')   # approx = sqrt(n / (4 pi r^2)) where r,n are params used in call to addPointsOnSphere(.,.,.,r,n,.)
     outf.write('seed_resolution 15\n')      # seed_resolution > voxel_resolution
     outf.write('color_importance 0.2\n')    # could be 0, we did not use colour
     outf.write('spatial_importance 1.0\n')
