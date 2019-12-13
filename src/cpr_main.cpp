@@ -93,12 +93,19 @@ main (int argc, char ** argv)
   ProcessedPointCloud ppc_source(argv[1]);
   ProcessedPointCloud ppc_dest(argv[2]);
 
-  ppc_source.build();
+  if (ppc_source.error() || ppc_dest.error())
+    return 1;
+
+  int build_error = ppc_source.build();
+  if (build_error)
+    return build_error;
 
   //pcl::visualization::PCLVisualizer::Ptr viewer_source =
   //ppc_source.visualise();
 
-  ppc_dest.build();
+  build_error = ppc_dest.build();
+  if (build_error)
+    return build_error;
 
   //pcl::visualization::PCLVisualizer::Ptr viewer_dest =
   //ppc_dest.visualise();
@@ -117,13 +124,14 @@ main (int argc, char ** argv)
   pcl::visualization::PCLVisualizer::Ptr viewer_dest =
     ppc_dest.visualise();
 
+  /*
   std::vector<KeyT> graph_matching;
   loadGraphMatching("output/matching/big1_big1.match", graph_matching);
 
   std::vector<KeyT> pointsToColour_source;
   std::vector<KeyT> pointsToColour_dest;
 
-   // select 8 arbitrary points
+  // select 8 arbitrary points
   for (std::size_t i = 3; i < 83; i += 10)
   {
     pointsToColour_source.push_back(i);
@@ -131,8 +139,9 @@ main (int argc, char ** argv)
   }
   //findSimilarNodes(vsim_mat, graph_matching, pointsToColour_source, pointsToColour_dest);
 
-  ppc_source.addSomeColours(viewer_source, pointsToColour_source);
-  ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);
+  //ppc_source.addSomeColours(viewer_source, pointsToColour_source);
+  //ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);
+  */
 
   while (!viewer_source->wasStopped())
     viewer_source->spinOnce(100);

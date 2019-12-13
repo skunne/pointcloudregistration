@@ -16,6 +16,11 @@ ProcessedPointCloud::ProcessedPointCloud(char const *metadata_filename)
 {
 }
 
+int ProcessedPointCloud::error() const
+{
+  return params.error;
+}
+
 int ProcessedPointCloud::build()
 {
   int error_loading_file = loadFile(); //(argv[1], params.is_pcd, cloud);

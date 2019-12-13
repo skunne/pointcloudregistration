@@ -28,6 +28,7 @@ public:
   ProcessedPointCloud(char const *metadata_filename);
   //int setParams(int argc, char const *const *argv);
   int loadFile();
+  int error() const;
   void buildGraph();
   void buildFeatures();
   int build();
