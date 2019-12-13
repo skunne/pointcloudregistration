@@ -1,0 +1,7 @@
+filename metadata/dragon_vrip_res2.ply
+voxel_resolution 0.01
+seed_resolution 0.012
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
+adjacency_filename output/dragon.adj

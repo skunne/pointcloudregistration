@@ -4,7 +4,6 @@ import random
 twoPi = 2 * math.pi
 
 def addPointsOnSphere(cx,cy,cz,r, n, pointcloud):
-    #pointcloud = []
     for i in range(n):
         u = random.uniform(-1, 1)
         phi = math.acos(u)
@@ -41,9 +40,9 @@ def drawSnowman():
     addPointsOnSphere(0,0,80+40+10, 10, 100, pointcloud)  # head
     (thetaEye, phiEye) = (0.26, math.pi / 4)
     (xEye,yEye,zEye) = (10*math.sin(phiEye)*math.cos(-thetaEye),10*math.sin(phiEye)*math.sin(-thetaEye),120+10*math.cos(phiEye))
-    addPointsOnSphere(xEye, -yEye, zEye, 2, 20, pointcloud)         # left eye
-    addPointsOnSphere(xEye, yEye, zEye, 2, 20, pointcloud)          # right eye
-    addPointsOnHorizontalCone(-8,0,120, 2, -16, 50, pointcloud)    # nose
+    addPointsOnSphere(xEye, -yEye, zEye, 4, 20, pointcloud)         # left eye
+    addPointsOnSphere(xEye, yEye, zEye, 4, 20, pointcloud)          # right eye
+    addPointsOnHorizontalCone(-8,0,120, 4, -16, 50, pointcloud)    # nose
     addPointsOnSegment(0,0,100, 0,50,100, 50, pointcloud)          # left arm
     addPointsOnSegment(0,0,100, 0,-50,100, 50, pointcloud)         # right arm
     return pointcloud

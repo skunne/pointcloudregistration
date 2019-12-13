@@ -1,0 +1,7 @@
+filename metadata/Armadillo.ply
+voxel_resolution 3.0
+seed_resolution 15
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
+adjacency_filename output/Armadillo.adj

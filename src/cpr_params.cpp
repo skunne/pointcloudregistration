@@ -35,6 +35,7 @@ Params::Params(char const *metadata_filename) : error(0)
 
     is_vtk = endsWith(filename, ".vtk");
     is_pcd = !is_vtk && endsWith(filename, ".pcd");
+    is_ply = !(is_vtk || is_pcd) && endsWith(filename, ".ply");
 
     while (std::getline(meta, line))
     {

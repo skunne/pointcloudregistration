@@ -12,6 +12,7 @@ public:
   std::string filename;
   bool  is_pcd;
   bool  is_vtk;
+  bool  is_ply;
 
   // supervoxel clustering
   float voxel_resolution;

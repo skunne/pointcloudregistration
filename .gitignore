@@ -3,3 +3,5 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 register_pointclouds
+pointclouds/Armadillo.ply
+pointclouds/dragon_vrip_res2.ply
