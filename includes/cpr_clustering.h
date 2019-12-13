@@ -18,8 +18,8 @@ void renumberVertices(SupervoxelClusters *supervoxel_clusters,
 /*
 ** delete clusters of size < 4
 */
-int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters,
-                          SupervoxelAdjacency &supervoxel_adjacency);
+//int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters,
+//                          SupervoxelAdjacency &supervoxel_adjacency);
 
 /*
 ** build a graph from a point cloud

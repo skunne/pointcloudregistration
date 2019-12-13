@@ -22,13 +22,13 @@ void renumberVertices(SupervoxelClusters *supervoxel_clusters, SupervoxelAdjacen
     new_supervoxel_adjacency.insert(std::make_pair(newIndexFromOld[edge_itr->first], newIndexFromOld[edge_itr->second]));
   }
 
-    supervoxel_clusters->clear();
-    supervoxel_adjacency->clear();
-    *supervoxel_clusters = new_supervoxel_clusters;
-    *supervoxel_adjacency = new_supervoxel_adjacency;
+  supervoxel_clusters->clear();
+  supervoxel_adjacency->clear();
+  *supervoxel_clusters = new_supervoxel_clusters;
+  *supervoxel_adjacency = new_supervoxel_adjacency;
 }
 
-int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
+/*int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
   int nbDissolvedClusters = 0;
   int nbPointsTotal = 0;
@@ -56,7 +56,7 @@ int dissolveSmallClusters(SupervoxelClusters &supervoxel_clusters, SupervoxelAdj
   }
   pcl::console::print_info("    (Total number of points in the clusters: %d)\n", nbPointsTotal);
   return nbDissolvedClusters;
-}
+}*/
 
 void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT> &super, struct Params const *params, SupervoxelClusters &supervoxel_clusters, SupervoxelAdjacency &supervoxel_adjacency)
 {
