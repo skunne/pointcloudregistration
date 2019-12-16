@@ -1,9 +1,9 @@
 
-#include <cstdlib>    // std::atof
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <string>
+//#include <cstdlib>    // std::atof
+#include <algorithm>          // test for suffix of string (".ply", ".pcd", ".vtk")
+#include <fstream>            // opening and reading files
+#include <sstream>            // string concatenation
+#include <string>             // converting string to float
 #include "cpr_main.h"
 #include "cpr_loadfiles.h"    //errorLoadingFile()
 #include "cpr_params.h"
@@ -43,15 +43,15 @@ Params::Params(char const *metadata_filename) : error(0)
       std::string value;
       if (!(iss >> field >> value)) { error = 1; wrong_line = line; } // error
       else if (field == "voxel_resolution" || field == "v")
-        voxel_resolution = std::atof(value.c_str());
+        voxel_resolution = std::stof(value.c_str());
       else if (field == "seed_resolution" || field == "s")
-        seed_resolution = std::atof(value.c_str());
+        seed_resolution = std::stof(value.c_str());
       else if (field == "color_importance" || field == "c")
-        color_importance = std::atof(value.c_str());
+        color_importance = std::stof(value.c_str());
       else if (field == "spatial_importance" || field == "z")
-        spatial_importance = std::atof(value.c_str());
+        spatial_importance = std::stof(value.c_str());
       else if (field == "normal_importance" || field == "n")
-        normal_importance = std::atof(value.c_str());
+        normal_importance = std::stof(value.c_str());
       else if (field == "adjacency_filename")
         adjacency_filename = value.c_str();
       else
