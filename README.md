@@ -30,7 +30,7 @@ make
 
 ### Usage
 
-The executable expects two arguments. Each argument is the name of a metadata file. A metadata file contains the name of a pointcloud file in `.vtk` or `.pcd` format, along with parameters for the supervoxel clustering algorithm. Examples of metadata files can be found in the `metadata/` subfolder, and the corresponding point cloud files in the `pointclouds/` subfolder. For an overview of the parameters, please refer to http://pointclouds.org/documentation/tutorials/supervoxel_clustering.php and to the corresponding paper (2).
+The executable expects two arguments. Each argument is the name of a metadata file. A metadata file contains the name of a pointcloud file in `.vtk`, `.pcd` or `.ply` format, along with parameters for the supervoxel clustering algorithm. Examples of metadata files can be found in the `metadata/` subfolder, and the corresponding point cloud files in the `pointclouds/` subfolder. For an overview of the parameters, please refer to http://pointclouds.org/documentation/tutorials/supervoxel_clustering.php and to the corresponding paper (2).
 
 Example use:
 ~~~~
