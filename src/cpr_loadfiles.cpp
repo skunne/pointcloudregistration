@@ -1,5 +1,7 @@
 
-# include <pcl/io/ply_io.h>   // pcl::PLYReader
+#include <pcl/io/vtk_lib_io.h> //VTK include needed to input vtk cloud file
+#include <pcl/io/pcd_io.h>     // pcl::io::loadPCDFile
+#include <pcl/io/ply_io.h>     // pcl::PLYReader
 #include "cpr_main.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_loadfiles.h"
@@ -55,7 +57,7 @@ int loadVTKFile(char const *filename, PointCloudT::Ptr cloud)
     pcl::console::print_info ("Point cloud has %d points.\n", polydata->GetNumberOfPoints());
   }
   else
-    return errorLoadingFile("vtk cloud", filename);
+    return errorLoadingFile(".vtk cloud", filename);
   pcl::io::vtkPolyDataToPointCloud(polydata, *cloud);
 
   return (0);
@@ -65,7 +67,7 @@ int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
 {
   pcl::console::print_highlight ("Loading point cloud from .pcd file %s\n", filename);
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))
-    return errorLoadingFile("pcd cloud", filename);
+    return errorLoadingFile(".pcd cloud", filename);
 
   return (0);
 }
@@ -73,5 +75,9 @@ int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
 int loadPLYFile(char const *filename, PointCloudT::Ptr cloud)
 {
   pcl::PLYReader reader;
-  return reader.read(filename,*cloud);
+  pcl::console::print_highlight ("Loading point cloud from .ply file %s\n", filename);
+  if (reader.read(filename,*cloud))
+    return errorLoadingFile(".ply cloud", filename);
+
+  return (0);
 }

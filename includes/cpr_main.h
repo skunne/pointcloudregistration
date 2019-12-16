@@ -4,7 +4,6 @@
 #include <pcl/console/parse.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl/io/pcd_io.h>
 #include <pcl/segmentation/supervoxel_clustering.h>
 
 // compute ESF descriptors
@@ -14,8 +13,7 @@
 //VTK include needed for drawing graph lines
 #include <vtkPolyLine.h>
 
-//VTK include needed to input vtk cloud file
-#include <pcl/io/vtk_lib_io.h>
+
 #include <vtkGenericDataObjectReader.h>
 //#include <vtkStructuredGrid.h>
 #include <vtkSmartPointer.h>
