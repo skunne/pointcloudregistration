@@ -1,4 +1,4 @@
-filename metadata/Armadillo.ply
+filename pointclouds/Armadillo.ply
 voxel_resolution 3.0
 seed_resolution 15
 color_importance 0.2
