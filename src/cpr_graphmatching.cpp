@@ -85,3 +85,8 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
   dres /= (g_adj->rows() * h_adj->rows());
   return dres;
 }
+
+double GraphMatching::f(double lambda, Eigen::MatrixXd const *p) const
+{
+  return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
+}
