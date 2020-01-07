@@ -30,7 +30,7 @@ protected:
   double f_convex();
   double f_smooth();
   double f(double lambda, Eigen::MatrixXd const *p);
-  frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
+  void frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
 
 public:
   GraphMatching(Eigen::MatrixXd const *vsim, Eigen::MatrixXd const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);

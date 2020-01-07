@@ -11,7 +11,7 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-set(SRC src/cpr_main.cpp src/cpr_processedpointcloud.cpp src/cpr_clustering.cpp src/cpr_connectedcomponents.cpp src/cpr_features.cpp src/cpr_matrices.cpp src/cpr_visualisation.cpp src/cpr_params.cpp src/cpr_loadfiles.cpp)
+set(SRC src/cpr_main.cpp src/cpr_processedpointcloud.cpp src/cpr_clustering.cpp src/cpr_connectedcomponents.cpp src/cpr_features.cpp src/cpr_matrices.cpp src/cpr_graphmatching.cpp src/cpr_visualisation.cpp src/cpr_params.cpp src/cpr_loadfiles.cpp)
 
 include_directories("includes")
 
