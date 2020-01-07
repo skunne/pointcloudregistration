@@ -5,7 +5,7 @@
 #include "cpr_main.h"
 
 /*
-** loadfiles.cpp
+** cpr_loadfiles.cpp
 */
 int cpr_loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud);
 //int cpr_loafFile(Params const &params, PointCloudT::Ptr cloud);
