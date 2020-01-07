@@ -1,3 +1,4 @@
+#include <stdexcept>    // std::out_of_range
 #include "cpr_graphmatching.h"
 
 GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
@@ -64,16 +65,22 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
       mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
       ++mapped_vertex_2)
       ;
-    if (mapped_vertex_1 == p->cols() || mapped_vertex_2 == p->cols())
+    if (mapped_vertex_1 < p->cols() && mapped_vertex_2 < p->cols()) // if both vertices map to vertices
     {
-
+      try
+      {
+        unsigned int eh = esim->destEdgeIndex.at(std::make_pair(mapped_vertex_1, mapped_vertex_2));
+        dres -= esim->m(eg, eh);
+      }
+      catch (const std::out_of_range &oor)  // if edge not mapped to an edge
+      {
+        dres -= 1.0; // this is the worst possible penalty, since esim is normalized
+      }
     }
-    else
+    else  // if one of vertices not mapped to a vertex
     {
-      unsigned int eh = esim->destEdgeIndex.at(std::make_pair(mapped_vertex_1, mapped_vertex_2));
-      dres -= esim->m(eg, eh);
+      dres -= 1.0;  // this is the worst possible penalty, since esim is normalized
     }
-
   }
   dres /= (g_adj->rows() * h_adj->rows());
   return dres;
