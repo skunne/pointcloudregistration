@@ -65,8 +65,8 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
       mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
       ++mapped_vertex_2)
       ;
-    if (mapped_vertex_1 < p->cols() && mapped_vertex_2 < p->cols()) // if both vertices map to vertices
-    {
+    //if (mapped_vertex_1 < p->cols() && mapped_vertex_2 < p->cols()) // if both vertices map to vertices
+    //{
       try
       {
         unsigned int eh = esim->destEdgeIndex.at(std::make_pair(mapped_vertex_1, mapped_vertex_2));
@@ -76,11 +76,11 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
       {
         dres -= 1.0; // this is the worst possible penalty, since esim is normalized
       }
-    }
-    else  // if one of vertices not mapped to a vertex
-    {
-      dres -= 1.0;  // this is the worst possible penalty, since esim is normalized
-    }
+    //}
+    //else  // if one of vertices not mapped to a vertex
+    //{
+    //  dres -= 1.0;  // this is the worst possible penalty, since esim is normalized
+    //}
   }
   dres /= (g_adj->rows() * h_adj->rows());
   return dres;
