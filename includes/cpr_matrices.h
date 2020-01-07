@@ -17,6 +17,11 @@ public:
 class EdgeSimilarityMatrix
 {
 public:
+  // correspondance <vertex, vertex> -> edge index in matrix
+  std::map<std::pair<KeyT, KeyT>, unsigned int> sourceEdgeIndex;
+  std::map<std::pair<KeyT, KeyT>, unsigned int> destEdgeIndex;
+
+  // matrix
   Eigen::MatrixXd m;
 
 public:

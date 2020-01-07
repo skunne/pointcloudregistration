@@ -47,15 +47,20 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
   : m(source.size(), dest.size())
 {
   pcl::console::print_highlight("About to build edge similarity matrix.\n");
+  //sourceEdgeIndex.reserve(source.size());  //std::map::reserve() does not exist
+  //destEdgeIndex.reserve(dest.size());
   unsigned int i = 0;
   for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
   {
+    sourceEdgeIndex[s_itr->first] = i;
     unsigned int j = 0;
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
     {
+      destEdgeIndex[d_itr->first] = j;
       // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
       // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
+
       ++j;
     }
     ++i;
