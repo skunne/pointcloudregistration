@@ -43,17 +43,13 @@ void GraphMatching::run()
 
 double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
 {
-  // dres = - \sum_(vertex i in G) \sum_(neighbour j of i in G) | ||pi-pj|| - ||p(i')-p(j')|| | / (nG * nH)
-  // where p(i) = point i, p(i') = point matched to i, nG,nH = number of nodes in G and H
-  // ||p(i) - p(j)|| = distance in 3d space or in feature space??
-  // dres = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
-
-  double dres = 0;
+  // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
+  double res = 0;
 
   unsigned int eg = 0;
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
-    // assert eg == esim.sourceEdgeIndex.at(edge_g_itr->first)
+    // assert eg == esim.sourceEdgeIndex.at(edge_g_itr->second)
     unsigned int mapped_vertex_1, mapped_vertex_2;
     for (
       mapped_vertex_1 = 0;
@@ -65,25 +61,14 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
       mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
       ++mapped_vertex_2)
       ;
-    //if (mapped_vertex_1 < p->cols() && mapped_vertex_2 < p->cols()) // if both vertices map to vertices
-    //{
-      try
-      {
-        unsigned int eh = esim->destEdgeIndex.at(std::make_pair(mapped_vertex_1, mapped_vertex_2));
-        dres -= esim->m(eg, eh);
-      }
-      catch (const std::out_of_range &oor)  // if edge not mapped to an edge
-      {
-        dres -= 1.0; // this is the worst possible penalty, since esim is normalized
-      }
-    //}
-    //else  // if one of vertices not mapped to a vertex
-    //{
-    //  dres -= 1.0;  // this is the worst possible penalty, since esim is normalized
-    //}
+    auto edge_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
+    if (edge_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
+      res -= esim->m(eg, edge_h_itr->second);
+    else          // if edge in G not mapped to an edge in H
+      res -= 1.0; // this is the worst possible penalty, since esim->m is normalized
   }
-  dres /= (g_adj->rows() * h_adj->rows());
-  return dres;
+  res /= (g_adj->rows() * h_adj->rows());
+  return res;
 }
 
 double GraphMatching::f(double lambda, Eigen::MatrixXd const *p) const
