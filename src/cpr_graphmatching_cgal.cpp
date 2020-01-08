@@ -1,5 +1,9 @@
 #include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
 //#include <stdexcept>    // std::out_of_range
+
+#include <CGAL/QP_models.h>     // quadratic programming
+#include <CGAL/QP_functions.h>
+
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_cgal.h"
 

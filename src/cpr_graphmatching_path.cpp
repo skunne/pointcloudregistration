@@ -1,5 +1,9 @@
 #include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
 //#include <stdexcept>    // std::out_of_range
+
+#include <CGAL/QP_models.h>     // quadratic programming
+#include <CGAL/QP_functions.h>
+
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
 
@@ -73,4 +77,9 @@ double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
 double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
 {
   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
+}
+
+void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start)
+{
+
 }
