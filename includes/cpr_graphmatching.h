@@ -40,7 +40,7 @@ protected:
 public:
   GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   void run();
-  unsigned int mappedVertex(unsigned int) const;
+  //unsigned int mappedVertex(unsigned int) const;
 };
 
 #endif /* __DEF_GRAPHMATCHING_H__ */

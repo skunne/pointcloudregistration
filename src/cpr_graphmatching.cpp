@@ -1,10 +1,13 @@
-#include <stdexcept>    // std::out_of_range
+#include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
+//#include <stdexcept>    // std::out_of_range
 #include "cpr_graphmatching.h"
 
 GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
   : vsim(vsim), esim(esim), g_adj(g_adj), h_adj(h_adj), matching(g_adj->rows(), h_adj->rows())
 {
   // assert g_adj and h_adj are square matrices
+  assert(g_adj->rows() == g_adj->cols());
+  assert(h_adj->rows() == h_adj->cols());
 }
 
 void GraphMatching::run()
@@ -19,7 +22,7 @@ void GraphMatching::run()
   lambda = 0;
   frankWolfe(lambda, &p, &p);
 
-  double dlambda = 0.01;  // this is completely false, please change this
+  double dlambda = 0.01;   // this is completely false, please change this
   double epsilon = 0.1;    // this is completely false, please change this
 
   // Cycle over lambda
@@ -38,18 +41,16 @@ void GraphMatching::run()
   }
 
   // Output
-  // copy p into matching? but make sure this is p(1)?
+  // copy p into matching?
 }
 
 double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
 {
-  // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
-  double res = 0;
-
-  unsigned int eg = 0;
+  double res = 0;       // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
+  unsigned int eg = 0;  // index of edge in G
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
-    // assert eg == esim.sourceEdgeIndex.at(edge_g_itr->second)
+    assert(eg == esim->sourceEdgeIndex.at(edge_g_itr->first));
     unsigned int mapped_vertex_1, mapped_vertex_2;
     for (
       mapped_vertex_1 = 0;
@@ -61,9 +62,9 @@ double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
       mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
       ++mapped_vertex_2)
       ;
-    auto edge_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
-    if (edge_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
-      res -= esim->m(eg, edge_h_itr->second);
+    auto edgeToIndex_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
+    if (edgeToIndex_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
+      res -= esim->m(eg, edgeToIndex_h_itr->second);
     else          // if edge in G not mapped to an edge in H
       res -= 1.0; // this is the worst possible penalty, since esim->m is normalized
   }
