@@ -15,7 +15,7 @@ A graph matching algorithm inspired by Zaslavskiy and Huang
 */
 class GraphMatching
 {
-private:
+protected:
   Eigen::MatrixXd const *vsim;    // vertex similarity matrix
   EdgeSimilarityMatrix const *esim; // edge similarity matrix
 
@@ -31,15 +31,15 @@ public:
   // include matching as an std::map as well as a permutation matrix?
 
 protected:
-  double f_concav() const;
-  double f_convex() const;
-  double f_smooth(Eigen::MatrixXd const *p) const;
-  double f(double lambda, Eigen::MatrixXd const *p) const;
-  void frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
+  //double f_concav() const;
+  //double f_convex() const;
+  //double f_smooth(Eigen::MatrixXd const *p) const;
+  //double f(double lambda, Eigen::MatrixXd const *p) const;
+  //void frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
 
 public:
   GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
-  void run();
+  virtual void run();
   //unsigned int mappedVertex(unsigned int) const;
 };
 

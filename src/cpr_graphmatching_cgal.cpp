@@ -1,16 +1,14 @@
 #include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
 //#include <stdexcept>    // std::out_of_range
 #include "cpr_graphmatching.h"
+#include "cpr_graphmatching_cgal.h"
 
-GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
-  : vsim(vsim), esim(esim), g_adj(g_adj), h_adj(h_adj), matching(g_adj->rows(), h_adj->rows())
+GraphMatchingCgal::GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
+: GraphMatching(vsim, esim, g_adj, h_adj)
 {
-  // assert g_adj and h_adj are square matrices
-  assert(g_adj->rows() == g_adj->cols());
-  assert(h_adj->rows() == h_adj->cols());
 }
 
-// void GraphMatching::run()
+// void GraphMatchingCgal::run()
 // {
 //
 //   // Initialisation
@@ -44,7 +42,7 @@ GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix c
 //   // copy p into matching?
 // }
 
-// double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
+// double GraphMatchingCgal::f_smooth(Eigen::MatrixXd const *p) const
 // {
 //   double res = 0;       // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
 //   unsigned int eg = 0;  // index of edge in G
@@ -72,7 +70,7 @@ GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix c
 //   return res;
 // }
 //
-// double GraphMatching::f(double lambda, Eigen::MatrixXd const *p) const
+// double GraphMatchingCgal::f(double lambda, Eigen::MatrixXd const *p) const
 // {
 //   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 // }
