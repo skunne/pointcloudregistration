@@ -37,6 +37,8 @@ public:
   GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   virtual void run();
   void fillMpsStream(std::stringstream &in) const;
+  void fillQuadraticObjective(std::vector<int *> &D);       // objective, rowwise, on/below diagonal only, multiplied by a factor 2
+  void fillStochasticityConstraints(std::vector<int *> &A); // make constraints, columnwise
   //unsigned int mappedVertex(unsigned int) const;
 };
 
