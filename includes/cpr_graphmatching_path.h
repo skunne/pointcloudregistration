@@ -2,6 +2,7 @@
 #ifndef __DEF_GRAPHMATCHINGPATH_H__
 # define __DEF_GRAPHMATCHINGPATH_H__
 
+#include <sstream>
 #include "cpr_main.h"
 #include "cpr_matrices.h"
 #include "cpr_graphmatching.h"
@@ -37,7 +38,7 @@ protected:
   double f_smooth(Eigen::MatrixXd const *p) const;
   double f(double lambda, Eigen::MatrixXd const *p) const;
   void frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
-
+  void fillMpsStream(std::stringstream &in) const;
 public:
   GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   virtual void run();
