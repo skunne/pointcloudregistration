@@ -10,6 +10,10 @@ GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix c
   assert(h_adj->rows() == h_adj->cols());
 }
 
+void GraphMatching::run(void)
+{
+  
+}
 // void GraphMatching::run()
 // {
 //
