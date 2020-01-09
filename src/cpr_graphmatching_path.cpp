@@ -146,10 +146,8 @@ void GraphMatchingPath::fillMpsStream(std::stringstream &in) const
             auto eg = esim->sourceEdgeIndex.find(std::make_pair(ig, jg));
             auto eh = esim->destEdgeIndex.find(std::make_pair(ih, jh));
             double edge_sim;
-            if (eg == esim->sourceEdgeIndex.end() && eh == esim->destEdgeIndex.end())
-              edge_sim = 1.0;   // make sure I did not accidentally swap 0 and 1
-            else if (eh == esim->destEdgeIndex.end() || eg == esim->sourceEdgeIndex.end())
-              edge_sim = 0;     // make sure I did not accidentally swap 0 and 1
+            if (eh == esim->destEdgeIndex.end() || eg == esim->sourceEdgeIndex.end())
+              edge_sim = 0;     // ig,jg or ih,jh is not an edge 
             else
             {
               edge_sim = esim->m(eg->second, eh->second);
