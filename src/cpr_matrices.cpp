@@ -31,7 +31,7 @@ void normalizeMatrixTo01(Eigen::MatrixXd &mat)
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
   : m(source.size(), dest.size())
 {
-  pcl::console::print_highlight("About to build vertex similarity matrix.\n");
+  pcl::console::print_highlight("Building vertex similarity matrix.\n");
   for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
   {
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
@@ -40,13 +40,13 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
     }
   }
   normalizeMatrixTo01(m);
-  pcl::console::print_info("    Successfully built vertex similarity matrix.\n");
+  pcl::console::print_info("    Successfully built %lu,%lu vertex similarity matrix.\n", source.size(), dest.size());
 }
 
 EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest)
   : m(source.size(), dest.size())
 {
-  pcl::console::print_highlight("About to build edge similarity matrix.\n");
+  pcl::console::print_highlight("Building edge similarity matrix.\n");
   //sourceEdgeIndex.reserve(source.size());  //std::map::reserve() does not exist
   //destEdgeIndex.reserve(dest.size());
   unsigned int i = 0;
@@ -66,7 +66,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
     ++i;
   }
   normalizeMatrixTo01(m);
-  pcl::console::print_info("    Successfully built edge similarity matrix.\n");
+  pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
 }
 
 void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)

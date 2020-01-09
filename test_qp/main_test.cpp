@@ -56,10 +56,10 @@ main (int argc, char ** argv)
   // pcl::visualization::PCLVisualizer::Ptr viewer =
   //visualisation(ppc_source, ppc_dest);
 
-  pcl::visualization::PCLVisualizer::Ptr viewer_source =
-    ppc_source.visualise();
-  pcl::visualization::PCLVisualizer::Ptr viewer_dest =
-    ppc_dest.visualise();
+  // pcl::visualization::PCLVisualizer::Ptr viewer_source =
+  //   ppc_source.visualise();
+  // pcl::visualization::PCLVisualizer::Ptr viewer_dest =
+  //   ppc_dest.visualise();
 
   /*
   std::vector<KeyT> graph_matching;
@@ -80,10 +80,10 @@ main (int argc, char ** argv)
   //ppc_dest.addSomeColours(viewer_dest, pointsToColour_dest);
   */
 
-  while (!viewer_source->wasStopped())
-    viewer_source->spinOnce(100);
-  while (!viewer_dest->wasStopped())
-    viewer_dest->spinOnce(100);
+  // while (!viewer_source->wasStopped())
+  //   viewer_source->spinOnce(100);
+  // while (!viewer_dest->wasStopped())
+  //   viewer_dest->spinOnce(100);
 
   // while (!(viewer->wasStopped() && viewer_source->wasStopped() && viewer_dest->wasStopped()))
   // while (!(viewer_source->wasStopped() && viewer_dest->wasStopped()))
