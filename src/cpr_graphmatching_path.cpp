@@ -3,14 +3,8 @@
 
 #include <CGAL/QP_models.h>     // quadratic programming
 #include <CGAL/QP_functions.h>
-// choose exact integral type
-// #ifdef CGAL_USE_GMP
-//   #include <CGAL/Gmpz.h>
-//   typedef CGAL::Gmpz ET;
-// #else
-  #include <CGAL/MP_Float.h>
-  typedef CGAL::MP_Float ET;
-// #endif
+#include <CGAL/MP_Float.h>
+typedef CGAL::MP_Float ET;
 
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
@@ -20,43 +14,39 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
 {
 }
 
-void GraphMatchingPath::run(void)
+void GraphMatchingPath::run()
 {
-  frankWolfe(0.0, NULL, NULL);
+
+  // Initialisation
+  double lambda;
+  double lambda_new;
+  Eigen::MatrixXd p(g_adj->rows(), h_adj->cols());
+  Eigen::MatrixXd p_new(g_adj->rows(), h_adj->cols());
+
+  lambda = 0;
+  frankWolfe(lambda, &p, &p);
+
+  double dlambda = 0.01;   // this is completely false, please change this
+  double epsilon = 0.1;    // this is completely false, please change this
+
+  // Cycle over lambda
+  while (lambda < 1.0)
+  {
+    lambda_new = lambda + dlambda;
+    if (abs(f(lambda_new, &p) - f(lambda, &p)) < epsilon)
+    {
+      lambda = lambda_new;
+    }
+    else
+    {
+      frankWolfe(lambda, &p_new, &p);   // maybe remove p argument and do memcpy(p_new, p) before call to frankWolfe()
+      lambda = lambda_new;
+    }
+  }
+
+  // Output
+  // copy p into matching?
 }
-// void GraphMatchingPath::run()
-// {
-//
-//   // Initialisation
-//   double lambda;
-//   double lambda_new;
-//   Eigen::MatrixXd p(g_adj->rows(), h_adj->cols());
-//   Eigen::MatrixXd p_new(g_adj->rows(), h_adj->cols());
-//
-//   lambda = 0;
-//   frankWolfe(lambda, &p, &p);
-//
-//   double dlambda = 0.01;   // this is completely false, please change this
-//   double epsilon = 0.1;    // this is completely false, please change this
-//
-//   // Cycle over lambda
-//   while (lambda < 1.0)
-//   {
-//     lambda_new = lambda + dlambda;
-//     if (abs(f(lambda_new, &p) - f(lambda, &p)) < epsilon)
-//     {
-//       lambda = lambda_new;
-//     }
-//     else
-//     {
-//       frankWolfe(lambda, &p_new, &p);   // maybe remove p argument and do memcpy(p_new, p) before call to frankWolfe()
-//       lambda = lambda_new;
-//     }
-//   }
-//
-//   // Output
-//   // copy p into matching?
-// }
 
 double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
 {
@@ -147,7 +137,7 @@ void GraphMatchingPath::fillMpsStream(std::stringstream &in) const
             auto eh = esim->destEdgeIndex.find(std::make_pair(ih, jh));
             double edge_sim;
             if (eh == esim->destEdgeIndex.end() || eg == esim->sourceEdgeIndex.end())
-              edge_sim = 0;     // ig,jg or ih,jh is not an edge 
+              edge_sim = 0;     // ig,jg or ih,jh is not an edge
             else
             {
               edge_sim = esim->m(eg->second, eh->second);

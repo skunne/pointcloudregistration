@@ -36,6 +36,7 @@ protected:
 public:
   GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   virtual void run();
+  void fillMpsStream(std::stringstream &in) const;
   //unsigned int mappedVertex(unsigned int) const;
 };
 
