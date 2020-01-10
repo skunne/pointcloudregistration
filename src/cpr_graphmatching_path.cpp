@@ -16,7 +16,6 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
 
 void GraphMatchingPath::run()
 {
-
   // Initialisation
   double lambda;
   double lambda_new;
@@ -26,8 +25,8 @@ void GraphMatchingPath::run()
   lambda = 0;
   frankWolfe(lambda, &p, &p);
 
-  double dlambda = 0.01;   // this is completely false, please change this
-  double epsilon = 0.1;    // this is completely false, please change this
+  double dlambda = 0.1;  // TODO find correct value
+  double epsilon = 0.1;  // TODO find correct value
 
   // Cycle over lambda
   while (lambda < 1.0)
@@ -43,7 +42,6 @@ void GraphMatchingPath::run()
       lambda = lambda_new;
     }
   }
-
   // Output
   // copy p into matching?
 }

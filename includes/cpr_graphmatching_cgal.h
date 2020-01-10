@@ -32,13 +32,26 @@ public:
   // include matching as an std::map as well as a permutation matrix?
 
 protected:
+  int **A;    // stochasticity constraints, columnwise
+  std::size_t nbconstraints;
+  double **D; // objective, rowwise, on/below diagonal only, multiplied by a factor 2
+  std::size_t nbvar;
+  CGAL::Const_oneset_iterator<CGAL::Comparison_result> r; // constraints are "=="
+  CGAL::Const_oneset_iterator<int> b;   // rhs of constraints is 1
+  CGAL::Const_oneset_iterator<bool> fl; // all variables lowerbounded by 0
+  CGAL::Const_oneset_iterator<int> l;   // all variables lowerbounded by 0
+  CGAL::Const_oneset_iterator<bool> fu; // all variables upperbounded by 1 (redundant with sum = 1)
+  CGAL::Const_oneset_iterator<int> u;   // all variables upperbounded by 1 (redundant with sum = 1)
+  CGAL::Const_oneset_iterator<int> c;   // no linear term in objective
+  int c0;                               // no constant term in objective
 
 public:
   GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
-  virtual void run();
+  void build(void);
+  virtual void run(void);
   void fillMpsStream(std::stringstream &in) const;
-  void fillQuadraticObjective(std::vector<double *> &D);    // objective, rowwise, on/below diagonal only, multiplied by a factor 2
-  void fillStochasticityConstraints(std::vector<int *> &A); // make constraints, columnwise
+  void fillQuadraticObjective(void);       // objective, rowwise, on/below diagonal only, multiplied by a factor 2
+  void fillStochasticityConstraints(void); // make constraints, columnwise
   //unsigned int mappedVertex(unsigned int) const;
 };
 

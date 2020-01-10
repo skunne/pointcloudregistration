@@ -93,6 +93,7 @@ main (int argc, char ** argv)
 
   GraphMatchingCgal gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
+  gm.build();
   gm.run();
 
   // TODO find geometric transform corresponding to the matching

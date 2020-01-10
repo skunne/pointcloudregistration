@@ -22,51 +22,59 @@ CGALProgram;
 #include "cpr_graphmatching_cgal.h"
 
 GraphMatchingCgal::GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
-: GraphMatching(vsim, esim, g_adj, h_adj)
+: GraphMatching(vsim, esim, g_adj, h_adj),
+  nbconstraints(h_adj->rows() + g_adj->rows()), nbvar(h_adj->rows() * g_adj->rows()),
+  r(CGAL::EQUAL), b(1),
+  fl(true), l(0), fu(true), u(1),
+  c(0), c0(0)
 {
 }
 
-void GraphMatchingCgal::run()
+void GraphMatchingCgal::build(void)
 {
   pcl::console::print_highlight("Writing quadrating program.\n");
-  std::vector<int *> A;   // constraints, columnwise
-  std::vector<double *> D;   // objective, rowwise, on/below diagonal only, multiplied by a factor 2
-  fillStochasticityConstraints(A);
-  fillQuadraticObjective(D);
-  CGAL::Const_oneset_iterator<CGAL::Comparison_result>
-        r(    CGAL::EQUAL);                   // constraints are "=="
-  CGAL::Const_oneset_iterator<int> b(1);      // constraints are "== 1"
-  CGAL::Const_oneset_iterator<bool> fl(true); // all variables lowerbounded by 0
-  CGAL::Const_oneset_iterator<int> l(0);      // all variables lowerbounded by 0
-  CGAL::Const_oneset_iterator<bool> fu(true); // all variables upperbounded by 1 (redundant with sum = 1)
-  CGAL::Const_oneset_iterator<int> u(1);      // all variables upperbounded by 1 (redundant with sum = 1)
-  CGAL::Const_oneset_iterator<int> c(0);      // no linear term in objective
-  int c0 = 0;                                 // no constant term in objective
-  // now construct the quadratic program; the first two parameters are
-  // the number of variables and the number of constraints (rows of A)
+  std::vector<int *> vector_A;   // constraints, columnwise
+  std::vector<double *> vector_D;   // objective, rowwise, on/below diagonal only, multiplied by a factor 2
+  fillStochasticityConstraints();
+  fillQuadraticObjective();
+  // CGAL::Const_oneset_iterator<CGAL::Comparison_result>
+  //       r(    CGAL::EQUAL);                   // constraints are "=="
+  // CGAL::Const_oneset_iterator<int> b(1);      // constraints are "== 1"
+  // CGAL::Const_oneset_iterator<bool> fl(true); // all variables lowerbounded by 0
+  // CGAL::Const_oneset_iterator<int> l(0);      // all variables lowerbounded by 0
+  // CGAL::Const_oneset_iterator<bool> fu(true); // all variables upperbounded by 1 (redundant with sum = 1)
+  // CGAL::Const_oneset_iterator<int> u(1);      // all variables upperbounded by 1 (redundant with sum = 1)
+  // CGAL::Const_oneset_iterator<int> c(0);      // no linear term in objective
+  // int c0 = 0;                                 // no constant term in objective
+}
 
-    pcl::console::print_info("    Building quadratic program object.\n");
-  CGALProgram qp (D.size(), A.size(), &A[0], b, r, fl, l, fu, u, &D[0], c, c0);
+void GraphMatchingCgal::run(void)
+{
+  // construct the quadratic program; the first two parameters are
+  // the number of variables and the number of constraints (rows of A)
+  pcl::console::print_info("    Building quadratic program object.\n");
+  CGALProgram qp (nbvar, nbconstraints, &A[0], b, r, fl, l, fu, u, &D[0], c, c0);
   // solve the program, using ET as the exact type
-    pcl::console::print_info("    Solving quadratic program.\n");
+  pcl::console::print_info("    Solving quadratic program.\n");
   CGAL::Quadratic_program_solution<ET> s = CGAL::solve_quadratic_program(qp, ET());
   // output solution
   std::cout << s;
 }
 
 // make constraints, columnwise
-void GraphMatchingCgal::fillStochasticityConstraints(std::vector<int *> &A)
+void GraphMatchingCgal::fillStochasticityConstraints(void)
 {
   pcl::console::print_info("    Writing constraints: solution matrix is stochastic.\n");
   unsigned int nh = h_adj->rows();
   unsigned int ng = g_adj->rows();
-  unsigned int nbvar = nh * g_adj->rows();
-  unsigned int nbconstraints = nh + ng;
+  //unsigned int nbvar = nh * ng;
+  //unsigned int nbconstraints = nh + ng;
+  A = (int **) malloc(nbvar * sizeof(*A));
   for (unsigned int var = 0; var < nbvar; ++var)
   {
     int *column = (int *) malloc(nbconstraints * sizeof(*column));
     memset (column, 0, nbconstraints * sizeof(*column));
-    A.push_back(column);
+    A[var] = column;
   }
   for (unsigned int i = 0; i < ng; ++i)
     for (unsigned int j = 0; j < nh; ++j)
@@ -79,16 +87,17 @@ void GraphMatchingCgal::fillStochasticityConstraints(std::vector<int *> &A)
 // objective, rowwise, on/below diagonal only, multiplied by a factor 2
 // D[nh*ig+ih][nh*jg+jh] = edge similarity ( (ig,jg), (ih,jh) )    below diagonal
 // D[nh*ig+ih][nh*ig+ih] = vertex similarity ( ig, ih )            on diagonal
-void GraphMatchingCgal::fillQuadraticObjective(std::vector<double *> &D)
+void GraphMatchingCgal::fillQuadraticObjective(void)
 {
   pcl::console::print_info("    Writing objective function coefficient matrix.\n");
   unsigned int nh = h_adj->rows();
   unsigned int ng = g_adj->rows();
-  for (unsigned int lin = 0; lin < ng * nh; ++lin)
+  D = (double **) malloc(nbvar * sizeof(*D));
+  for (unsigned int rowindex = 0; rowindex < nbvar; ++rowindex)
   {
-    double *row = (double *) malloc((lin + 1) * sizeof(*row));
-    memset(row, 0, (lin+1) * sizeof(*row));
-    D.push_back(row);
+    double *row = (double *) malloc((rowindex + 1) * sizeof(*row));
+    memset(row, 0, (rowindex+1) * sizeof(*row));
+    D[rowindex] = row;
   }
   for (unsigned int ig = 0; ig < ng; ++ig)
   {
