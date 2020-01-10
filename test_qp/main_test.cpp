@@ -3,7 +3,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_cgal.h"
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -91,7 +91,7 @@ main (int argc, char ** argv)
 
   // TODO match graphs
 
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+  GraphMatchingCgal gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   gm.run();
 

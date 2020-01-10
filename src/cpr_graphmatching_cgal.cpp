@@ -14,7 +14,7 @@ typedef CGAL::Quadratic_program_from_iterators
  CGAL::Const_oneset_iterator<int>,                     // l  lower bounds (0)
  CGAL::Const_oneset_iterator<bool>,                    // fu variables are upperbounded
  CGAL::Const_oneset_iterator<int>,                     // u  upper bounds (1)
- int **,                                    // D  objective matrix (quadratic form)
+ double **,                                    // D  objective matrix (quadratic form)
  CGAL::Const_oneset_iterator<int>>                     // c  linear term in objective (0)
 CGALProgram;
 
@@ -28,8 +28,9 @@ GraphMatchingCgal::GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarity
 
 void GraphMatchingCgal::run()
 {
+  pcl::console::print_highlight("Writing quadrating program.\n");
   std::vector<int *> A;   // constraints, columnwise
-  std::vector<int *> D;   // objective, rowwise, on/below diagonal only, multiplied by a factor 2
+  std::vector<double *> D;   // objective, rowwise, on/below diagonal only, multiplied by a factor 2
   fillStochasticityConstraints(A);
   fillQuadraticObjective(D);
   CGAL::Const_oneset_iterator<CGAL::Comparison_result>
@@ -43,8 +44,11 @@ void GraphMatchingCgal::run()
   int c0 = 0;                                 // no constant term in objective
   // now construct the quadratic program; the first two parameters are
   // the number of variables and the number of constraints (rows of A)
+
+    pcl::console::print_info("    Building quadratic program object.\n");
   CGALProgram qp (D.size(), A.size(), &A[0], b, r, fl, l, fu, u, &D[0], c, c0);
   // solve the program, using ET as the exact type
+    pcl::console::print_info("    Solving quadratic program.\n");
   CGAL::Quadratic_program_solution<ET> s = CGAL::solve_quadratic_program(qp, ET());
   // output solution
   std::cout << s;
@@ -53,6 +57,7 @@ void GraphMatchingCgal::run()
 // make constraints, columnwise
 void GraphMatchingCgal::fillStochasticityConstraints(std::vector<int *> &A)
 {
+  pcl::console::print_info("    Writing constraints: solution matrix is stochastic.\n");
   unsigned int nh = h_adj->rows();
   unsigned int ng = g_adj->rows();
   unsigned int nbvar = nh * g_adj->rows();
@@ -72,13 +77,16 @@ void GraphMatchingCgal::fillStochasticityConstraints(std::vector<int *> &A)
 }
 
 // objective, rowwise, on/below diagonal only, multiplied by a factor 2
-void GraphMatchingCgal::fillQuadraticObjective(std::vector<int *> &D)
+// D[nh*ig+ih][nh*jg+jh] = edge similarity ( (ig,jg), (ih,jh) )    below diagonal
+// D[nh*ig+ih][nh*ig+ih] = vertex similarity ( ig, ih )            on diagonal
+void GraphMatchingCgal::fillQuadraticObjective(std::vector<double *> &D)
 {
+  pcl::console::print_info("    Writing objective function coefficient matrix.\n");
   unsigned int nh = h_adj->rows();
   unsigned int ng = g_adj->rows();
   for (unsigned int lin = 0; lin < ng * nh; ++lin)
   {
-    int * row = (int *) malloc((lin + 1) * sizeof(*row));
+    double *row = (double *) malloc((lin + 1) * sizeof(*row));
     memset(row, 0, (lin+1) * sizeof(*row));
     D.push_back(row);
   }
