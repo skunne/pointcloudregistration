@@ -1,10 +1,12 @@
-#include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
+//#include <cassert>        // assert(eg == esim.sourceEdgeIndex.at(edge_g_itr->first));
 //#include <stdexcept>    // std::out_of_range
 
-#include <CGAL/QP_models.h>     // quadratic programming
+#include <cstring>    // memset
+
+#include <CGAL/QP_models.h>    // quadratic programming
 #include <CGAL/QP_functions.h>
 #include <CGAL/MP_Float.h>
-typedef CGAL::MP_Float ET;
+typedef CGAL::MP_Float ET;     // type of variables in quadratic program
 
 typedef CGAL::Quadratic_program_from_iterators
   <
@@ -60,6 +62,7 @@ void GraphMatchingCgal::run(void)
   pcl::console::print_info("    Solving quadratic program.\n");
   CGAL::Quadratic_program_solution<ET> s = CGAL::solve_quadratic_program(qp, ET());
   // output solution
+  pcl::console::print_info("        ...solved.\n");
   std::cout << s;
 }
 
@@ -75,7 +78,7 @@ void GraphMatchingCgal::fillStochasticityConstraints(void)
   for (unsigned int var = 0; var < nbvar; ++var)
   {
     int *column = (int *) malloc(nbconstraints * sizeof(*column));
-    memset (column, 0, nbconstraints * sizeof(*column));
+    memset(column, 0, nbconstraints * sizeof(*column));
     A[var] = column;
   }
   for (unsigned int i = 0; i < ng; ++i)
