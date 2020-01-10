@@ -30,6 +30,7 @@ private:
 
 protected:
   double *z;   // vector solution of quadratric problem PII in frank-wolfe, z = [x u y v]
+  double *w;   // helper vector for frank-wolfe PII
 
 protected:
   double f_concav() const;

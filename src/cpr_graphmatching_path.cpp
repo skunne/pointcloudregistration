@@ -19,6 +19,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   std::size_t y_len = ng + nh;    // nb constraints
   std::size_t v_len = x_len;
   z = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*z));
+  w = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*w));
 }
 
 void GraphMatchingPath::run()
@@ -90,5 +91,20 @@ double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
 
 void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_0)
 {
+  // Phase I
+  //   find U,Y,V such that
+  //   Z = [X U Y V] is solution of PII
+  //     if no solution: ??
+  //   W = Z
 
+  // Phase II
+  //   loop:
+  //     apply simplex method to maximize (- W~ * Z)
+  //       stop simplex when one of the two conditions is true:
+  //         if Z~ * Z == 0:
+  //           halt and return solution Z
+  //         if W~ * Z <= 1/2 W~ W:
+  //           mu = W~ * (W - Z)
+  //           mu = min(mu, 1)
+  //           W = W + mu (Z - W)
 }
