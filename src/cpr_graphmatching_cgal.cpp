@@ -7,15 +7,15 @@
 typedef CGAL::MP_Float ET;
 
 typedef CGAL::Quadratic_program_from_iterators
-<int**,                                                // for A
- int*,                                                 // for b
- CGAL::Const_oneset_iterator<CGAL::Comparison_result>, // for r
- bool*,                                                // for fl
- int*,                                                 // for l
- bool*,                                                // for fu
- int*,                                                 // for u
- int**,                                                // for D
- int*>                                                 // for c
+<int **,                                    // A  constraint matrix
+ CGAL::Const_oneset_iterator<int>,                     // b  constraint rhs (1)
+ CGAL::Const_oneset_iterator<CGAL::Comparison_result>, // r  constraint relations (=)
+ CGAL::Const_oneset_iterator<bool>,                    // fl variables are lowerbounded
+ CGAL::Const_oneset_iterator<int>,                     // l  lower bounds (0)
+ CGAL::Const_oneset_iterator<bool>,                    // fu variables are upperbounded
+ CGAL::Const_oneset_iterator<int>,                     // u  upper bounds (1)
+ int **,                                    // D  objective matrix (quadratic form)
+ CGAL::Const_oneset_iterator<int>>                     // c  linear term in objective (0)
 CGALProgram;
 
 #include "cpr_graphmatching.h"
@@ -35,15 +35,15 @@ void GraphMatchingCgal::run()
   CGAL::Const_oneset_iterator<CGAL::Comparison_result>
         r(    CGAL::EQUAL);                   // constraints are "=="
   CGAL::Const_oneset_iterator<int> b(1);      // constraints are "== 1"
-  CGAL::Const_oneset_iterator<bool> fl(true);     // all variables lowerbounded by 0
-  CGAL::Const_oneset_iterator<int> l(0);          // all variables lowerbounded by 0
-  CGAL::Const_oneset_iterator<bool> fu(true);     // all variables upperbounded by 1 (redundant with sum = 1)
-  CGAL::Const_oneset_iterator<int> u(1);          // all variables upperbounded by 1 (redundant with sum = 1)
+  CGAL::Const_oneset_iterator<bool> fl(true); // all variables lowerbounded by 0
+  CGAL::Const_oneset_iterator<int> l(0);      // all variables lowerbounded by 0
+  CGAL::Const_oneset_iterator<bool> fu(true); // all variables upperbounded by 1 (redundant with sum = 1)
+  CGAL::Const_oneset_iterator<int> u(1);      // all variables upperbounded by 1 (redundant with sum = 1)
   CGAL::Const_oneset_iterator<int> c(0);      // no linear term in objective
   int c0 = 0;                                 // no constant term in objective
   // now construct the quadratic program; the first two parameters are
   // the number of variables and the number of constraints (rows of A)
-  CGALProgram qp (D.size(), A.size(), A, b, r, fl, l, fu, u, D, c, c0);
+  CGALProgram qp (D.size(), A.size(), &A[0], b, r, fl, l, fu, u, &D[0], c, c0);
   // solve the program, using ET as the exact type
   CGAL::Quadratic_program_solution<ET> s = CGAL::solve_quadratic_program(qp, ET());
   // output solution
@@ -96,7 +96,7 @@ void GraphMatchingCgal::fillQuadraticObjective(std::vector<int *> &D)
             D[nh * ig + ih][nh * jg + jh] = esim->m(eg->second, eh->second);
         }
       }
-      D[nh * ig + ih][nh * ig + ih] = 2 * (*vsim)(ig, ih);  // diagonal
+      D[nh * ig + ih][nh * ig + ih] = 2.0 * (*vsim)(ig, ih);  // diagonal
     }
   }
 }
