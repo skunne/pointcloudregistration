@@ -7,16 +7,18 @@
 typedef CGAL::MP_Float ET;
 
 typedef CGAL::Quadratic_program_from_iterators
-<int **,                                    // A  constraint matrix
- CGAL::Const_oneset_iterator<int>,                     // b  constraint rhs (1)
- CGAL::Const_oneset_iterator<CGAL::Comparison_result>, // r  constraint relations (=)
- CGAL::Const_oneset_iterator<bool>,                    // fl variables are lowerbounded
- CGAL::Const_oneset_iterator<int>,                     // l  lower bounds (0)
- CGAL::Const_oneset_iterator<bool>,                    // fu variables are upperbounded
- CGAL::Const_oneset_iterator<int>,                     // u  upper bounds (1)
- double **,                                    // D  objective matrix (quadratic form)
- CGAL::Const_oneset_iterator<int>>                     // c  linear term in objective (0)
-CGALProgram;
+  <
+    int **,                                // A  constraint matrix
+    CGAL::Const_oneset_iterator<int>,                     // b  constraint rhs (1)
+    CGAL::Const_oneset_iterator<CGAL::Comparison_result>, // r  constraint relations (=)
+    CGAL::Const_oneset_iterator<bool>,                    // fl variables are lowerbounded
+    CGAL::Const_oneset_iterator<int>,                     // l  lower bounds (0)
+    CGAL::Const_oneset_iterator<bool>,                    // fu variables are upperbounded
+    CGAL::Const_oneset_iterator<int>,                     // u  upper bounds (1)
+    double **,                              // D  objective matrix (quadratic form)
+    CGAL::Const_oneset_iterator<int>                     // c  linear term in objective (0)
+  >
+  CGALProgram;
 
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_cgal.h"
@@ -33,10 +35,10 @@ GraphMatchingCgal::GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarity
 void GraphMatchingCgal::build(void)
 {
   pcl::console::print_highlight("Writing quadrating program.\n");
-  std::vector<int *> vector_A;   // constraints, columnwise
-  std::vector<double *> vector_D;   // objective, rowwise, on/below diagonal only, multiplied by a factor 2
-  fillStochasticityConstraints();
-  fillQuadraticObjective();
+  //std::vector<int *> vector_A;
+  //std::vector<double *> vector_D;
+  fillStochasticityConstraints(); // make constraints, columnwise
+  fillQuadraticObjective(); // objective, rowwise, on/below diagonal only, multiplied by a factor 2
   // CGAL::Const_oneset_iterator<CGAL::Comparison_result>
   //       r(    CGAL::EQUAL);                   // constraints are "=="
   // CGAL::Const_oneset_iterator<int> b(1);      // constraints are "== 1"

@@ -28,17 +28,15 @@ private:
   //Eigen::MatrixXd sol_convex;   // doubly stochastic
   //Eigen::MatrixXd sol_smooth;   // doubly stochastic
 
-public:
-  //Eigen::MatrixXi matching;          // permutation matrix
-  // include matching as an std::map as well as a permutation matrix?
+protected:
+  double *z;   // vector solution of quadratric problem PII in frank-wolfe, z = [x u y v]
 
 protected:
   double f_concav() const;
   double f_convex() const;
   double f_smooth(Eigen::MatrixXd const *p) const;
   double f(double lambda, Eigen::MatrixXd const *p) const;
-  void frankWolfe(double lambda, Eigen::MatrixXd *p_new, Eigen::MatrixXd const *p_start);
-  void fillMpsStream(std::stringstream &in) const;
+  void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
 public:
   GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   virtual void run();
