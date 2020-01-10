@@ -10,14 +10,15 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
       * Compute the 4 descriptors `(angle_x, angle_y, angle_z, distance)` following _Huang et al, 2017_ (1)
  * Build vertex similarity matrix using distance between ESF descriptors
  * Build edge similarity matrix using distance between 4-descriptors
- * TODO Match the two resulting graphs
- * TODO Apply RANSAC algorithm (4) to the point clouds
- * TODO Apply ICP algorithm (5, 6) to the point clouds
+ * TODO Match the two resulting graphs using the Path algorithm from _Zaslavskiy et al, 2009_ (4)
+ * TODO Apply RANSAC algorithm (6) to the point clouds
+ * TODO Apply ICP algorithm (7, 8) to the point clouds
 
 
 ### Dependencies
 
  * Point Cloud Library http://pointclouds.org/
+ * Eigen http://eigen.tuxfamily.org/
 
 ### Install
 
@@ -45,8 +46,12 @@ Example use:
 
  (3) "Ensemble of Shape Functions for 3D Object Classification", Wohlkinger, Vincze, IEEE International Conference on Robotics and Biomimetics, 2011
 
- (4) "Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography.", Fischler, Bolles,  Communications of the ACM, 1981
+ (4) "A Path Following Algorithm for the Graph Matching Problem", Zaslavskiy, Bach, Vert, IEEE Transactions on Pattern Analysis and Machine Intelligence, 2009
 
- (5) "A Method for Registration of 3-D Shapes", Besl, McKay, IEEE Trans. Pattern Anal. Mach. Intell., 1992
+ (5) "An Algorithm for Quadratic Programming", Frank, Wolfe, Naval research logistics quarterly, 1956
 
- (6) "Object modeling by registration of multiple range images", Chen, Medioni, 1991
+ (6) "Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography.", Fischler, Bolles,  Communications of the ACM, 1981
+
+ (7) "A Method for Registration of 3-D Shapes", Besl, McKay, IEEE Trans. Pattern Anal. Mach. Intell., 1992
+
+ (8) "Object modeling by registration of multiple range images", Chen, Medioni, 1991
