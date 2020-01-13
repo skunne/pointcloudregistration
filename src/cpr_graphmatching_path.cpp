@@ -106,6 +106,9 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   //     if no solution: ??
   //   W = Z
 
+  // BREAKING NEWS actually y = 0 always
+  // for phase I, we can always choose u = 0 and v = 0 ???
+
   // memcpy(z, x_start->data(), x_len * sizeof(double));    // good news: Eigen::MatrixXd::data() is column major
   completeBasicFeasibleZ(x_start);
   memcpy(w, z, (x_len + u_len + y_len + v_len) * sizeof(*z));
@@ -147,11 +150,11 @@ double GraphMatchingPath::adjointMult(double const *a, double const *b) const
   double res = 0;
   double const *const xa = &a[0];
   double const *const ua = &a[x_len];
-  double const *const ya = &a[x_len + u_len];
+  double const *const ya = &a[x_len + u_len];         // BREAKING NEWS ya = 0 if a feasible
   double const *const va = &a[x_len + u_len + y_len];
   double const *const xb = &b[0];
   double const *const ub = &b[x_len];
-  double const *const yb = &b[x_len + u_len];
+  double const *const yb = &b[x_len + u_len];         // BREAKING NEWS yb = 0 if b feasible
   double const *const vb = &b[x_len + u_len + y_len];
   for (std::size_t i = 0; i < x_len; ++i)
   {
@@ -160,8 +163,8 @@ double GraphMatchingPath::adjointMult(double const *a, double const *b) const
   }
   for (std::size_t j = 0; j < u_len; ++j)
   {
-    res += ya[j] * ub[j];
-    res += ua[j] * yb[j];
+    res += ya[j] * ub[j];   // = 0 if a feasible
+    res += ua[j] * yb[j];   // = 0 if b feasible
   }
   return res;
 }
@@ -174,10 +177,13 @@ void GraphMatchingPath::updateW(double mu)  // w = (1.0 - mu) * w + mu * z;
 
 void GraphMatchingPath::completeBasicFeasibleZ(Eigen::MatrixXd const *x_start)
 {
-  memcpy(z, x_start->data(), x_len * sizeof(double));   // TODO: remove memcpy and make x point to z[0]
   //   find U,Y,V such that
   //   Z = [X U Y V] is solution of PII
   //     if no solution: ??
+  memcpy(z, x_start->data(), x_len * sizeof(double));   // TODO: remove memcpy and make x point to z[0]
+  // BREAKING NEWS actually y = 0 always
+  // for phase I, we can always choose u = 0 and v = 0 ???
+  memset(&z[x_len], 0, (u_len + y_len + v_len) * sizeof(*z));
 }
 
 double GraphMatchingPath::nextSimplexStep(void)
