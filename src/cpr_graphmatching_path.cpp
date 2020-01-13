@@ -7,7 +7,7 @@
 // typedef CGAL::MP_Float ET;
 
 #include <cstdlib>  // malloc, free
-#include <cstring>  // memcpy
+#include <cstring>  // memcpy, memset
 
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
@@ -60,7 +60,8 @@ void GraphMatchingPath::run()
     }
   }
   // Output
-  // copy p into matching?
+  // when lambda == 1, all coeffs in p must be 0.0 or 1.0
+  // copy p into this->matching and convert double to int
 }
 
 double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
@@ -136,7 +137,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     {
       double mu = (ww - wz) / (zz - wz - wz + ww);
       if (mu >= 1.0)
-        memcpy(w, z, (x_len + u_len + y_len + x_len)); // w = z
+        memcpy(w, z, (x_len + u_len + y_len + x_len) * sizeof(*z)); // w = z
       else
         updateW(mu); // w = (1.0 - mu) * w + mu * z;
     }
@@ -147,7 +148,6 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
 // return scalar product a~ * b where [x u y v]~ = [v y u x]
 double GraphMatchingPath::adjointMult(double const *a, double const *b) const
 {
-  double res = 0;
   double const *const xa = &a[0];
   double const *const ua = &a[x_len];
   double const *const ya = &a[x_len + u_len];         // BREAKING NEWS ya = 0 if a feasible
@@ -156,17 +156,18 @@ double GraphMatchingPath::adjointMult(double const *a, double const *b) const
   double const *const ub = &b[x_len];
   double const *const yb = &b[x_len + u_len];         // BREAKING NEWS yb = 0 if b feasible
   double const *const vb = &b[x_len + u_len + y_len];
+  double result = 0;
   for (std::size_t i = 0; i < x_len; ++i)
   {
-    res += va[i] * xb[i];
-    res += xa[i] * vb[i];
+    result += va[i] * xb[i];
+    result += xa[i] * vb[i];
   }
   for (std::size_t j = 0; j < u_len; ++j)
   {
-    res += ya[j] * ub[j];   // = 0 if a feasible
-    res += ua[j] * yb[j];   // = 0 if b feasible
+    result += ya[j] * ub[j];   // = 0 if a feasible
+    result += ua[j] * yb[j];   // = 0 if b feasible
   }
-  return res;
+  return result;
 }
 
 void GraphMatchingPath::updateW(double mu)  // w = (1.0 - mu) * w + mu * z;
@@ -180,10 +181,10 @@ void GraphMatchingPath::completeBasicFeasibleZ(Eigen::MatrixXd const *x_start)
   //   find U,Y,V such that
   //   Z = [X U Y V] is solution of PII
   //     if no solution: ??
-  memcpy(z, x_start->data(), x_len * sizeof(double));   // TODO: remove memcpy and make x point to z[0]
+  memcpy(z, x_start->data(), x_len * sizeof(double)); // x=x // TODO: remove memcpy and make x point to z[0]
   // BREAKING NEWS actually y = 0 always
   // for phase I, we can always choose u = 0 and v = 0 ???
-  memset(&z[x_len], 0, (u_len + y_len + v_len) * sizeof(*z));
+  memset(&z[x_len], 0, (u_len + y_len + v_len) * sizeof(*z));  // u=0 y=0 v=0
 }
 
 double GraphMatchingPath::nextSimplexStep(void)
