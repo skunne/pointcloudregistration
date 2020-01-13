@@ -133,7 +133,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     {
       double mu = (ww - wz) / (zz - wz - wz + ww);
       if (mu >= 1.0)
-        memcpy(w, z, (x_len + u_len + y_len + x_len));
+        memcpy(w, z, (x_len + u_len + y_len + x_len)); // w = z
       else
         updateW(mu); // w = (1.0 - mu) * w + mu * z;
     }

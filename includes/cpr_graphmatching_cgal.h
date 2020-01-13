@@ -2,6 +2,10 @@
 #ifndef __DEF_GRAPHMATCHINGCGAL_H__
 # define __DEF_GRAPHMATCHINGCGAL_H__
 
+#include <CGAL/QP_models.h>    // quadratic programming
+#include <CGAL/QP_functions.h>
+#include <CGAL/MP_Float.h>
+
 #include "cpr_main.h"
 #include "cpr_matrices.h"
 #include "cpr_graphmatching.h"
