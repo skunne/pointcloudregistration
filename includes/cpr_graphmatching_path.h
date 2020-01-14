@@ -33,6 +33,7 @@ protected:
   double *w;   // feasible vector for PII in frank-wolfe
   std::size_t *base;    // base indices for simplex
   std::size_t *nonbase; // nonbase indices for simplex
+  double *reduced_cost;  // reduced cost of each variable for simplex
   std::size_t x_len;  // nb var = ng * nh
   std::size_t u_len;  // nb constraints = ng + nh
   std::size_t y_len;  // nb constraints
@@ -48,6 +49,7 @@ protected:
   double nextSimplexStep(void);   // solve for z: minimize w * z
   double adjointMult(double const *a, double const *b) const;
   void updateW(double mu);  // w = (1.0 - mu) * w + mu * z;
+  void initSimplex(void);
 
 public:
   GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);

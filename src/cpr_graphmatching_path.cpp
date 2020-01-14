@@ -25,6 +25,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   w = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*w));
   // base = malloc(realnbconstraints * sizeof(std::size_t));
   // nonbase = malloc((realnbvar - realnbconstraints) * sizeof(std::size_t));
+  // reduced_cost = malloc(realnbconstraints * sizeof(double));
 }
 
 GraphMatchingPath::~GraphMatchingPath()
@@ -33,6 +34,7 @@ GraphMatchingPath::~GraphMatchingPath()
   free(w);
   free(base);
   free(nonbase);
+  free(reduced_cost);
 }
 
 void GraphMatchingPath::run()
@@ -129,6 +131,8 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   //           mu = min(mu, 1)
   //           W = W + mu (Z - W)
 
+
+  initSimplex();      // initialise reduced cost with coeffs from w
   double wz;          // dot products W~ * Z, W~ * W and Z~ * Z
   double ww;
   double zz = 1.0;    // initialize with arbitrary nonzero value
@@ -145,6 +149,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
         memcpy(w, z, (x_len + u_len + y_len + x_len) * sizeof(*z)); // w = z
       else
         updateW(mu); // w = (1 - mu) * w + mu * z;
+      initSimplex(); // update reduced_cost according to new w
     }
   }
   memcpy(x_return->data(), z, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
@@ -196,27 +201,31 @@ void GraphMatchingPath::completeBasicFeasibleZ(Eigen::MatrixXd const *x_start)
 // update z to minimise W~ * Z
 double GraphMatchingPath::nextSimplexStep(void)
 {
-  // find pivot i such that w[i] < 0 (for instance i that minimises w[i])
-  std::size_t iz;       // because objective = w~ z and not w z, need two indices iw and iz reflecting w[iw] = w~[iz]
-  std::size_t iw = 0;
-  while (iw < x_len + u_len + y_len + v_len && w[iw] >= 0)
-    ++iw;
-  assert (iw < x_len + u_len + y_len + v_len); // there exists iw such that w[iw] < 0
-  assert(iw < x_len || iw >= x_len + u_len + y_len); // cannot be in u or y since y = 0
-
-  if (iw < x_len)
-    iz = iw + (x_len + u_len + y_len);
-  else // (iw >= x_len + u_len + y_len)
-    iz = iw - (x_len + u_len + y_len);
+  // find pivot i such that reduced_cost[i] < 0 (for instance i that minimises reduced_cost[i])
+  std::size_t i = 0;
+  while (i < x_len + u_len + y_len + v_len && reduced_cost[i] >= 0)
+    ++i;
+  assert (i < x_len + u_len + y_len + v_len); // there exists iw such that w[iw] < 0
+  assert(i < x_len || i >= x_len + u_len + y_len); // cannot be in u or y since y = 0
 
 
-  // find constraint j such that constraint j exploses first when z[iz] is increased
 
-  // update z[iz] with appropriate new value
+  // find constraint j such that constraint j exploses first when z[i] is increased
+
+  // update z[i] with appropriate new value
 
   // find basic variable k corresponding to constraint j; set z[k] = 0
 
-  // update other basic variables and problem data ("residual cost" of each variable)
+  // update other basic variables
+  // update residual cost
 
   return adjointMult(w, z);
+}
+
+// initialise the "reduced cost" of each variable for the simplex algorithm
+void GraphMatchingPath::initSimplex(void)
+{
+  memcpy(reduced_cost, &w[x_len + u_len + y_len], x_len * sizeof(*reduced_cost));  // x_rc = v_w
+  memcpy(&reduced_cost[x_len + u_len + y_len], w, v_len * sizeof(*reduced_cost));  // v_rc = x_w
+  memset(&reduced_cost[x_len], 0, (u_len + y_len) * sizeof(*reduced_cost));   // u_rc = 0 , y_rc = 0
 }
