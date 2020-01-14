@@ -29,8 +29,10 @@ private:
   //Eigen::MatrixXd sol_smooth;   // doubly stochastic
 
 protected:
-  double *z;   // vector solution of quadratic problem PII in frank-wolfe, z = [x u y v]
-  double *w;   // helper vector for frank-wolfe PII
+  double *z;   // basic feasible vector for quadratic problem PII in frank-wolfe, z = [x u y v]
+  double *w;   // feasible vector for PII in frank-wolfe
+  std::size_t *base;    // base indices for simplex
+  std::size_t *nonbase; // nonbase indices for simplex
   std::size_t x_len;  // nb var = ng * nh
   std::size_t u_len;  // nb constraints = ng + nh
   std::size_t y_len;  // nb constraints

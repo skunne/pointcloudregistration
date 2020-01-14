@@ -23,12 +23,16 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   v_len = x_len;
   z = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*z));
   w = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*w));
+  // base = malloc(realnbconstraints * sizeof(std::size_t));
+  // nonbase = malloc((realnbvar - realnbconstraints) * sizeof(std::size_t));
 }
 
 GraphMatchingPath::~GraphMatchingPath()
 {
   free(z);
   free(w);
+  free(base);
+  free(nonbase);
 }
 
 void GraphMatchingPath::run()
@@ -112,7 +116,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
 
   // memcpy(z, x_start->data(), x_len * sizeof(double));    // good news: Eigen::MatrixXd::data() is column major
   completeBasicFeasibleZ(x_start);
-  memcpy(w, z, (x_len + u_len + y_len + v_len) * sizeof(*z));
+  memcpy(w, z, (x_len + u_len + y_len + v_len) * sizeof(*z)); // w = z
 
   // Phase II
   //   loop:
@@ -125,21 +129,22 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   //           mu = min(mu, 1)
   //           W = W + mu (Z - W)
 
-  double wz;
+  double wz;          // dot products W~ * Z, W~ * W and Z~ * Z
   double ww;
-  double zz = 1.0;    // arbitrary nonzero value
+  double zz = 1.0;    // initialize with arbitrary nonzero value
   while (zz != 0)
   {
-    wz = nextSimplexStep();  // update z
+    wz = nextSimplexStep();  // update z to maximize  (- W~ * Z)
     zz = adjointMult(z,z);
     ww = adjointMult(w, w);
     if (wz + wz <= ww)
     {
+      // update w so that new w maximizes new objective on segment [w, z]
       double mu = (ww - wz) / (zz - wz - wz + ww);
       if (mu >= 1.0)
         memcpy(w, z, (x_len + u_len + y_len + x_len) * sizeof(*z)); // w = z
       else
-        updateW(mu); // w = (1.0 - mu) * w + mu * z;
+        updateW(mu); // w = (1 - mu) * w + mu * z;
     }
   }
   memcpy(x_return->data(), z, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
@@ -170,9 +175,9 @@ double GraphMatchingPath::adjointMult(double const *a, double const *b) const
   return result;
 }
 
-void GraphMatchingPath::updateW(double mu)  // w = (1.0 - mu) * w + mu * z;
+void GraphMatchingPath::updateW(double mu)  // w = (1 - mu) * w + mu * z;
 {
-  for (std::size_t i = 0; i < x_len +u_len + y_len + v_len; ++i)
+  for (std::size_t i = 0; i < x_len + u_len + y_len + v_len; ++i)
     w[i] = (1.0 - mu) * w[i] + mu * z[i];
 }
 
@@ -181,14 +186,37 @@ void GraphMatchingPath::completeBasicFeasibleZ(Eigen::MatrixXd const *x_start)
   //   find U,Y,V such that
   //   Z = [X U Y V] is solution of PII
   //     if no solution: ??
-  memcpy(z, x_start->data(), x_len * sizeof(double)); // x=x // TODO: remove memcpy and make x point to z[0]
+  memcpy(z, x_start->data(), x_len * sizeof(double)); // x=x // TODO remove memcpy and make x point to z[0]
   // BREAKING NEWS actually y = 0 always
   // for phase I, we can always choose u = 0 and v = 0 ???
   memset(&z[x_len], 0, (u_len + y_len + v_len) * sizeof(*z));  // u=0 y=0 v=0
+  // TODO ASSERT z REALLY IS FEASIBLE AND BASIC
 }
 
+// update z to minimise W~ * Z
 double GraphMatchingPath::nextSimplexStep(void)
 {
-  // TODO magic happens here
+  // find pivot i such that w[i] < 0 (for instance i that minimises w[i])
+  std::size_t iz;       // because objective = w~ z and not w z, need two indices iw and iz reflecting w[iw] = w~[iz]
+  std::size_t iw = 0;
+  while (iw < x_len + u_len + y_len + v_len && w[iw] >= 0)
+    ++iw;
+  assert (iw < x_len + u_len + y_len + v_len); // there exists iw such that w[iw] < 0
+  assert(iw < x_len || iw >= x_len + u_len + y_len); // cannot be in u or y since y = 0
+
+  if (iw < x_len)
+    iz = iw + (x_len + u_len + y_len);
+  else // (iw >= x_len + u_len + y_len)
+    iz = iw - (x_len + u_len + y_len);
+
+
+  // find constraint j such that constraint j exploses first when z[iz] is increased
+
+  // update z[iz] with appropriate new value
+
+  // find basic variable k corresponding to constraint j; set z[k] = 0
+
+  // update other basic variables and problem data ("residual cost" of each variable)
+
   return adjointMult(w, z);
 }
