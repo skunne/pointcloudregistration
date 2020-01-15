@@ -137,16 +137,33 @@ double GraphMatchingPath::simplex(void)
 
   // find pivot i such that reduced_cost[i] < 0 (for instance i that minimises reduced_cost[i])
   std::size_t i = 0;
-  while (i < x_len && reduced_cost[i] >= 0)
+  while (i < x_len && (reduced_cost[i] >= 0 || z[i] > 0))   // browse all variables, not good
+  while (i < nonbase_len && reduced_cost[nonbase[i]] >= 0)  // browse nonbasic variables only
     ++i;
   if (i == x_len)   // no negative reduced cost: solution is optimal
     return obj;
 
   // find constraint j such that constraint j exploses first when z[i] is increased
+  std::size_t j = 0;
+  double ratio = ?? / ??; // TODO find better variable name
+  for (std::size_t newj = 0; newj < nb_constraints; ++newj)
+  {
+    if ((newratio = ?? / ??) < ratio)
+    {
+      ratio = newratio;
+      j = newj;
+    }
+    // PAS BESOIN DE FAIRE UNE BOUCLE POUR TROUVER J
+    // ON EST INTELLIGENT ET LES CONTRAINTES ONT UNE LOGIQUE
+  }
 
   // update z[i] with appropriate new value
+  z[i] = ??;
 
   // find basic variable k corresponding to constraint j; set z[k] = 0
+  z[base[j]] = 0;
+  nonbase[??] = base[j];  // exit z[k]
+  base[j] = i;            // enter z[i]
 
   // update other basic variables
   // update residual cost
