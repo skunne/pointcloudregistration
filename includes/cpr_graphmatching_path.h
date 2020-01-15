@@ -34,9 +34,10 @@ protected:
   double *y;   // feasible vector for PII in frank-wolfe
 
   std::size_t x_len;  // nb var = ng * nh
-  std::size_t n;    // assume ng = nh?? maybe not necessary??
+  std::size_t n;    // assume ng = nh?? not necessary??
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
+  glp_prob *lp;
   std::vector<int> cons_coeff_rowindex;     // nonzero constraint coeff rowindex
   std::vector<int> cons_coeff_colindex;     // nonzero constraint coeff colindex
   std::vector<double> cons_coeff_value;  // nonzero constraint coeff value
@@ -48,8 +49,10 @@ protected:
   double f(double lambda, Eigen::MatrixXd const *p) const;
   void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
   //double simplex(void);   // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
-  double simplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
+  void initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
+  double simplex(void);
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
+  void updateY(glp_prob *lp);  // set y to solution of solved lp
   void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:

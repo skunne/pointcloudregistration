@@ -32,8 +32,10 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
       cons_coeff_rowindex.push_back(ig);
       cons_coeff_colindex.push_back(ih);
       cons_coeff_value.push_back(1.0);
-
     }
+
+  initSimplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);
+
 }
 
 GraphMatchingPath::~GraphMatchingPath()
@@ -117,16 +119,18 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
 
   while (1) // TODO find correct stop criterion    //(zz != 0)
   {
-    simplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
-
-    double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
+    double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
+    double xDx = 0; // TODO compute
+    double yDy = 0; // TODO compute
+    double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
+    //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else
       updateX(mu); // x = (1 - mu) * x + mu * y;
   }
   memcpy(x_return->data(), x, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
-}
+}     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
 void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
 {
@@ -136,12 +140,9 @@ void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
 
 #include <glpk.h>
 
-// update z to minimise W~ * Z
-double GraphMatchingPath::simplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av)
+void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av)
 {
-  double obj;       // value of objective function
-
-  glp_prob *lp;
+  // declare linear problem object
   lp = glp_create_prob();
   glp_set_prob_name(lp, "linear approximation");
 
@@ -160,19 +161,23 @@ double GraphMatchingPath::simplex(std::vector<int> const &iv, std::vector<int> c
   glp_load_matrix(lp, iv.size(), iv.data(), jv.data(), av.data());
   for (std::size_t row = 0; row < nb_constraints; ++row)
     glp_set_row_bnds(lp, row, GLP_FX, 1.0, 1.0);
+}
 
+// update z to minimise W~ * Z
+double GraphMatchingPath::simplex(void)
+{
+  // reset objective function
   // load objective function
   compute_lp_obj_coeffs(lp);
 
   // solve problem
   glp_simplex(lp, NULL);
 
+  // TODO update vector y with variables from the solution!!
+  updateY(lp);
+
   // retrieve optimal objective value
-  obj = glp_get_obj_val(lp);
-
-
-
-  return obj;
+  return (glp_get_obj_val(lp));
 }
 
 
@@ -198,4 +203,11 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   }
 
   // reward[vertex pair (ig, jg) with ig != jg and no edge (ig, jg)] = 0
+}
+
+// set y to solution of solved lp
+void GraphMatchingPath::updateY(glp_prob *lp)  // should be glp_prob const *lp but library wants it non-const for no reason
+{
+  for (std::size_t j = 0; j < x_len; ++j)
+    y[j] = glp_get_col_prim(lp, static_cast<int>(j + 1));  // library wants int, 1-indexed
 }
