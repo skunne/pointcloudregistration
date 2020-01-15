@@ -120,8 +120,8 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   while (1) // TODO find correct stop criterion    //(zz != 0)
   {
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
-    double xDx = 0; // TODO compute
-    double yDy = 0; // TODO compute
+    double xDx = mult_xD(lp, x);
+    double yDy = mult_xD(lp, y);  // TODO this is a mistake, mult_xD(y) = xDy and not yDy
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
@@ -201,8 +201,16 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
       reward_ig += (*vsim)(ig, ih) * x[ig * n + ih];
     glp_set_obj_coef(lp, ig * (n+1) + 1, reward_ig);    // second parameter expects 1-indexed int !!
   }
-
   // reward[vertex pair (ig, jg) with ig != jg and no edge (ig, jg)] = 0
+}
+
+double GraphMatchingPath::mult_xD(glp_prob *lp, double *z)  // should be glp_prob const *lp
+{
+  // TODO xD is very sparse; try to browse nonzero coeffs only, and compare speed
+  double result = 0;
+  for (std::size_t i = 0; i < x_len; ++i)
+    result += glp_get_obj_coef(lp, static_cast<int>(i+1)) * z[i];
+  return result;
 }
 
 // set y to solution of solved lp
