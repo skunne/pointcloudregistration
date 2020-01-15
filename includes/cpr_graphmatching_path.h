@@ -29,15 +29,14 @@ private:
   //Eigen::MatrixXd sol_smooth;   // doubly stochastic
 
 protected:
-  double *z;   // basic feasible vector for quadratic problem PII in frank-wolfe, z = [x u y v]
-  double *w;   // feasible vector for PII in frank-wolfe
+  double *x;
+  double *y;   // feasible vector for PII in frank-wolfe
   std::size_t *base;    // base indices for simplex
   std::size_t *nonbase; // nonbase indices for simplex
   double *reduced_cost;  // reduced cost of each variable for simplex
   std::size_t x_len;  // nb var = ng * nh
-  std::size_t u_len;  // nb constraints = ng + nh
-  std::size_t y_len;  // nb constraints
-  std::size_t v_len;  // nb var
+  std::size_t n;    // assume ng = nh??
+  std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
 protected:
   double f_concav() const;
@@ -45,11 +44,9 @@ protected:
   double f_smooth(Eigen::MatrixXd const *p) const;
   double f(double lambda, Eigen::MatrixXd const *p) const;
   void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
-  void completeBasicFeasibleZ(Eigen::MatrixXd const *x_start);
-  double nextSimplexStep(void);   // solve for z: minimize w * z
-  double adjointMult(double const *a, double const *b) const;
-  void updateW(double mu);  // w = (1.0 - mu) * w + mu * z;
+  double simplex(void);   // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
   void initSimplex(void);
+  void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:
   GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);

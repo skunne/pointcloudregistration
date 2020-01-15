@@ -18,11 +18,11 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   std::size_t ng = g_adj->rows();
   std::size_t nh = h_adj->rows();
   x_len = ng * nh;    // nb variables
-  u_len = ng + nh;
-  y_len = ng + nh;    // nb constraints
-  v_len = x_len;
-  z = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*z));
-  w = (double *) malloc((x_len + u_len + y_len + v_len) * sizeof(*w));
+  nb_constraints = ng + nh;    // nb constraints
+  assert(ng = nh);    // is that necessary?
+  n = ng;
+  x = (double *) malloc(x_len * sizeof(*x));
+  y = (double *) malloc(x_len * sizeof(*y));
   // base = malloc(realnbconstraints * sizeof(std::size_t));
   // nonbase = malloc((realnbvar - realnbconstraints) * sizeof(std::size_t));
   // reduced_cost = malloc(realnbconstraints * sizeof(double));
@@ -30,8 +30,8 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
 
 GraphMatchingPath::~GraphMatchingPath()
 {
-  free(z);
-  free(w);
+  free(x);
+  free(y);
   free(base);
   free(nonbase);
   free(reduced_cost);
@@ -107,108 +107,40 @@ double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
 
 void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start)
 {
-  // Phase I
-  //   find U,Y,V such that
-  //   Z = [X U Y V] is solution of PII
-  //     if no solution: ??
-  //   W = Z
+  // assert x basic feasible
+  memcpy(y, x, x_len * sizeof(*x)); // y = x
 
-  // BREAKING NEWS actually y = 0 always
-  // for phase I, we can always choose u = 0 and v = 0 ???
-
-  // memcpy(z, x_start->data(), x_len * sizeof(double));    // good news: Eigen::MatrixXd::data() is column major
-  completeBasicFeasibleZ(x_start);
-  memcpy(w, z, (x_len + u_len + y_len + v_len) * sizeof(*z)); // w = z
-
-  // Phase II
-  //   loop:
-  //     apply simplex method to maximize (- W~ * Z)
-  //       stop simplex when one of the two conditions is true:
-  //         if Z~ * Z == 0:
-  //           halt and return solution Z
-  //         if W~ * Z <= 1/2 W~ W:
-  //           mu = W~ * (W - Z) / ((Z~ - W~)*(Z - W))
-  //           mu = min(mu, 1)
-  //           W = W + mu (Z - W)
-
-
-  initSimplex();      // initialise reduced cost with coeffs from w
-  double wz;          // dot products W~ * Z, W~ * W and Z~ * Z
-  double ww;
-  double zz = 1.0;    // initialize with arbitrary nonzero value
-  while (zz != 0)
+  while () //(zz != 0)
   {
-    wz = nextSimplexStep();  // update z to maximize  (- W~ * Z)
-    zz = adjointMult(z,z);
-    ww = adjointMult(w, w);
-    if (wz + wz <= ww)
-    {
-      // update w so that new w maximizes new objective on segment [w, z]
-      double mu = (ww - wz) / (zz - wz - wz + ww);
-      if (mu >= 1.0)
-        memcpy(w, z, (x_len + u_len + y_len + x_len) * sizeof(*z)); // w = z
-      else
-        updateW(mu); // w = (1 - mu) * w + mu * z;
-      initSimplex(); // update reduced_cost according to new w
-    }
+    simplex();  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
+
+    double mu = 0;//(ww - wz) / (zz - wz - wz + ww);
+    if (mu >= 1.0)
+      memcpy(x, y, x_len * sizeof(*y)); // x = y
+    else
+      updateX(mu); // x = (1 - mu) * x + mu * y;
   }
-  memcpy(x_return->data(), z, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  memcpy(x_return->data(), x, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
 }
 
-// return scalar product a~ * b where [x u y v]~ = [v y u x]
-double GraphMatchingPath::adjointMult(double const *a, double const *b) const
+void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
 {
-  double const *const xa = &a[0];
-  double const *const ua = &a[x_len];
-  double const *const ya = &a[x_len + u_len];         // BREAKING NEWS ya = 0 if a feasible
-  double const *const va = &a[x_len + u_len + y_len];
-  double const *const xb = &b[0];
-  double const *const ub = &b[x_len];
-  double const *const yb = &b[x_len + u_len];         // BREAKING NEWS yb = 0 if b feasible
-  double const *const vb = &b[x_len + u_len + y_len];
-  double result = 0;
   for (std::size_t i = 0; i < x_len; ++i)
-  {
-    result += va[i] * xb[i];
-    result += xa[i] * vb[i];
-  }
-  for (std::size_t j = 0; j < u_len; ++j)
-  {
-    result += ya[j] * ub[j];   // = 0 if a feasible
-    result += ua[j] * yb[j];   // = 0 if b feasible
-  }
-  return result;
-}
-
-void GraphMatchingPath::updateW(double mu)  // w = (1 - mu) * w + mu * z;
-{
-  for (std::size_t i = 0; i < x_len + u_len + y_len + v_len; ++i)
-    w[i] = (1.0 - mu) * w[i] + mu * z[i];
-}
-
-void GraphMatchingPath::completeBasicFeasibleZ(Eigen::MatrixXd const *x_start)
-{
-  //   find U,Y,V such that
-  //   Z = [X U Y V] is solution of PII
-  //     if no solution: ??
-  memcpy(z, x_start->data(), x_len * sizeof(double)); // x=x // TODO remove memcpy and make x point to z[0]
-  // BREAKING NEWS actually y = 0 always
-  // for phase I, we can always choose u = 0 and v = 0 ???
-  memset(&z[x_len], 0, (u_len + y_len + v_len) * sizeof(*z));  // u=0 y=0 v=0
-  // TODO ASSERT z REALLY IS FEASIBLE AND BASIC
+    x[i] = (1.0 - mu) * x[i] + mu * y[i];
 }
 
 // update z to minimise W~ * Z
-double GraphMatchingPath::nextSimplexStep(void)
+double GraphMatchingPath::simplex(void)
 {
+  double obj;       // value of objective function
+  initSimplex();   // init reduced cost
+
   // find pivot i such that reduced_cost[i] < 0 (for instance i that minimises reduced_cost[i])
   std::size_t i = 0;
-  while (i < x_len + u_len + y_len + v_len && reduced_cost[i] >= 0)
+  while (i < x_len && reduced_cost[i] >= 0)
     ++i;
-  assert (i < x_len + u_len + y_len + v_len); // there exists iw such that w[iw] < 0
-  assert(i < x_len || i >= x_len + u_len + y_len); // cannot be in u or y since y = 0
-
-
+  if (i == x_len)   // no negative reduced cost: solution is optimal
+    return obj;
 
   // find constraint j such that constraint j exploses first when z[i] is increased
 
@@ -219,13 +151,22 @@ double GraphMatchingPath::nextSimplexStep(void)
   // update other basic variables
   // update residual cost
 
-  return adjointMult(w, z);
+  return obj;
 }
 
 // initialise the "reduced cost" of each variable for the simplex algorithm
 void GraphMatchingPath::initSimplex(void)
 {
-  memcpy(reduced_cost, &w[x_len + u_len + y_len], x_len * sizeof(*reduced_cost));  // x_rc = v_w
-  memcpy(&reduced_cost[x_len + u_len + y_len], w, v_len * sizeof(*reduced_cost));  // v_rc = x_w
-  memset(&reduced_cost[x_len], 0, (u_len + y_len) * sizeof(*reduced_cost));   // u_rc = 0 , y_rc = 0
+  memset(reduced_cost, 0, x_len * sizeof(*reduced_cost));
+  for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
+  {
+    std::size_t k = edge_g_itr->first.first * n + edge_g_itr->first.second;
+    for (auto edge_h_itr = esim->destEdgeIndex.cbegin(); edge_h_itr != esim->destEdgeIndex.cend(); ++edge_h_itr)
+      reduced_cost[k] += esim->m(edge_g_itr->second, edge_h_itr->second);
+  }
+  for (std::size_t ig = 0; ig < n; ++ig)
+  {
+    for (std::size_t ih = 0; ih < n; ++ih)
+      reduced_cost[ig * (n + 1)] += (*vsim)(ig, ih);
+  }
 }
