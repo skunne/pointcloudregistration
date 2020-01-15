@@ -3,6 +3,7 @@
 # define __DEF_GRAPHMATCHINGPATH_H__
 
 #include <sstream>
+#include <glpk.h>   // linear programming solver
 #include "cpr_main.h"
 #include "cpr_matrices.h"
 #include "cpr_graphmatching.h"
@@ -31,12 +32,18 @@ private:
 protected:
   double *x;
   double *y;   // feasible vector for PII in frank-wolfe
+
   std::size_t *base;    // base indices for simplex
   std::size_t *nonbase; // nonbase indices for simplex
   double *reduced_cost;  // reduced cost of each variable for simplex
+
   std::size_t x_len;  // nb var = ng * nh
   std::size_t n;    // assume ng = nh?? maybe not necessary??
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
+
+  std::vector<int> iv;     // nonzero constraint coeff rowindex
+  std::vector<int> jv;     // nonzero constraint coeff colindex
+  std::vector<double> av;  // nonzero constraint coeff value
 
 protected:
   double f_concav() const;
@@ -44,8 +51,9 @@ protected:
   double f_smooth(Eigen::MatrixXd const *p) const;
   double f(double lambda, Eigen::MatrixXd const *p) const;
   void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
-  double simplex(void);   // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
-  void initSimplex(void);
+  //double simplex(void);   // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
+  double simplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
+  void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
   void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:

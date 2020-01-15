@@ -112,7 +112,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
 
   while (1) // TODO find correct stop criterion    //(zz != 0)
   {
-    simplex();  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
+    simplex(iv, jv, av);  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
 
     double mu = 0;//(ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
@@ -129,67 +129,55 @@ void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
     x[i] = (1.0 - mu) * x[i] + mu * y[i];
 }
 
+#include <glpk.h>
+
 // update z to minimise W~ * Z
-double GraphMatchingPath::simplex(void)
+double GraphMatchingPath::simplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av)
 {
   double obj;       // value of objective function
-  initSimplex();   // init reduced cost
 
-  // find pivot i such that reduced_cost[i] < 0 (for instance i that minimises reduced_cost[i])
-  std::size_t i = 0;
-  while (i < x_len && (reduced_cost[i] >= 0 || z[i] > 0))   // browse all variables, not good
-  while (i < nonbase_len && reduced_cost[nonbase[i]] >= 0)  // browse nonbasic variables only
-    ++i;
-  if (i == x_len)   // no negative reduced cost: solution is optimal
-    return obj;
+  glp_prob *lp;
 
-  // find constraint j such that constraint j exploses first when z[i] is increased
-  std::size_t j = 0;
-  double ratio = ?? / ??; // TODO find better variable name
-  for (std::size_t newj = 0; newj < nb_constraints; ++newj)
-  {
-    if ((newratio = ?? / ??) < ratio)
-    {
-      ratio = newratio;
-      j = newj;
-    }
-    // PAS BESOIN DE FAIRE UNE BOUCLE POUR TROUVER J
-    // ON EST INTELLIGENT ET LES CONTRAINTES ONT UNE LOGIQUE
-  }
+  lp = glp_create_prob();
+  glp_set_prob_name(lp, "linear approximation");
+  glp_set_obj_dir(lp, GLP_MAX);
+  glp_add_rows(lp, nb_constraints);
+  glp_add_cols(lp, x_len);
 
-  // update z[i] with appropriate new value
-  z[i] = ??;
+  glp_load_matrix(lp, iv.size(), iv.data(), jv.data(), av.data());  // load constraints
 
-  // find basic variable k corresponding to constraint j; set z[k] = 0
-  z[base[j]] = 0;
-  nonbase[??] = base[j];  // exit z[k]
-  base[j] = i;            // enter z[i]
+  compute_lp_obj_coeffs(lp);
 
-  // update other basic variables
-  // update residual cost
+  glp_simplex(lp, NULL);
+
+  obj = glp_get_obj_val(lp);
+
+  
 
   return obj;
 }
 
-// initialise the "reduced cost" of each variable for the simplex algorithm
-void GraphMatchingPath::initSimplex(void)
-{
-  memset(reduced_cost, 0, x_len * sizeof(*reduced_cost));
 
-  // reduced_cost[edge eg] = sum_(edge eh) esim(eg,eh) * x[eh]
+void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
+{
+  // reward[edge eg] = sum_(edge eh) esim(eg,eh) * x[eh]
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
-    std::size_t k = edge_g_itr->first.first * n + edge_g_itr->first.second;
+    double reward_eg = 0;
+    int j = edge_g_itr->first.first * n + edge_g_itr->first.second;   // cast here from size_t to int
     for (auto edge_h_itr = esim->destEdgeIndex.cbegin(); edge_h_itr != esim->destEdgeIndex.cend(); ++edge_h_itr)
-      reduced_cost[k] += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * n + edge_h_itr->first.second];
+      reward_eg += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * n + edge_h_itr->first.second];
+    glp_set_obj_coef(lp, j + 1, reward_eg);    // second parameter expects 1-indexed int !!
   }
 
-  // reduced_cost[vertex ig] = sum_(vertex ih) vsim(ig,ih) * x[ig,ih]
+  // reward[vertex ig] = sum_(vertex ih) vsim(ig,ih) * x[ig,ih]
   for (std::size_t ig = 0; ig < n; ++ig)
   {
+    double reward_ig = 0;
     for (std::size_t ih = 0; ih < n; ++ih)
-      reduced_cost[ig * (n + 1)] += (*vsim)(ig, ih) * x[ig * n + ih];
+      reward_ig += (*vsim)(ig, ih) * x[ig * n + ih];
+    glp_set_obj_coef(lp, ig * (n+1) + 1, reward_ig);    // second parameter expects 1-indexed int !!
   }
 
-  // reduced_cost[not an edge nor a vertex] = 0
+  // reward[vertex pair (ig, jg) with ig != jg and no edge (ig, jg)] = 0
 }

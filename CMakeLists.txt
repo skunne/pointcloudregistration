@@ -7,6 +7,7 @@ project(${NAME})
 
 find_package(PCL 1.8 REQUIRED)
 find_package(CGAL COMPONENTS Core)
+find_package(GLPK REQUIRED)
 
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
@@ -18,4 +19,5 @@ include_directories("includes")
 
 add_executable (${NAME} ${SRC})
 target_link_libraries (${NAME} PUBLIC ${PCL_LIBRARIES})
+target_link_libraries (${NAME} PUBLIC glpk)
 target_compile_options(${NAME} PRIVATE -Wall -Wextra -Wfloat-conversion)
