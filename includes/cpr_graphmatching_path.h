@@ -35,7 +35,7 @@ protected:
   std::size_t *nonbase; // nonbase indices for simplex
   double *reduced_cost;  // reduced cost of each variable for simplex
   std::size_t x_len;  // nb var = ng * nh
-  std::size_t n;    // assume ng = nh??
+  std::size_t n;    // assume ng = nh?? maybe not necessary??
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
 protected:

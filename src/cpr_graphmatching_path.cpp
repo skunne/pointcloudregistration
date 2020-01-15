@@ -110,7 +110,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   // assert x basic feasible
   memcpy(y, x, x_len * sizeof(*x)); // y = x
 
-  while () //(zz != 0)
+  while (1) // TODO find correct stop criterion    //(zz != 0)
   {
     simplex();  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
 
@@ -158,15 +158,21 @@ double GraphMatchingPath::simplex(void)
 void GraphMatchingPath::initSimplex(void)
 {
   memset(reduced_cost, 0, x_len * sizeof(*reduced_cost));
+
+  // reduced_cost[edge eg] = sum_(edge eh) esim(eg,eh) * x[eh]
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
     std::size_t k = edge_g_itr->first.first * n + edge_g_itr->first.second;
     for (auto edge_h_itr = esim->destEdgeIndex.cbegin(); edge_h_itr != esim->destEdgeIndex.cend(); ++edge_h_itr)
-      reduced_cost[k] += esim->m(edge_g_itr->second, edge_h_itr->second);
+      reduced_cost[k] += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * n + edge_h_itr->first.second];
   }
+
+  // reduced_cost[vertex ig] = sum_(vertex ih) vsim(ig,ih) * x[ig,ih]
   for (std::size_t ig = 0; ig < n; ++ig)
   {
     for (std::size_t ih = 0; ih < n; ++ih)
-      reduced_cost[ig * (n + 1)] += (*vsim)(ig, ih);
+      reduced_cost[ig * (n + 1)] += (*vsim)(ig, ih) * x[ig * n + ih];
   }
+
+  // reduced_cost[not an edge nor a vertex] = 0
 }
