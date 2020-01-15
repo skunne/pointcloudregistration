@@ -33,17 +33,13 @@ protected:
   double *x;
   double *y;   // feasible vector for PII in frank-wolfe
 
-  std::size_t *base;    // base indices for simplex
-  std::size_t *nonbase; // nonbase indices for simplex
-  double *reduced_cost;  // reduced cost of each variable for simplex
-
   std::size_t x_len;  // nb var = ng * nh
   std::size_t n;    // assume ng = nh?? maybe not necessary??
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
-  std::vector<int> iv;     // nonzero constraint coeff rowindex
-  std::vector<int> jv;     // nonzero constraint coeff colindex
-  std::vector<double> av;  // nonzero constraint coeff value
+  std::vector<int> cons_coeff_rowindex;     // nonzero constraint coeff rowindex
+  std::vector<int> cons_coeff_colindex;     // nonzero constraint coeff colindex
+  std::vector<double> cons_coeff_value;  // nonzero constraint coeff value
 
 protected:
   double f_concav() const;

@@ -21,20 +21,25 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   nb_constraints = ng + nh;    // nb constraints
   assert(ng = nh);    // is that necessary?
   n = ng;
+
   x = (double *) malloc(x_len * sizeof(*x));
   y = (double *) malloc(x_len * sizeof(*y));
-  // base = malloc(realnbconstraints * sizeof(std::size_t));
-  // nonbase = malloc((realnbvar - realnbconstraints) * sizeof(std::size_t));
-  // reduced_cost = malloc(realnbconstraints * sizeof(double));
+
+  // stochasticity constraints
+  for (std::size_t ig = 0; ig < ng; ++ig)
+    for (std::size_t ih = 0; ih < nh; ++ih)
+    {
+      cons_coeff_rowindex.push_back(ig);
+      cons_coeff_colindex.push_back(ih);
+      cons_coeff_value.push_back(1.0);
+
+    }
 }
 
 GraphMatchingPath::~GraphMatchingPath()
 {
   free(x);
   free(y);
-  free(base);
-  free(nonbase);
-  free(reduced_cost);
 }
 
 void GraphMatchingPath::run()
@@ -72,7 +77,7 @@ void GraphMatchingPath::run()
 
 double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
 {
-  double res = 0;       // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
+  double result = 0;       // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
   unsigned int eg = 0;  // index of edge in G
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
@@ -90,12 +95,12 @@ double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
       ;
     auto edgeToIndex_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
     if (edgeToIndex_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
-      res -= esim->m(eg, edgeToIndex_h_itr->second);
+      result -= esim->m(eg, edgeToIndex_h_itr->second);
     else          // if edge in G not mapped to an edge in H
-      res -= 1.0; // this is the worst possible penalty, since esim->m is normalized
+      result -= 1.0; // this is the worst possible penalty, since esim->m is normalized
   }
-  res /= x_len;   // res = res / (ng * nh)
-  return res;
+  result /= x_len;   // result = result / (ng * nh)
+  return result;
 }
 
 double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
@@ -112,9 +117,9 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
 
   while (1) // TODO find correct stop criterion    //(zz != 0)
   {
-    simplex(iv, jv, av);  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
+    simplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);  // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
 
-    double mu = 0;//(ww - wz) / (zz - wz - wz + ww);
+    double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else
@@ -137,22 +142,35 @@ double GraphMatchingPath::simplex(std::vector<int> const &iv, std::vector<int> c
   double obj;       // value of objective function
 
   glp_prob *lp;
-
   lp = glp_create_prob();
   glp_set_prob_name(lp, "linear approximation");
+
+  // declare objective: maximize
   glp_set_obj_dir(lp, GLP_MAX);
+
+  // declare number of constraints and variables
   glp_add_rows(lp, nb_constraints);
   glp_add_cols(lp, x_len);
 
-  glp_load_matrix(lp, iv.size(), iv.data(), jv.data(), av.data());  // load constraints
+  // variables are nonnegative (and at most 1) and 1-indexed in glp
+  for (std::size_t col = 1; col <= x_len; ++col)
+    glp_set_col_bnds(lp, col, GLP_DB, 0.0, 1.0);  // 0 <= x[.] <= 1
 
+  // load constraints
+  glp_load_matrix(lp, iv.size(), iv.data(), jv.data(), av.data());
+  for (std::size_t row = 0; row < nb_constraints; ++row)
+    glp_set_row_bnds(lp, row, GLP_FX, 1.0, 1.0);
+
+  // load objective function
   compute_lp_obj_coeffs(lp);
 
+  // solve problem
   glp_simplex(lp, NULL);
 
+  // retrieve optimal objective value
   obj = glp_get_obj_val(lp);
 
-  
+
 
   return obj;
 }
