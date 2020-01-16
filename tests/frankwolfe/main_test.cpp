@@ -91,11 +91,11 @@ int main(void)
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
   Eigen::MatrixXd other_vsim(5,5);
-  other_vsim << 1.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 1.0;    // almost identity matrix
+  other_vsim << 0.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 0.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 0.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 0.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 0.0;    // almost identity matrix
 
   std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;

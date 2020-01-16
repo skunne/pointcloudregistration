@@ -20,6 +20,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
 
   x = (double *) malloc(x_len * sizeof(*x));
   y = (double *) malloc(x_len * sizeof(*y));
+  xD = (double *) malloc(x_len * sizeof(*xD));
 
   cons_coeff_rowindex.push_back(1);   // duplicate coeff at pos 0 and pos 1 because apparently these three vectors should be 1-indexed??
   cons_coeff_colindex.push_back(1);
@@ -47,6 +48,7 @@ GraphMatchingPath::~GraphMatchingPath()
 {
   free(x);
   free(y);
+  free(xD);
 }
 
 void GraphMatchingPath::run()
@@ -137,9 +139,9 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   double xDx = 1.0;   // initialise with arbitrary nonzero
   while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
   {
-    print_x(x, 5, 5);   // debug
+    print_x(y, 5, 5);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
-    xDx = mult_xD(lp, x);
+    xDx = mult_xD(x);
     pcl::console::print_info("xDx == %f\n", xDx);
     //exit(3); // debug exit
     double yDy = bilinear(y, y);
@@ -250,33 +252,34 @@ double GraphMatchingPath::simplex(void)
 
 void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
 {
-  // reward[edge eg] = sum_(edge eh) esim(eg,eh) * x[eh]
-  for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
+  // start from 0
+  memset(xD, 0, x_len * sizeof(*xD));
+  // add edge related rewards
+  for (auto edge_g : esim->sourceEdgeIndex)
   {
-    double reward_eg = 0;
-    int j = edge_g_itr->first.first * ng + edge_g_itr->first.second;   // cast here from size_t to int
-    for (auto edge_h_itr = esim->destEdgeIndex.cbegin(); edge_h_itr != esim->destEdgeIndex.cend(); ++edge_h_itr)
-      reward_eg += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * nh + edge_h_itr->first.second];
-    glp_set_obj_coef(lp, j + 1, reward_eg);    // second parameter expects 1-indexed int !!
+    for (auto edge_h : esim->destEdgeIndex)
+    {
+      std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
+      std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
+      xD[ky] += x[kx] * esim->m(edge_g.second, edge_h.second);
+      //glp_set_obj_coef(lp, ky+1, x[kx] * esim->m(edge_g.second, edge_h.second))
+    }
   }
-
-  // reward[vertex ig] = sum_(vertex ih) vsim(ig,ih) * x[ig,ih]
-  for (std::size_t ig = 0; ig < ng; ++ig)
-  {
-    double reward_ig = 0;
-    for (std::size_t ih = 0; ih < nh; ++ih)
-      reward_ig += (*vsim)(ig, ih) * x[ig * nh + ih];
-    glp_set_obj_coef(lp, ig * (ng+1) + 1, reward_ig);    // second parameter expects 1-indexed int !!
-  }
-  // reward[vertex pair (ig, jg) with ig != jg and no edge (ig, jg)] = 0
+  // add vertex related rewards
+  for (KeyT ig = 0; ig < ng; ++ig)
+    for (KeyT ih = 0; ih < nh; ++ih)
+      xD[ig * nh + ih] += x[ig * nh + ih] * (*vsim)(ig, ih);
+      //glp_set_obj_coef(lp, ig * nh + ih + 1, x[ig * nh + ih] * (*vsim)(ig, ih));
+  // send results to glpk
+  for (std::size_t ky = 0; ky < x_len; ++ky)
+    glp_set_obj_coef(lp, static_cast<int>(ky) + 1, xD[ky]);   // int 1-indexed
 }
 
-double GraphMatchingPath::mult_xD(glp_prob *lp, double *z)  // should be glp_prob const *lp
+double GraphMatchingPath::mult_xD(double *z)  // should be glp_prob const *lp
 {
-  // TODO xD is very sparse; try to browse nonzero coeffs only, and compare speed
   double result = 0;
-  for (std::size_t i = 0; i < x_len; ++i)
-    result += glp_get_obj_coef(lp, static_cast<int>(i+1)) * z[i];
+  for (std::size_t k = 0; k < x_len; ++k)
+    result += xD[k] * z[k];
   return result;
 }
 
@@ -290,7 +293,7 @@ double GraphMatchingPath::bilinear(double *x, double *y)
     {
       std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
       std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
-      result += x[kx] * x[ky] * esim->m(edge_g.second, edge_h.second);
+      result += x[kx] * y[ky] * esim->m(edge_g.second, edge_h.second);
     }
   }
   for (KeyT ig = 0; ig < ng; ++ig)

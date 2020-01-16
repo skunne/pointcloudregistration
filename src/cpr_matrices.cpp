@@ -25,8 +25,8 @@ void normalizeMatrixTo01(Eigen::MatrixXd &mat)
 
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
-      mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
-      //mat(i,j) = (mat(i,j)) / coeffMax;    
+      //mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+      mat(i,j) = (mat(i,j)) / coeffMax;
 }
 
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
@@ -34,12 +34,8 @@ VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESF
 {
   pcl::console::print_highlight("Building vertex similarity matrix.\n");
   for (auto s_itr = source.cbegin(); s_itr != source.cend(); ++s_itr)
-  {
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
-    {
       m(s_itr->first, d_itr->first) = esfDistance(s_itr->second, d_itr->second);
-    }
-  }
   normalizeMatrixTo01(m);
   pcl::console::print_info("    Successfully built %lu,%lu vertex similarity matrix.\n", source.size(), dest.size());
 }

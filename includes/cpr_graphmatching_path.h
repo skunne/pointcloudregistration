@@ -33,6 +33,8 @@ protected:
   double *x;
   double *y;   // feasible vector for PII in frank-wolfe
 
+  double *xD;   // coeffs of linear objective when x is fixed
+
   std::size_t ng;
   std::size_t nh;
   std::size_t x_len;  // nb var = ng * nh
@@ -53,7 +55,7 @@ protected:
   void initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
   double simplex(void);
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
-  double mult_xD(glp_prob *lp, double *z);   // compute xDz reusing xD coeffs stored in lp
+  double mult_xD(double *z);   // compute xDz reusing xD coeffs stored in variable xD
   double bilinear(double *x, double *y); // recompute xDy
   void updateY(glp_prob *lp);  // set y to solution of solved lp
   void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
