@@ -29,7 +29,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
     for (std::size_t ih = 0; ih < nh; ++ih)
     {
       cons_coeff_rowindex.push_back(ig+1);    // 1-indexed int
-      cons_coeff_colindex.push_back(ih+1);
+      cons_coeff_colindex.push_back(ig * nh + ih + 1);
       cons_coeff_value.push_back(1.0);
     }
   // stochasticity constraints: forall ih, sum_(ig) x(ig,ih) = 1
@@ -37,7 +37,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
     for (std::size_t ig = 0; ig < ng; ++ig)
     {
       cons_coeff_rowindex.push_back(ng+1+ih);    // continue from last row index
-      cons_coeff_colindex.push_back(ig+1);
+      cons_coeff_colindex.push_back(ig * nh + ih + 1);
       cons_coeff_value.push_back(1.0);
     }
   initSimplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);
@@ -199,9 +199,9 @@ void print_simplex(glp_prob *lp)
     assert(coef[0] == 43.0);
     if (nb_nonzero != 5)
       pcl::console::print_info("Wrong number (%d) of nonzero coeffs for constraint %d!!\n", nb_nonzero, row);
-    pcl::console::print_info("%.2f * x%d", coef[1], ind[1]-1);
+    pcl::console::print_info("%.2f * x%02d", coef[1], ind[1]-1);
     for (int col = 2; col <= 5; ++col)
-      pcl::console::print_info(" + %.2f * x%d", coef[col], ind[col]-1);
+      pcl::console::print_info(" + %.2f * x%02d", coef[col], ind[col]-1);
     assert(rowtype == GLP_FX);
     pcl::console::print_info(" == %.2f\n", rhs);
   }
