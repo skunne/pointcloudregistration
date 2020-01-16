@@ -8,15 +8,15 @@ void fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
 {
   // house with bottomleft-topright diagonal
   src_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 1, 0,     // 4   1
-             0, 1, 0, 1, 0,     // 3   2
+             1, 0, 1, 1, 0,     // 4  /1
+             0, 1, 0, 1, 0,     // 3/  2
              0, 1, 1, 0, 1,
              1, 1, 0, 1, 0;
 
   // house with topleft-bottomright diagonal
   dst_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 0, 0,     // 4   1
-             0, 1, 0, 1, 1,     // 3   2
+             1, 0, 1, 0, 0,     // 4\  1
+             0, 1, 0, 1, 1,     // 3  \2
              0, 0, 1, 0, 1,
              1, 1, 1, 1, 0;
 }
@@ -89,7 +89,8 @@ int main(void)
 
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
 
-  Eigen::MatrixXd x;
+  Eigen::MatrixXd x(5,5);
+  x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
 
   gm.frankWolfe(0.0, &x, &x);
 
