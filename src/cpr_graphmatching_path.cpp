@@ -21,12 +21,23 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
   x = (double *) malloc(x_len * sizeof(*x));
   y = (double *) malloc(x_len * sizeof(*y));
 
-  // stochasticity constraints
+  cons_coeff_rowindex.push_back(1);   // duplicate coeff at pos 0 and pos 1 because apparently these three vectors should be 1-indexed??
+  cons_coeff_colindex.push_back(1);
+  cons_coeff_value.push_back(1.0);
+  // stochasticity constraints: forall ig, sum_(ih) x(ig,ih) = 1
   for (std::size_t ig = 0; ig < ng; ++ig)
     for (std::size_t ih = 0; ih < nh; ++ih)
     {
-      cons_coeff_rowindex.push_back(ig);
-      cons_coeff_colindex.push_back(ih);
+      cons_coeff_rowindex.push_back(ig+1);    // 1-indexed int
+      cons_coeff_colindex.push_back(ih+1);
+      cons_coeff_value.push_back(1.0);
+    }
+  // stochasticity constraints: forall ih, sum_(ig) x(ig,ih) = 1
+  for (std::size_t ih = 0; ih < nh; ++ih)
+    for (std::size_t ig = 0; ig < ng; ++ig)
+    {
+      cons_coeff_rowindex.push_back(ng+1+ih);    // continue from last row index
+      cons_coeff_colindex.push_back(ig+1);
       cons_coeff_value.push_back(1.0);
     }
   initSimplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);
@@ -109,6 +120,7 @@ double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
 void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start)
 {
   // assert x basic feasible
+  memcpy(x, x_start->data(), x_len * sizeof(*x));
   memcpy(y, x, x_len * sizeof(*x)); // y = x
 
   while (1) // TODO find correct stop criterion    //(zz != 0)
@@ -152,14 +164,19 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
     glp_set_col_bnds(lp, col, GLP_DB, 0.0, 1.0);  // 0 <= x[.] <= 1
 
   // load constraints
-  glp_load_matrix(lp, iv.size(), iv.data(), jv.data(), av.data());
+  pcl::console::print_info("glp_load_matrix with %u nonzero constraint coeffs.\n", iv.size()-1);
+  glp_load_matrix(lp, iv.size()-1, iv.data(), jv.data(), av.data());
   for (std::size_t row = 0; row < nb_constraints; ++row)
-    glp_set_row_bnds(lp, row, GLP_FX, 1.0, 1.0);
+    glp_set_row_bnds(lp, row + 1, GLP_FX, 1.0, 1.0);    // row is 1-indexed
 }
 
 // update z to minimise W~ * Z
 double GraphMatchingPath::simplex(void)
 {
+  static std::size_t nb_calls = 0;
+  pcl::console::print_info("simplex call %u\n", nb_calls);
+  ++nb_calls;
+
   // reset objective function
   // load objective function
   compute_lp_obj_coeffs(lp);
