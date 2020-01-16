@@ -13,14 +13,10 @@
 #include "cpr_graphmatching_path.h"
 
 GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
-  : GraphMatching(vsim, esim, g_adj, h_adj)
+  : GraphMatching(vsim, esim, g_adj, h_adj),
+  ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh)
 {
-  std::size_t ng = g_adj->rows();
-  std::size_t nh = h_adj->rows();
-  x_len = ng * nh;    // nb variables
-  nb_constraints = ng + nh;    // nb constraints
-  assert(ng = nh);    // is that necessary?
-  n = ng;
+  //assert(ng = nh);    // is that necessary?
 
   x = (double *) malloc(x_len * sizeof(*x));
   y = (double *) malloc(x_len * sizeof(*y));
@@ -33,9 +29,7 @@ GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarity
       cons_coeff_colindex.push_back(ih);
       cons_coeff_value.push_back(1.0);
     }
-
   initSimplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);
-
 }
 
 GraphMatchingPath::~GraphMatchingPath()
@@ -49,8 +43,8 @@ void GraphMatchingPath::run()
   // Initialisation
   double lambda;
   double lambda_new;
-  Eigen::MatrixXd p(g_adj->rows(), h_adj->cols());
-  Eigen::MatrixXd p_new(g_adj->rows(), h_adj->cols());
+  Eigen::MatrixXd p(ng, nh);
+  Eigen::MatrixXd p_new(ng, nh);
 
   lambda = 0;
   frankWolfe(lambda, &p, &p);
@@ -187,19 +181,19 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
     double reward_eg = 0;
-    int j = edge_g_itr->first.first * n + edge_g_itr->first.second;   // cast here from size_t to int
+    int j = edge_g_itr->first.first * ng + edge_g_itr->first.second;   // cast here from size_t to int
     for (auto edge_h_itr = esim->destEdgeIndex.cbegin(); edge_h_itr != esim->destEdgeIndex.cend(); ++edge_h_itr)
-      reward_eg += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * n + edge_h_itr->first.second];
+      reward_eg += esim->m(edge_g_itr->second, edge_h_itr->second) * x[edge_h_itr->first.first * nh + edge_h_itr->first.second];
     glp_set_obj_coef(lp, j + 1, reward_eg);    // second parameter expects 1-indexed int !!
   }
 
   // reward[vertex ig] = sum_(vertex ih) vsim(ig,ih) * x[ig,ih]
-  for (std::size_t ig = 0; ig < n; ++ig)
+  for (std::size_t ig = 0; ig < ng; ++ig)
   {
     double reward_ig = 0;
-    for (std::size_t ih = 0; ih < n; ++ih)
-      reward_ig += (*vsim)(ig, ih) * x[ig * n + ih];
-    glp_set_obj_coef(lp, ig * (n+1) + 1, reward_ig);    // second parameter expects 1-indexed int !!
+    for (std::size_t ih = 0; ih < nh; ++ih)
+      reward_ig += (*vsim)(ig, ih) * x[ig * nh + ih];
+    glp_set_obj_coef(lp, ig * (ng+1) + 1, reward_ig);    // second parameter expects 1-indexed int !!
   }
   // reward[vertex pair (ig, jg) with ig != jg and no edge (ig, jg)] = 0
 }

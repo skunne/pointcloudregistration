@@ -33,8 +33,9 @@ protected:
   double *x;
   double *y;   // feasible vector for PII in frank-wolfe
 
+  std::size_t ng;
+  std::size_t nh;
   std::size_t x_len;  // nb var = ng * nh
-  std::size_t n;    // assume ng = nh?? not necessary??
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
   glp_prob *lp;
