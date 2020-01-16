@@ -90,6 +90,13 @@ int main(void)
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
+  Eigen::MatrixXd other_vsim(5,5);
+  other_vsim << 1.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 1.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 1.0;    // almost identity matrix
+
   std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;
   std::cout << vsim_mat.m << std::endl << std::endl;
@@ -99,7 +106,8 @@ int main(void)
   std::cout << esim_mat.m << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
 
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
+  //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
+  GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
 
   Eigen::MatrixXd x(5,5);
   x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;

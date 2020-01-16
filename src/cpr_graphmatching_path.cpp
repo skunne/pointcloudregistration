@@ -142,7 +142,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     xDx = mult_xD(lp, x);
     pcl::console::print_info("xDx == %f\n", xDx);
     //exit(3); // debug exit
-    double yDy = mult_xD(lp, y);  // TODO this is a mistake, mult_xD(y) = xDy and not yDy
+    double yDy = bilinear(y, y);
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
@@ -187,8 +187,10 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
 
 void print_simplex(glp_prob *lp)
 {
+  // print constraints
+  pcl::console::print_info("constraints:\n");
   int ind[6];
-  double coef[6];
+  double coef[26];
   ind[0] = 43; coef[0] = 43.0;
   for (int row = 1; row <= 10; ++row)
   {
@@ -205,13 +207,26 @@ void print_simplex(glp_prob *lp)
     assert(rowtype == GLP_FX);
     pcl::console::print_info(" == %.2f\n", rhs);
   }
+  pcl::console::print_info("objective:\n");
+  assert(glp_get_obj_dir(lp) == GLP_MAX);
+  for (int j = 1; j <= 25; ++j)
+    coef[j] = glp_get_obj_coef(lp, j);
+  pcl::console::print_info    ("Maximize  %.2f x%02d", coef[1], 0);
+  int j = 2;
+  for (int k = 5; k <= 25; k += 5)
+  {
+    for (; j <= k; ++j)
+      pcl::console::print_info(" + %.2f x%02d", coef[j], j-1);
+    pcl::console::print_info("\n       ");
+  }
+  pcl::console::print_info("\n");
 }
 
 // update z to minimise W~ * Z
 double GraphMatchingPath::simplex(void)
 {
   static std::size_t nb_calls = 0;
-  if (nb_calls > 10)
+  if (nb_calls > 5)
     exit(3);    // for debug
   pcl::console::print_info("simplex call %u\n", nb_calls);
   ++nb_calls;
@@ -263,6 +278,26 @@ double GraphMatchingPath::mult_xD(glp_prob *lp, double *z)  // should be glp_pro
   for (std::size_t i = 0; i < x_len; ++i)
     result += glp_get_obj_coef(lp, static_cast<int>(i+1)) * z[i];
   return result;
+}
+
+// compute x D y
+double GraphMatchingPath::bilinear(double *x, double *y)
+{
+  double result = 0;
+  for (auto edge_g : esim->sourceEdgeIndex)
+  {
+    for (auto edge_h : esim->destEdgeIndex)
+    {
+      std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
+      std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
+      result += x[kx] * x[ky] * esim->m(edge_g.second, edge_h.second);
+    }
+  }
+  for (KeyT ig = 0; ig < ng; ++ig)
+    for (KeyT ih = 0; ih < nh; ++ih)
+      result += x[ig * nh + ih] * y[ig * nh + ih] * (*vsim)(ig, ih);
+
+  return result; // = sum_(jg,jh) (sum_(ig,ih) x[ig,ih] D[(ig,ih)(jg,jh)]) y[jg,jh]
 }
 
 // set y to solution of solved lp

@@ -26,6 +26,7 @@ void normalizeMatrixTo01(Eigen::MatrixXd &mat)
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
       mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+      //mat(i,j) = (mat(i,j)) / coeffMax;    
 }
 
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
