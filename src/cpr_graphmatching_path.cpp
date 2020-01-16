@@ -117,6 +117,17 @@ double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 }
 
+void print_x(double *x, std::size_t width, std::size_t height)
+{
+  std::cout << "Printing solution x" << std::endl;
+  for (std::size_t row = 0; row < height; ++row)
+  {
+    for (std::size_t col = 0; col < width; ++col)
+      std::cout << x[row * width + col] << ' ';
+    std::cout << std::endl;
+  }
+}
+
 void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start)
 {
   // assert x basic feasible
@@ -126,10 +137,11 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   double xDx = 1.0;   // initialise with arbitrary nonzero
   while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
   {
+    print_x(x, 5, 5);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
     xDx = mult_xD(lp, x);
     pcl::console::print_info("xDx == %f\n", xDx);
-    exit(3);
+    //exit(3); // debug exit
     double yDy = mult_xD(lp, y);  // TODO this is a mistake, mult_xD(y) = xDy and not yDy
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
@@ -177,6 +189,8 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
 double GraphMatchingPath::simplex(void)
 {
   static std::size_t nb_calls = 0;
+  if (nb_calls > 10)
+    exit(3);    // for debug
   pcl::console::print_info("simplex call %u\n", nb_calls);
   ++nb_calls;
 

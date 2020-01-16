@@ -26,15 +26,17 @@ void fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
 // fill dst_esf with a small perturbation of src_esf
 void fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
 {
+  int random = 197546;
   for (KeyT i = 0; i < 5; ++i)
   {
     for (std::size_t j = 0; j < 640; ++j)
     {
+      random = (random * 7 + 19 + i + j) % 31;
       // src = pseudo-random in [0, 1]
-      src_esf[i].push_back(static_cast<float>((i % 3 + 1) * (j % 17 + 1)) / 51.0f);
+      src_esf[i].push_back(static_cast<float>(random) / 30.0f);
 
-      // dst = src + pseudo-random in [-0.0185, 0.02]
-      dst_esf[i].push_back(src_esf[i][j] + ((static_cast<float>((i % 4 + 1) * (j % 7 + 1)) - 14.0f) / 700.0f));
+      // dst = src + pseudo-random in [-0.02, 0.02]
+      dst_esf[i].push_back(src_esf[i][j] + (static_cast<float>(random) / (30.0f * 25.0f) - 0.02f));
     }
   }
 }
@@ -88,11 +90,14 @@ int main(void)
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
-  std::cout << std::fixed << std::setprecision(2);
+  std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_mat.m << std::endl;
+  std::cout << vsim_mat.m << std::endl << std::endl;
+  std::cout.unsetf(std::ios_base::floatfield);
+  std::cout << std::setprecision(1);
   std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl;
+  std::cout << esim_mat.m << std::endl << std::endl;
+  std::cout << std::fixed << std::setprecision(2);
 
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
 
