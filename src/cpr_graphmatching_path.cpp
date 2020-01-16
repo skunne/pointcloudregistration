@@ -150,7 +150,7 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     else
       updateX(mu); // x = (1 - mu) * x + mu * y;
   }
-  memcpy(x_return->data(), x, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  memcpy(x_return->data(), y, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
 }     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
 void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
@@ -185,6 +185,28 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
     glp_set_row_bnds(lp, row + 1, GLP_FX, 1.0, 1.0);    // row is 1-indexed
 }
 
+void print_simplex(glp_prob *lp)
+{
+  int ind[6];
+  double coef[6];
+  ind[0] = 43; coef[0] = 43.0;
+  for (int row = 1; row <= 10; ++row)
+  {
+    int nb_nonzero = glp_get_mat_row(lp, row, ind, coef);
+    int rowtype = glp_get_row_type(lp, row);
+    double rhs = glp_get_row_ub(lp, row);
+    assert(ind[0] == 43);
+    assert(coef[0] == 43.0);
+    if (nb_nonzero != 5)
+      pcl::console::print_info("Wrong number (%d) of nonzero coeffs for constraint %d!!\n", nb_nonzero, row);
+    pcl::console::print_info("%.2f * x%d", coef[1], ind[1]-1);
+    for (int col = 2; col <= 5; ++col)
+      pcl::console::print_info(" + %.2f * x%d", coef[col], ind[col]-1);
+    assert(rowtype == GLP_FX);
+    pcl::console::print_info(" == %.2f\n", rhs);
+  }
+}
+
 // update z to minimise W~ * Z
 double GraphMatchingPath::simplex(void)
 {
@@ -197,6 +219,8 @@ double GraphMatchingPath::simplex(void)
   // reset objective function
   // load objective function
   compute_lp_obj_coeffs(lp);
+
+  print_simplex(lp);
 
   // solve problem
   glp_simplex(lp, NULL);
