@@ -48,7 +48,7 @@ protected:
   double f_convex() const;
   double f_smooth(Eigen::MatrixXd const *p) const;
   double f(double lambda, Eigen::MatrixXd const *p) const;
-  void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
+  //void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
   //double simplex(void);   // y = argmax 2 x^T D y, A y = 1, 0 <= y <= 1
   void initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
   double simplex(void);
@@ -58,6 +58,7 @@ protected:
   void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:
+  void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);
   GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
   ~GraphMatchingPath();
   virtual void run();

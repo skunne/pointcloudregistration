@@ -11,9 +11,9 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-set(SRC ../src/cpr_params.cpp ../src/cpr_loadfiles.cpp test.cpp)
+set(SRC ../../src/cpr_params.cpp ../../src/cpr_loadfiles.cpp test.cpp)
 
-include_directories("../includes")
+include_directories("../../includes")
 
 add_executable (${NAME} ${SRC})
 target_link_libraries (${NAME} PUBLIC ${PCL_LIBRARIES})
