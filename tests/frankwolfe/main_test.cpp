@@ -1,4 +1,5 @@
-#include <iostream>
+#include <iostream>   // std::cout
+#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
@@ -86,6 +87,12 @@ int main(void)
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
+
+  std::cout << std::fixed << std::setprecision(2);
+  std::cout << "Vertex similarity matrix:" << std::endl;
+  std::cout << vsim_mat.m << std::endl;
+  std::cout << "Edge similarity matrix:" << std::endl;
+  std::cout << esim_mat.m << std::endl;
 
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
 

@@ -123,10 +123,13 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   memcpy(x, x_start->data(), x_len * sizeof(*x));
   memcpy(y, x, x_len * sizeof(*x)); // y = x
 
-  while (1) // TODO find correct stop criterion    //(zz != 0)
+  double xDx = 1.0;   // initialise with arbitrary nonzero
+  while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
   {
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
-    double xDx = mult_xD(lp, x);
+    xDx = mult_xD(lp, x);
+    pcl::console::print_info("xDx == %f\n", xDx);
+    exit(3);
     double yDy = mult_xD(lp, y);  // TODO this is a mistake, mult_xD(y) = xDy and not yDy
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
