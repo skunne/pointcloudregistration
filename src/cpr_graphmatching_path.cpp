@@ -119,9 +119,9 @@ double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 }
 
-void print_x(double *x, std::size_t width, std::size_t height)
+void print_x(char const *name, double *x, std::size_t width, std::size_t height)
 {
-  std::cout << "Printing solution x" << std::endl;
+  std::cout << "Printing solution " << name << std::endl;
   for (std::size_t row = 0; row < height; ++row)
   {
     for (std::size_t col = 0; col < width; ++col)
@@ -139,7 +139,8 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   double xDx = 1.0;   // initialise with arbitrary nonzero
   while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
   {
-    print_x(y, 5, 5);   // debug
+    print_x("x", x, 5, 5);   // debug
+    print_x("y", y, 5, 5);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
     xDx = mult_xD(x);
     pcl::console::print_info("xDx == %f\n", xDx);
@@ -149,6 +150,15 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
+    else if (mu < 0)
+    {
+      pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
+      pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
+      pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
+      pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
+      pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
+      pcl::console::print_info("    mu: %f\n", mu);
+    }
     else
       updateX(mu); // x = (1 - mu) * x + mu * y;
   }
@@ -273,6 +283,14 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   // send results to glpk
   for (std::size_t ky = 0; ky < x_len; ++ky)
     glp_set_obj_coef(lp, static_cast<int>(ky) + 1, xD[ky]);   // int 1-indexed
+
+  std::cout << "Objective coeffs:" << std::endl;
+  for (KeyT ig = 0; ig < ng; ++ig)
+  {
+    for (KeyT ih = 0; ih < nh; ++ih)
+      std::cout << xD[ig * nh + ih] << ' ';
+    std::cout << std::endl;
+  }
 }
 
 double GraphMatchingPath::mult_xD(double *z)  // should be glp_prob const *lp
