@@ -201,10 +201,10 @@ void print_simplex(glp_prob *lp, int ng, int nh)
 {
   // print constraints
   pcl::console::print_info("constraints:\n");
-  int ind[6];
-  double coef[26];
+  int ind[6];       // must be at least max(ng,nh)+1
+  double coef[26];  // must be at least ng*nh+1
   ind[0] = 43; coef[0] = 43.0;
-  for (int row = 1; row <= 10; ++row)
+  for (int row = 1; row <= ng+nh; ++row)
   {
     int nb_nonzero = glp_get_mat_row(lp, row, ind, coef);
     int rowtype = glp_get_row_type(lp, row);
@@ -221,11 +221,11 @@ void print_simplex(glp_prob *lp, int ng, int nh)
   }
   pcl::console::print_info("objective:\n");
   assert(glp_get_obj_dir(lp) == GLP_MAX);
-  for (int j = 1; j <= 25; ++j)
+  for (int j = 1; j <= ng*nh; ++j)
     coef[j] = glp_get_obj_coef(lp, j);
   pcl::console::print_info    ("Maximize  %.2f x%02d", coef[1], 0);
   int j = 2;
-  for (int k = 5; k <= 25; k += 5)
+  for (int k = nh; k <= ng*nh; k += nh)
   {
     for (; j <= k; ++j)
       pcl::console::print_info(" + %.2f x%02d", coef[j], j-1);
