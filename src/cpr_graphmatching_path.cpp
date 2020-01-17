@@ -197,7 +197,7 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
     glp_set_row_bnds(lp, row + 1, GLP_FX, 1.0, 1.0);    // row is 1-indexed
 }
 
-void print_simplex(glp_prob *lp)
+void print_simplex(glp_prob *lp, int ng, int nh)
 {
   // print constraints
   pcl::console::print_info("constraints:\n");
@@ -211,7 +211,7 @@ void print_simplex(glp_prob *lp)
     double rhs = glp_get_row_ub(lp, row);
     assert(ind[0] == 43);
     assert(coef[0] == 43.0);
-    if (nb_nonzero != 5)
+    if (((row-1) < ng && nb_nonzero != nh) || nb_nonzero != ng)
       pcl::console::print_info("Wrong number (%d) of nonzero coeffs for constraint %d!!\n", nb_nonzero, row);
     pcl::console::print_info("%.2f * x%02d", coef[1], ind[1]-1);
     for (int col = 2; col <= 5; ++col)
@@ -247,7 +247,7 @@ double GraphMatchingPath::simplex(void)
   // load objective function
   compute_lp_obj_coeffs(lp);
 
-  print_simplex(lp);
+  print_simplex(lp, ng, nh);
 
   // solve problem
   glp_simplex(lp, NULL);
