@@ -16,7 +16,8 @@ void test_two_twonodes_graphs()
               1.0, 0.0;
 
   EdgeDescriptors ed;
-  ed[std::make_pair(0,1)] = ed[std::make_pair(1,0)] = std::make_tuple(0, 3.14/2.0, 0, 1); // just one edge
+  ed[std::make_pair(1,0)] = std::make_tuple(0, 3.14/2.0, 0, 1); // just one edge
+  ed[std::make_pair(0,1)] = ed[std::make_pair(1,0)];
 
   EdgeSimilarityMatrix esim_mat(ed, ed);  // both graphs have the same edge
 
@@ -26,17 +27,17 @@ void test_two_twonodes_graphs()
 
   GraphMatchingPath gm(&vsim_mat, &esim_mat, &adj, &adj);
 
-  std::cout << "Vertex distance matrix:" << std::endl;
+  std::cout << std::endl << "Vertex distance matrix:" << std::endl;
   std::cout << vsim_mat << std::endl;
 
   std::cout << "Edge distance matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl;
+  std::cout << esim_mat.m << std::endl << std::endl;
 
   std::cout << "Starting solution:" << std::endl;
-  std::cout << x << std::endl;
+  std::cout << x << std::endl << std::endl;
 
   gm.frankWolfe(0.0, &x, &x);
 
   std::cout << "Final solution:" << std::endl;
-  std::cout << x << std::endl;
+  std::cout << x << std::endl << std::endl;
 }

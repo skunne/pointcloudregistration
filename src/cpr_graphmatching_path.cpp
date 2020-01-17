@@ -139,24 +139,23 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   double xDx = 1.0;   // initialise with arbitrary nonzero
   while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
   {
-    print_x("x", x, 5, 5);   // debug
-    print_x("y", y, 5, 5);   // debug
+    print_x("x", x, nh, ng);   // debug
+    print_x("y", y, nh, ng);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
     xDx = mult_xD(x);
-    pcl::console::print_info("xDx == %f\n", xDx);
     //exit(3); // debug exit
     double yDy = bilinear(y, y);
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
+    pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
+    pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
+    pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
+    pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else if (mu < 0)
     {
       pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
-      pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
-      pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
-      pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
-      pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
       pcl::console::print_info("    mu: %f\n", mu);
     }
     else
