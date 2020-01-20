@@ -10,7 +10,7 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
       * Compute the 4 descriptors `(angle_x, angle_y, angle_z, distance)` following _Huang et al, 2017_ (1)
  * Build vertex similarity matrix using distance between ESF descriptors
  * Build edge similarity matrix using distance between 4-descriptors
- * TODO Match the two resulting graphs using the Path algorithm from _Zaslavskiy et al, 2009_ (4)
+ * Match the two resulting graphs using Frank-Wolfe algorithm for quadratic programming (5)
  * TODO Apply RANSAC algorithm (6) to the point clouds
  * TODO Apply ICP algorithm (7, 8) to the point clouds
 

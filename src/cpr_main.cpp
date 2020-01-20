@@ -159,12 +159,17 @@ main (int argc, char ** argv)
   int const ng = ppc_source.getNbVertices();
   int const nh = ppc_dest.getNbVertices();
 
-  MatrixDouble x(ng, nh);
-  x.Constant(ng, nh, 1.0 / (ng < nh ? ng : nh));
+  MatrixDouble x(ng, nh);   // matrix to store the graph matching permutation
+  x.fill(1.0 / (ng < nh ? ng : nh));  // trivial initial feasible solution
+  //x.Constant(ng, nh, 1.0 / static_cast<double>(ng < nh ? ng : nh));
   //x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+
+  //std::cout << "Initial graph-matching solution:" << std::endl;
+  //std::cout << x << std::endl;
 
   gm.frankWolfe(0.0, &x, &x);
 
+  std::cout << "Final graph-matching solution:" << std::endl;
   std::cout << x << std::endl;
 
   // TODO find geometric transform corresponding to the matching

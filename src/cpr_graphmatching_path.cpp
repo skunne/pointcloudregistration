@@ -140,20 +140,19 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
   double yDy = 1.0;   // initialise with arbitrary nonzero
   while (yDy != 0 && mu != 0) // TODO find correct stop criterion    //(zz != 0)
   {
-    print_x("x", x, nh, ng);   // debug
-    print_x("y", y, nh, ng);   // debug
+    //print_x("x", x, nh, ng);   // debug
+    //print_x("y", y, nh, ng);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
     double xDx = mult_xD(x);
-    //exit(3); // debug
     yDy = bilinear(y, y);
     // be careful with sign of mu and maximize/minimize in lp??
     mu = -(xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
-    pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
-    pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
-    pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
-    pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
-    pcl::console::print_info("    mu:  %f\n", mu);
+    // pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
+    // pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
+    // pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
+    // pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
+    // pcl::console::print_info("    mu:  %f\n", mu);
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else if (mu < 0)
@@ -243,21 +242,21 @@ void print_simplex(glp_prob *lp, int ng, int nh)
 double GraphMatchingPath::simplex(void)
 {
   static std::size_t nb_calls = 0;
-  //if (nb_calls > 5)
-  //  exit(3);    // for debug
   pcl::console::print_info("simplex call %u\n", nb_calls);
+  // if (nb_calls > 5)
+  //   exit(3);    // for debug
   ++nb_calls;
 
   // reset objective function
   // load objective function
   compute_lp_obj_coeffs(lp);
 
-  //print_simplex(lp, ng, nh);
+  // print_simplex(lp, ng, nh);
 
   // solve problem
   glp_simplex(lp, NULL);
 
-  // TODO update vector y with variables from the solution!!
+  // update vector y with variables from the solution!!
   setYToSolutionOfLP(lp);
 
   // retrieve optimal objective value
@@ -289,13 +288,13 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   for (std::size_t ky = 0; ky < x_len; ++ky)
     glp_set_obj_coef(lp, static_cast<int>(ky) + 1, xD[ky]);   // int 1-indexed
 
-  std::cout << "Objective coeffs:" << std::endl;
-  for (KeyT ig = 0; ig < ng; ++ig)
-  {
-    for (KeyT ih = 0; ih < nh; ++ih)
-      std::cout << xD[ig * nh + ih] << ' ';
-    std::cout << std::endl;
-  }
+  //std::cout << "Objective coeffs:" << std::endl;
+  //for (KeyT ig = 0; ig < ng; ++ig)
+  //{
+  //  for (KeyT ih = 0; ih < nh; ++ih)
+  //    std::cout << xD[ig * nh + ih] << ' ';
+  //  std::cout << std::endl;
+  //}
 }
 
 double GraphMatchingPath::mult_xD(double *z)  // should be glp_prob const *lp
