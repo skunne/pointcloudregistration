@@ -154,7 +154,7 @@ main (int argc, char ** argv)
 
   // TODO match graphs
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
-  Eigen::MatrixXd x(ng,nh);
+  MatrixDouble x(ng,nh);
   x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
 
   gm.frankWolfe(0.0, &x, &x);

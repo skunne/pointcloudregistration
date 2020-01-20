@@ -5,7 +5,7 @@
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-void testdifferent_fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
+void testdifferent_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
 {
   // house with 5 nodes and 7 edges
   //   0
@@ -108,6 +108,8 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
 
 void test_5nodes_with_6nodes()
 {
+  int const ng = 5; // src graph has 5 nodes
+  int const nh = 6; // dst graph has 6 nodes
   ESFDescriptors  src_esf;
   ESFDescriptors  dst_esf;
   testdifferent_fill_esf_descr(src_esf, dst_esf);
@@ -116,19 +118,19 @@ void test_5nodes_with_6nodes()
   EdgeDescriptors dst_ed;
   testdifferent_fill_edge_descr(src_ed, dst_ed);
 
-  Eigen::MatrixXi src_adj(5,5);
-  Eigen::MatrixXi dst_adj(6,6);
+  MatrixInt src_adj(ng,ng);
+  MatrixInt dst_adj(nh,nh);
   testdifferent_fill_adjacency_matrices(src_adj, dst_adj);
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
-  Eigen::MatrixXd other_vsim(5,6);
-  other_vsim << 0.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 0.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 0.0;    // almost identity matrix
+  MatrixDouble other_vsim(ng,nh);
+  other_vsim << 0.95, 0.07, 0.07, 0.20, 0.07, 0.07,
+                0.07, 0.95, 0.07, 0.20, 0.07, 0.07,
+                0.07, 0.07, 0.95, 0.20, 0.07, 0.07,
+                0.07, 0.07, 0.07, 0.20, 0.95, 0.07,
+                0.07, 0.07, 0.07, 0.20, 0.07, 0.95; // almost identity matrix
 
   std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;
@@ -142,8 +144,12 @@ void test_5nodes_with_6nodes()
   //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
   GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
 
-  Eigen::MatrixXd x(5,5);
-  x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
+  x << 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+       0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+       0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+       0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+       0.2, 0.2, 0.2, 0.2, 0.2, 0.2;
 
   gm.frankWolfe(0.0, &x, &x);
 

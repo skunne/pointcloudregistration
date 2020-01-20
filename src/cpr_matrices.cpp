@@ -5,9 +5,9 @@
 #include "cpr_features.h"   // distance between two ESF descriptors or two edge descriptors
 #include "cpr_matrices.h"
 
-void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen::MatrixXi &adjacency_matrix)
+void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, MatrixInt &adjacency_matrix)
 {
-  adjacency_matrix = Eigen::MatrixXi::Zero(adjacency_matrix.rows(), adjacency_matrix.cols());
+  adjacency_matrix = MatrixInt::Zero(adjacency_matrix.rows(), adjacency_matrix.cols());
   for (auto edge_itr = supervoxel_adjacency.cbegin(); edge_itr != supervoxel_adjacency.cend(); ++edge_itr)
   {
     adjacency_matrix(edge_itr->first, edge_itr->second) = 1;
@@ -16,7 +16,7 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Eigen
 }
 
 // assumes all coeffs are positive!!
-void normalizeMatrixTo01(Eigen::MatrixXd &mat)
+void normalizeMatrixTo01(MatrixDouble &mat)
 {
   double coeffMax = 0;
   for (int i = 0; i < mat.rows(); ++i)
@@ -27,8 +27,8 @@ void normalizeMatrixTo01(Eigen::MatrixXd &mat)
   {
     for (int i = 0; i < mat.rows(); ++i)
       for (int j = 0; j < mat.cols(); ++j)
-        mat(i,j) = (mat(i,j)) / coeffMax;
-        //mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+        //mat(i,j) = (mat(i,j)) / coeffMax;
+        mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
   }
 }
 
@@ -73,7 +73,7 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
   pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
 }
 
-void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)
+void printMatrixToFile(char const *filename, MatrixInt const &m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
@@ -85,7 +85,7 @@ void printMatrixToFile(char const *filename, Eigen::MatrixXi const &m)
   else
     output << m << std::endl;
 }
-void printMatrixToFile(char const *filename, Eigen::MatrixXd const &m)
+void printMatrixToFile(char const *filename, MatrixDouble const &m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 

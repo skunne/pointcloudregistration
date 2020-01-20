@@ -21,18 +21,18 @@ A graph matching algorithm inspired by Zaslavskiy and Huang
 class GraphMatchingCgal : GraphMatching
 {
 private:
-  //Eigen::MatrixXd const *vsim;    // vertex similarity matrix
+  //MatrixDouble const *vsim;    // vertex similarity matrix
   //EdgeSimilarityMatrix const *esim; // edge similarity matrix
 
-  //Eigen::MatrixXi const *g_adj;   // adjacency matrix of first graph
-  //Eigen::MatrixXi const *h_adj;   // adjacency matrix of second graph
+  //MatrixInt const *g_adj;   // adjacency matrix of first graph
+  //MatrixInt const *h_adj;   // adjacency matrix of second graph
 
-  //Eigen::MatrixXd sol_concav;   // doubly stochastic, actually a permutation matrix
-  //Eigen::MatrixXd sol_convex;   // doubly stochastic
-  //Eigen::MatrixXd sol_smooth;   // doubly stochastic
+  //MatrixDouble sol_concav;   // doubly stochastic, actually a permutation matrix
+  //MatrixDouble sol_convex;   // doubly stochastic
+  //MatrixDouble sol_smooth;   // doubly stochastic
 
 public:
-  //Eigen::MatrixXi matching;          // permutation matrix
+  //MatrixInt matching;          // permutation matrix
   // include matching as an std::map as well as a permutation matrix?
 
 protected:
@@ -50,7 +50,7 @@ protected:
   int c0;                               // no constant term in objective
 
 public:
-  GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj);
+  GraphMatchingCgal(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
   void build(void);
   virtual void run(void);
   void fillMpsStream(std::stringstream &in) const;

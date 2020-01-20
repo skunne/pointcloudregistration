@@ -2,7 +2,7 @@
 //#include <stdexcept>    // std::out_of_range
 #include "cpr_graphmatching.h"
 
-GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
+GraphMatching::GraphMatching(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : vsim(vsim), esim(esim), g_adj(g_adj), h_adj(h_adj), matching(g_adj->rows(), h_adj->rows())
 {
   // assert g_adj and h_adj are square matrices
@@ -12,7 +12,7 @@ GraphMatching::GraphMatching(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix c
 
 void GraphMatching::run(void)
 {
-  
+
 }
 // void GraphMatching::run()
 // {
@@ -20,8 +20,8 @@ void GraphMatching::run(void)
 //   // Initialisation
 //   double lambda;
 //   double lambda_new;
-//   Eigen::MatrixXd p(g_adj->rows(), h_adj->cols());
-//   Eigen::MatrixXd p_new(g_adj->rows(), h_adj->cols());
+//   MatrixDouble p(g_adj->rows(), h_adj->cols());
+//   MatrixDouble p_new(g_adj->rows(), h_adj->cols());
 //
 //   lambda = 0;
 //   frankWolfe(lambda, &p, &p);
@@ -48,7 +48,7 @@ void GraphMatching::run(void)
 //   // copy p into matching?
 // }
 
-// double GraphMatching::f_smooth(Eigen::MatrixXd const *p) const
+// double GraphMatching::f_smooth(MatrixDouble const *p) const
 // {
 //   double res = 0;       // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
 //   unsigned int eg = 0;  // index of edge in G
@@ -76,7 +76,7 @@ void GraphMatching::run(void)
 //   return res;
 // }
 //
-// double GraphMatching::f(double lambda, Eigen::MatrixXd const *p) const
+// double GraphMatching::f(double lambda, MatrixDouble const *p) const
 // {
 //   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 // }

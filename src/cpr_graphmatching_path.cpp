@@ -12,7 +12,7 @@
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
 
-GraphMatchingPath::GraphMatchingPath(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
+GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : GraphMatching(vsim, esim, g_adj, h_adj),
   ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh)
 {
@@ -56,8 +56,8 @@ void GraphMatchingPath::run()
   // Initialisation
   double lambda;
   double lambda_new;
-  Eigen::MatrixXd p(ng, nh);
-  Eigen::MatrixXd p_new(ng, nh);
+  MatrixDouble p(ng, nh);
+  MatrixDouble p_new(ng, nh);
 
   lambda = 0;
   frankWolfe(lambda, &p, &p);
@@ -84,7 +84,7 @@ void GraphMatchingPath::run()
   // copy p into this->matching and convert double to int
 }
 
-double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
+double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 {
   double result = 0;       // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
   unsigned int eg = 0;  // index of edge in G
@@ -112,7 +112,7 @@ double GraphMatchingPath::f_smooth(Eigen::MatrixXd const *p) const
   return result;
 }
 
-double GraphMatchingPath::f(double lambda, Eigen::MatrixXd const *p) const
+double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
 {
   (void) lambda;
   (void) p;
@@ -130,14 +130,15 @@ void print_x(char const *name, double *x, std::size_t width, std::size_t height)
   }
 }
 
-void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start)
+void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start)
 {
   // assert x basic feasible
   memcpy(x, x_start->data(), x_len * sizeof(*x));
   memcpy(y, x, x_len * sizeof(*x)); // y = x
 
+  double mu = 1.0;    // initialise with arbitrary nonzero
   double yDy = 1.0;   // initialise with arbitrary nonzero
-  while (yDy != 0) // TODO find correct stop criterion    //(zz != 0)
+  while (yDy != 0 && mu != 0) // TODO find correct stop criterion    //(zz != 0)
   {
     print_x("x", x, nh, ng);   // debug
     print_x("y", y, nh, ng);   // debug
@@ -145,12 +146,14 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
     double xDx = mult_xD(x);
     //exit(3); // debug
     yDy = bilinear(y, y);
-    double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
+    // be careful with sign of mu and maximize/minimize in lp??
+    mu = -(xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
     pcl::console::print_info("    xDy: %f == %f\n", xDy, bilinear(x,y));
     pcl::console::print_info("    yDx:          == %f\n", bilinear(y,x));
     pcl::console::print_info("    yDy: %f == %f\n", yDy, bilinear(y,y));
+    pcl::console::print_info("    mu:  %f\n", mu);
     if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else if (mu < 0)
@@ -179,8 +182,8 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
   lp = glp_create_prob();
   glp_set_prob_name(lp, "linear approximation");
 
-  // declare objective: minimize
-  glp_set_obj_dir(lp, GLP_MIN);
+  // declare objective: maximize
+  glp_set_obj_dir(lp, GLP_MAX);
 
   // declare number of constraints and variables
   glp_add_rows(lp, nb_constraints);
@@ -194,7 +197,7 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
   pcl::console::print_info("glp_load_matrix with %u nonzero constraint coeffs.\n", iv.size()-1);
   glp_load_matrix(lp, iv.size()-1, iv.data(), jv.data(), av.data());
   for (std::size_t row = 0; row < nb_constraints; ++row)
-    glp_set_row_bnds(lp, row + 1, GLP_FX, 1.0, 1.0);    // row is 1-indexed
+    glp_set_row_bnds(lp, row + 1, GLP_DB, 0.0, 1.0);    // row is 1-indexed
 }
 
 void print_simplex(glp_prob *lp, int ng, int nh)
@@ -218,11 +221,11 @@ void print_simplex(glp_prob *lp, int ng, int nh)
     pcl::console::print_info("%.2f * x%02d", coef[1], ind[1]-1);
     for (int col = 2; col <= 5; ++col)
       pcl::console::print_info(" + %.2f * x%02d", coef[col], ind[col]-1);
-    assert(rowtype == GLP_FX);
-    pcl::console::print_info(" == %.2f\n", rhs);
+    assert(rowtype == GLP_DB);
+    pcl::console::print_info(" <= %.2f\n", rhs);
   }
   pcl::console::print_info("objective:\n");
-  assert(glp_get_obj_dir(lp) == GLP_MIN);
+  assert(glp_get_obj_dir(lp) == GLP_MAX);
   for (int j = 1; j <= ng*nh; ++j)
     coef[j] = glp_get_obj_coef(lp, j);
   pcl::console::print_info    ("Maximize  %.2f x%02d", coef[1], 0);

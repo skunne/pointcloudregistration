@@ -44,6 +44,8 @@ typedef std::map<
                 EdgeFeature
                 > EdgeDescriptors;
 
+typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> MatrixDouble;
+typedef Eigen::Matrix<int,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> MatrixInt;
 
 
 #endif /* __DEF_MAIN_H__ */

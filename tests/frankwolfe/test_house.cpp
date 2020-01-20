@@ -5,7 +5,7 @@
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-void testhouses_fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
+void testhouses_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
 {
   // house with bottomleft-topright diagonal
   src_adj << 0, 1, 0, 0, 1,     //   0
@@ -83,19 +83,19 @@ void test_two_house_graphs()
   EdgeDescriptors dst_ed;
   testhouses_fill_edge_descr(src_ed, dst_ed);
 
-  Eigen::MatrixXi src_adj(5,5);
-  Eigen::MatrixXi dst_adj(5,5);
+  MatrixInt src_adj(5,5);
+  MatrixInt dst_adj(5,5);
   testhouses_fill_adjacency_matrices(src_adj, dst_adj);
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
-  Eigen::MatrixXd other_vsim(5,5);
-  other_vsim << 0.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 0.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 0.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 0.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 0.0;    // almost identity matrix
+  MatrixDouble other_vsim(5,5);
+  other_vsim << 0.95, 0.1, 0.1, 0.1, 0.1,
+                0.1, 0.95, 0.1, 0.1, 0.1,
+                0.1, 0.1, 0.95, 0.1, 0.1,
+                0.1, 0.1, 0.1, 0.95, 0.1,
+                0.1, 0.1, 0.1, 0.1, 0.95;    // almost identity matrix
 
   std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;
@@ -109,7 +109,7 @@ void test_two_house_graphs()
   //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
   GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
 
-  Eigen::MatrixXd x(5,5);
+  MatrixDouble x(5,5);
   x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
 
   gm.frankWolfe(0.0, &x, &x);

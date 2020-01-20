@@ -25,7 +25,7 @@ typedef CGAL::Quadratic_program_from_iterators
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_cgal.h"
 
-GraphMatchingCgal::GraphMatchingCgal(Eigen::MatrixXd const *vsim, EdgeSimilarityMatrix const *esim, Eigen::MatrixXi const *g_adj, Eigen::MatrixXi const *h_adj)
+GraphMatchingCgal::GraphMatchingCgal(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
 : GraphMatching(vsim, esim, g_adj, h_adj),
   nbconstraints(h_adj->rows() + g_adj->rows()), nbvar(h_adj->rows() * g_adj->rows()),
   r(CGAL::EQUAL), b(1),
@@ -203,8 +203,8 @@ void GraphMatchingCgal::fillQuadraticObjective(void)
 //   // Initialisation
 //   double lambda;
 //   double lambda_new;
-//   Eigen::MatrixXd p(g_adj->rows(), h_adj->cols());
-//   Eigen::MatrixXd p_new(g_adj->rows(), h_adj->cols());
+//   MatrixDouble p(g_adj->rows(), h_adj->cols());
+//   MatrixDouble p_new(g_adj->rows(), h_adj->cols());
 //
 //   lambda = 0;
 //   frankWolfe(lambda, &p, &p);
@@ -231,7 +231,7 @@ void GraphMatchingCgal::fillQuadraticObjective(void)
 //   // copy p into matching?
 // }
 
-// double GraphMatchingCgal::f_smooth(Eigen::MatrixXd const *p) const
+// double GraphMatchingCgal::f_smooth(MatrixDouble const *p) const
 // {
 //   double res = 0;       // res = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
 //   unsigned int eg = 0;  // index of edge in G
@@ -259,7 +259,7 @@ void GraphMatchingCgal::fillQuadraticObjective(void)
 //   return res;
 // }
 //
-// double GraphMatchingCgal::f(double lambda, Eigen::MatrixXd const *p) const
+// double GraphMatchingCgal::f(double lambda, MatrixDouble const *p) const
 // {
 //   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 // }

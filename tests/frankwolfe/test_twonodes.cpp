@@ -7,13 +7,13 @@
 
 void test_two_twonodes_graphs()
 {
-  Eigen::MatrixXi adj(2,2);    // graph = 2 nodes with one edge
+  MatrixInt adj(2,2);    // graph = 2 nodes with one edge
   adj << 0, 1,            // second graph = first graph
          1, 0;
 
-  Eigen::MatrixXd vsim_mat(2,2);  // similarity matrix = 1111 - identity ==> solution to the graph matching problem must be identity
-  vsim_mat << 0.0, 1.0,
-              1.0, 0.0;
+  MatrixDouble vsim_mat(2,2);  // similarity matrix = 1111 - identity ==> solution to the graph matching problem must be identity
+  vsim_mat << 0.95, 0.10,
+              0.12, 0.90;
 
   EdgeDescriptors ed;
   ed[std::make_pair(1,0)] = std::make_tuple(0, 3.14/2.0, 0, 1); // just one edge
@@ -21,7 +21,7 @@ void test_two_twonodes_graphs()
 
   EdgeSimilarityMatrix esim_mat(ed, ed);  // both graphs have the same edge
 
-  Eigen::MatrixXd x(2,2);
+  MatrixDouble x(2,2);
   x << 0.5, 0.5,   // starting solution
        0.5, 0.5;
 
