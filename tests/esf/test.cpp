@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     esf_calculator.compute(*esf_out[i]);
   }
 
-  Eigen::MatrixXd dist_mat(argc - 1, argc - 1);
+  MatrixDouble dist_mat(argc - 1, argc - 1);
   for (int i = 0; i < argc - 1; ++i)
     for (int j = 0; j < argc - 1; ++j)
       dist_mat(i, j) = esfDistance(esf_out[i]->points[0].histogram, esf_out[j]->points[0].histogram);

@@ -16,10 +16,15 @@ double esfDistance(ESFHist const &a, ESFHist const &b)
 
 double edgeDistance(EdgeFeature const &a, EdgeFeature const &b)
 {
+  //std::cout << "edgeDistance(a,b)" << std::endl;
+  //std::cout << "a:  " << std::get<0>(a) << ',' << std::get<1>(a) << ',' << std::get<2>(a) << ',' << std::get<3>(a) << std::endl;
+  //std::cout << "b:  " << std::get<0>(b) << ',' << std::get<1>(b) << ',' << std::get<2>(b) << ',' << std::get<3>(b) << std::endl;
   double dx = (std::get<0>(a) - std::get<0>(b));
   double dy = (std::get<1>(a) - std::get<1>(b));
   double dz = (std::get<2>(a) - std::get<2>(b));
   double dd = (std::get<3>(a) - std::get<3>(b));
+  //std::cout << dx << "^2 + " << dy << "^2 + " << dz << "^2 + " << dd << "^2" << std::endl;
+  //std::cout << "    = " << dx*dx + dy*dy + dz*dz + dd*dd << std::endl;
   return (dx*dx + dy*dy + dz*dz + dd*dd);
 }
 

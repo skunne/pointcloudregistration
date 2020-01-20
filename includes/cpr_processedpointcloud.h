@@ -21,7 +21,7 @@ private:
 public:
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
-  Eigen::MatrixXi adjacency_matrix;
+  MatrixInt adjacency_matrix;
 
 public:
   ProcessedPointCloud(Params const &p);
@@ -40,6 +40,7 @@ public:
   //void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer);
   void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes);
 
+  int getNbVertices() const;
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */

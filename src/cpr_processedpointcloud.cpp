@@ -99,3 +99,8 @@ pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise()
   //}
   return viewer;
 }
+
+int ProcessedPointCloud::getNbVertices(void) const
+{
+  return nbVertices;
+}
