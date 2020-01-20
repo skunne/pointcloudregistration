@@ -201,9 +201,9 @@ void print_simplex(glp_prob *lp, int ng, int nh)
 {
   // print constraints
   pcl::console::print_info("constraints:\n");
-  int ind[6];       // must be at least max(ng,nh)+1
-  double coef[26];  // must be at least ng*nh+1
-  ind[0] = 43; coef[0] = 43.0;
+  int ind[7];       // must be at least max(ng,nh)+1
+  double coef[31];  // must be at least ng*nh+1
+  ind[0] = 43; coef[0] = 43.0;  // cell [0] is never used because everything in the glp library is 1-indexed :-(
   for (int row = 1; row <= ng+nh; ++row)
   {
     int nb_nonzero = glp_get_mat_row(lp, row, ind, coef);
@@ -211,8 +211,10 @@ void print_simplex(glp_prob *lp, int ng, int nh)
     double rhs = glp_get_row_ub(lp, row);
     assert(ind[0] == 43);
     assert(coef[0] == 43.0);
-    if (((row-1) < ng && nb_nonzero != nh) || nb_nonzero != ng)
-      pcl::console::print_info("Wrong number (%d) of nonzero coeffs for constraint %d!!\n", nb_nonzero, row);
+    if ((row-1) < ng && nb_nonzero != nh)
+      pcl::console::print_info("Wrong number of nonzero coeffs for constraint %d!! (has %d, should have %d = nh)\n", row, nb_nonzero, nh);
+    else if ((row-1) >= ng && nb_nonzero != ng)
+      pcl::console::print_info("Wrong number of nonzero coeffs for constraint %d!! (has %d, should have %d = ng)\n", row, nb_nonzero, ng);
     pcl::console::print_info("%.2f * x%02d", coef[1], ind[1]-1);
     for (int col = 2; col <= 5; ++col)
       pcl::console::print_info(" + %.2f * x%02d", coef[col], ind[col]-1);

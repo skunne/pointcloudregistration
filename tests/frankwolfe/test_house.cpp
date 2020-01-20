@@ -5,7 +5,7 @@
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-void fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
+void testhouses_fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
 {
   // house with bottomleft-topright diagonal
   src_adj << 0, 1, 0, 0, 1,     //   0
@@ -24,7 +24,7 @@ void fill_adjacency_matrices(Eigen::MatrixXi &src_adj, Eigen::MatrixXi &dst_adj)
 
 // fill src_esf with pseudo-random numbers in [0, 1]
 // fill dst_esf with a small perturbation of src_esf
-void fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
+void testhouses_fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
 {
   int random = 197546;
   for (KeyT i = 0; i < 5; ++i)
@@ -41,7 +41,7 @@ void fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
   }
 }
 
-void fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed)
+void testhouses_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed)
 {
   src_ed[std::make_pair(0,1)] = std::make_tuple(3.14/4.0, 3.14/4.0, 0, 1.4);
   src_ed[std::make_pair(1,2)] = std::make_tuple(0.0, 3.14/2.0, 0, 1.0);
@@ -77,15 +77,15 @@ void test_two_house_graphs()
 {
   ESFDescriptors  src_esf;
   ESFDescriptors  dst_esf;
-  fill_esf_descr(src_esf, dst_esf);
+  testhouses_fill_esf_descr(src_esf, dst_esf);
 
   EdgeDescriptors src_ed;
   EdgeDescriptors dst_ed;
-  fill_edge_descr(src_ed, dst_ed);
+  testhouses_fill_edge_descr(src_ed, dst_ed);
 
   Eigen::MatrixXi src_adj(5,5);
   Eigen::MatrixXi dst_adj(5,5);
-  fill_adjacency_matrices(src_adj, dst_adj);
+  testhouses_fill_adjacency_matrices(src_adj, dst_adj);
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
