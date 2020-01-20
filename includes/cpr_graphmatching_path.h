@@ -57,8 +57,8 @@ protected:
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
   double mult_xD(double *z);   // compute xDz reusing xD coeffs stored in variable xD
   double bilinear(double *x, double *y); // recompute xDy
-  void updateY(glp_prob *lp);  // set y to solution of solved lp
-  void updateX(double mu);  // x = (1.0 - mu) * x + mu * y;
+  void setYToSolutionOfLP(glp_prob *lp);  // set y to solution of solved lp
+  void setXTo1minusMuXPlusMuY(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:
   void frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eigen::MatrixXd const *x_start);

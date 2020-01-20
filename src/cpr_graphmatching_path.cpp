@@ -136,15 +136,15 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
   memcpy(x, x_start->data(), x_len * sizeof(*x));
   memcpy(y, x, x_len * sizeof(*x)); // y = x
 
-  double xDx = 1.0;   // initialise with arbitrary nonzero
-  while (xDx != 0) // TODO find correct stop criterion    //(zz != 0)
+  double yDy = 1.0;   // initialise with arbitrary nonzero
+  while (yDy != 0) // TODO find correct stop criterion    //(zz != 0)
   {
     print_x("x", x, nh, ng);   // debug
     print_x("y", y, nh, ng);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
-    xDx = mult_xD(x);
-    //exit(3); // debug exit
-    double yDy = bilinear(y, y);
+    double xDx = mult_xD(x);
+    //exit(3); // debug
+    yDy = bilinear(y, y);
     double mu = (xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     pcl::console::print_info("    xDx: %f == %f\n", xDx, bilinear(x,x));
@@ -155,16 +155,17 @@ void GraphMatchingPath::frankWolfe(double lambda, Eigen::MatrixXd *x_return, Eig
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else if (mu < 0)
     {
-      pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
-      pcl::console::print_info("    mu: %f\n", mu);
+      assert(yDy == 0);
+      //pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
+      //pcl::console::print_info("    mu: %f\n", mu);
     }
     else
-      updateX(mu); // x = (1 - mu) * x + mu * y;
+      setXTo1minusMuXPlusMuY(mu); // x = (1 - mu) * x + mu * y;
   }
   memcpy(x_return->data(), y, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
 }     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
-void GraphMatchingPath::updateX(double mu)  // x = (1 - mu) * x + mu * y;
+void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
 {
   for (std::size_t i = 0; i < x_len; ++i)
     x[i] = (1.0 - mu) * x[i] + mu * y[i];
@@ -252,7 +253,7 @@ double GraphMatchingPath::simplex(void)
   glp_simplex(lp, NULL);
 
   // TODO update vector y with variables from the solution!!
-  updateY(lp);
+  setYToSolutionOfLP(lp);
 
   // retrieve optimal objective value
   return (glp_get_obj_val(lp));
@@ -321,7 +322,7 @@ double GraphMatchingPath::bilinear(double *x, double *y)
 }
 
 // set y to solution of solved lp
-void GraphMatchingPath::updateY(glp_prob *lp)  // should be glp_prob const *lp but library wants it non-const for no reason
+void GraphMatchingPath::setYToSolutionOfLP(glp_prob *lp)  // should be glp_prob const *lp but library wants it non-const for no reason
 {
   for (std::size_t j = 0; j < x_len; ++j)
     y[j] = glp_get_col_prim(lp, static_cast<int>(j + 1));  // library wants int, 1-indexed
