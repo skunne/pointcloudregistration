@@ -178,8 +178,8 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
   lp = glp_create_prob();
   glp_set_prob_name(lp, "linear approximation");
 
-  // declare objective: maximize
-  glp_set_obj_dir(lp, GLP_MAX);
+  // declare objective: minimize
+  glp_set_obj_dir(lp, GLP_MIN);
 
   // declare number of constraints and variables
   glp_add_rows(lp, nb_constraints);
@@ -219,7 +219,7 @@ void print_simplex(glp_prob *lp, int ng, int nh)
     pcl::console::print_info(" == %.2f\n", rhs);
   }
   pcl::console::print_info("objective:\n");
-  assert(glp_get_obj_dir(lp) == GLP_MAX);
+  assert(glp_get_obj_dir(lp) == GLP_MIN);
   for (int j = 1; j <= ng*nh; ++j)
     coef[j] = glp_get_obj_coef(lp, j);
   pcl::console::print_info    ("Maximize  %.2f x%02d", coef[1], 0);
@@ -237,8 +237,8 @@ void print_simplex(glp_prob *lp, int ng, int nh)
 double GraphMatchingPath::simplex(void)
 {
   static std::size_t nb_calls = 0;
-  if (nb_calls > 5)
-    exit(3);    // for debug
+  //if (nb_calls > 5)
+  //  exit(3);    // for debug
   pcl::console::print_info("simplex call %u\n", nb_calls);
   ++nb_calls;
 

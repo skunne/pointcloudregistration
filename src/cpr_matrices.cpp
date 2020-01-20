@@ -23,10 +23,13 @@ void normalizeMatrixTo01(Eigen::MatrixXd &mat)
     for (int j = 0; j < mat.cols(); ++j)
       coeffMax = (mat(i,j) > coeffMax ? mat(i,j) : coeffMax);
 
-  for (int i = 0; i < mat.rows(); ++i)
-    for (int j = 0; j < mat.cols(); ++j)
-      //mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
-      mat(i,j) = (mat(i,j)) / coeffMax;
+  if (coeffMax > 0)
+  {
+    for (int i = 0; i < mat.rows(); ++i)
+      for (int j = 0; j < mat.cols(); ++j)
+        mat(i,j) = (mat(i,j)) / coeffMax;
+        //mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+  }
 }
 
 VertexSimilarityMatrix::VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest)
@@ -57,12 +60,16 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
       // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
       // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
-
+      std::cout << "EdgeSimilarityMatrix()  m(" << i << ',' << j << ") = " << m(i,j) << std::endl;
       ++j;
     }
     ++i;
   }
+  std::cout << "EdgeSimilarityMatrix before normalisation:" << std::endl;
+  std::cout << m << std::endl;
   normalizeMatrixTo01(m);
+  std::cout << "EdgeSimilarityMatrix after normalisation:" << std::endl;
+  std::cout << m << std::endl;
   pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
 }
 
