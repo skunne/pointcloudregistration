@@ -252,7 +252,7 @@ double GraphMatchingPath::simplex(void)
   // load objective function
   compute_lp_obj_coeffs(lp);
 
-  print_simplex(lp, ng, nh);
+  //print_simplex(lp, ng, nh);
 
   // solve problem
   glp_simplex(lp, NULL);

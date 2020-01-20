@@ -60,16 +60,16 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
       // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
       // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
-      std::cout << "EdgeSimilarityMatrix()  m(" << i << ',' << j << ") = " << m(i,j) << std::endl;
+      //std::cout << "EdgeSimilarityMatrix()  m(" << i << ',' << j << ") = " << m(i,j) << std::endl;
       ++j;
     }
     ++i;
   }
-  std::cout << "EdgeSimilarityMatrix before normalisation:" << std::endl;
-  std::cout << m << std::endl;
+  //std::cout << "EdgeSimilarityMatrix before normalisation:" << std::endl;
+  //std::cout << m << std::endl;
   normalizeMatrixTo01(m);
-  std::cout << "EdgeSimilarityMatrix after normalisation:" << std::endl;
-  std::cout << m << std::endl;
+  //std::cout << "EdgeSimilarityMatrix after normalisation:" << std::endl;
+  //std::cout << m << std::endl;
   pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
 }
 

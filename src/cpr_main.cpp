@@ -3,6 +3,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
+#include "cpr_graphmatching_path.h"
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -13,74 +14,74 @@
 
 #include <Eigen/Dense>    // matrices
 */
-#include <sstream>
-#include <string>
-#include "cpr_loadfiles.h"
+//#include <sstream>          // istringstream to parse input for loadGraphMatching()
+//#include <string>
+//#include "cpr_loadfiles.h"  // errorLoadingFile() for loadGraphMatching()
 
 
-int loadGraphMatching(char const *filename, std::vector<KeyT> &mapping)
-{
-  std::ifstream infile(filename);
-  if (!infile)
-    return errorLoadingFile("graph matching", filename);
-  mapping.clear();
-  std::string line;
-  std::getline(infile, line); // skip header
-  while (std::getline(infile, line))
-  {
-      std::istringstream iss(line);
-      int i, u, rank, qcv, rand, path;
-      iss >> i >> u >> rank >> qcv >> rand >> path; // check for error
-      mapping.push_back(qcv - 1); // -1 because the graph matching algo returns indices starting at 1 instead of 0
-      // process pair (a,b)
-  }
-  return 0;
-}
+// int loadGraphMatching(char const *filename, std::vector<KeyT> &mapping)
+// {
+//   std::ifstream infile(filename);
+//   if (!infile)
+//     return errorLoadingFile("graph matching", filename);
+//   mapping.clear();
+//   std::string line;
+//   std::getline(infile, line); // skip header
+//   while (std::getline(infile, line))
+//   {
+//       std::istringstream iss(line);
+//       int i, u, rank, qcv, rand, path;
+//       iss >> i >> u >> rank >> qcv >> rand >> path; // check for error
+//       mapping.push_back(qcv - 1); // -1 because the graph matching algo returns indices starting at 1 instead of 0
+//       // process pair (a,b)
+//   }
+//   return 0;
+// }
 
 /* add new element in correct position */
-void insert_sorted(std::vector<KeyT> &src, std::vector<KeyT> &dst, int i, int j, VertexSimilarityMatrix const &score)
-{
-  std::vector<KeyT>::iterator src_itr = src.begin();
-  std::vector<KeyT>::iterator dst_itr = dst.begin();
-  while (src_itr != src.end() && score.m(i,j) > score.m(*src_itr, *dst_itr))
-  {
-    ++src_itr;
-    ++dst_itr;
-  }
-  src.insert(src_itr, i);
-  dst.insert(dst_itr, j);
+// void insert_sorted(std::vector<KeyT> &src, std::vector<KeyT> &dst, int i, int j, VertexSimilarityMatrix const &score)
+// {
+//   std::vector<KeyT>::iterator src_itr = src.begin();
+//   std::vector<KeyT>::iterator dst_itr = dst.begin();
+//   while (src_itr != src.end() && score.m(i,j) > score.m(*src_itr, *dst_itr))
+//   {
+//     ++src_itr;
+//     ++dst_itr;
+//   }
+//   src.insert(src_itr, i);
+//   dst.insert(dst_itr, j);
+//
+//   pcl::console::print_info("insert_sorted: ");
+//   for (std::size_t k = 0; k < src.size(); ++k)
+//     pcl::console::print_info("%f, ", score.m(src[k], dst[k]));
+//   pcl::console::print_info("\n");
+// }
 
-  pcl::console::print_info("insert_sorted: ");
-  for (std::size_t k = 0; k < src.size(); ++k)
-    pcl::console::print_info("%f, ", score.m(src[k], dst[k]));
-  pcl::console::print_info("\n");
-}
-
-void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<KeyT> const &matching, std::vector<KeyT> &src, std::vector<KeyT> &dst)
-{
-  src.clear();
-  dst.clear();
-  // find 8 smallest (source,dest) node pairs
-  std::size_t i;
-  for (i = 0; i < 8; ++i)
-    insert_sorted(src, dst, i, matching[i], vsim_mat);
-  for (; i < matching.size(); ++i)
-  {
-    if (matching[i] < vsim_mat.m.cols()
-      && vsim_mat.m(i, matching[i]) < vsim_mat.m(src[7], dst[7]))
-      //&& std::find(dst.cbegin(), dst.cend(), matching[i]) == dst.cend())  //avoid duplicates in dst
-    {
-      src.pop_back();
-      dst.pop_back();
-      insert_sorted(src, dst, i, matching[i], vsim_mat);
-    }
-  }
-
-  pcl::console::print_highlight("Scores retenus: \n    ");
-  for (std::size_t i = 0; i < src.size(); ++i)
-    pcl::console::print_info("%f, ", vsim_mat.m(src[i], dst[i]));
-  pcl::console::print_info("\n");
-}
+// void findSimilarNodes(VertexSimilarityMatrix const &vsim_mat, std::vector<KeyT> const &matching, std::vector<KeyT> &src, std::vector<KeyT> &dst)
+// {
+//   src.clear();
+//   dst.clear();
+//   // find 8 smallest (source,dest) node pairs
+//   std::size_t i;
+//   for (i = 0; i < 8; ++i)
+//     insert_sorted(src, dst, i, matching[i], vsim_mat);
+//   for (; i < matching.size(); ++i)
+//   {
+//     if (matching[i] < vsim_mat.m.cols()
+//       && vsim_mat.m(i, matching[i]) < vsim_mat.m(src[7], dst[7]))
+//       //&& std::find(dst.cbegin(), dst.cend(), matching[i]) == dst.cend())  //avoid duplicates in dst
+//     {
+//       src.pop_back();
+//       dst.pop_back();
+//       insert_sorted(src, dst, i, matching[i], vsim_mat);
+//     }
+//   }
+//
+//   pcl::console::print_highlight("Scores retenus: \n    ");
+//   for (std::size_t i = 0; i < src.size(); ++i)
+//     pcl::console::print_info("%f, ", vsim_mat.m(src[i], dst[i]));
+//   pcl::console::print_info("\n");
+// }
 
 int
 main (int argc, char ** argv)
@@ -153,9 +154,14 @@ main (int argc, char ** argv)
   //  ;   // wait for user to close window before halting
 
   // TODO match graphs
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
-  MatrixDouble x(ng,nh);
-  x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+
+  int const ng = ppc_source.getNbVertices();
+  int const nh = ppc_dest.getNbVertices();
+
+  MatrixDouble x(ng, nh);
+  x.Constant(ng, nh, 1.0 / (ng < nh ? ng : nh));
+  //x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
 
   gm.frankWolfe(0.0, &x, &x);
 
