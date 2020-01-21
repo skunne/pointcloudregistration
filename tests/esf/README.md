@@ -1,5 +1,5 @@
 ## Testing ESF descriptors
-Compare two point clouds using ESF descriptors.
+Compare two or more point clouds using ESF descriptors.
 
 ### Install
 
@@ -12,6 +12,8 @@ make
 Give metadata files as commandline arguments.
 
 If you use the metadata files from `../../metadata`, then it is important to run binary from `../../`
+
+The binary will output the matrix of distances between the ESF descriptors of every point cloud.
 
 ~~~~
 cd ../..

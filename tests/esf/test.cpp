@@ -1,4 +1,7 @@
 
+#include <iostream>   // std::cout
+#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
+
 #include <pcl/features/esf.h>
 #include <pcl/visualization/histogram_visualizer.h>
 #include "cpr_main.h"
@@ -26,40 +29,6 @@ int main(int argc, char **argv)
   if (argc < 2)
     return printUsage(argv[0]);
 
-/*  Params paramsalpha(argv[1]);
-  Params paramsbeta(argv[2]);
-  if (paramsalpha.error || paramsbeta.error)
-    return (1);
-
-  PointCloudT::Ptr cloudalpha(new PointCloudT);
-  PointCloudT::Ptr cloudbeta(new PointCloudT);
-  pcl::ESFEstimation<PointT, pcl::ESFSignature640> esf_calculator;
-  typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut esfalpha;
-  typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut esfbeta;
-
-  int error_loading_file = cpr_loadFile(paramsalpha.filename.c_str(), paramsalpha.is_pcd, cloudalpha);
-  error_loading_file = error_loading_file || cpr_loadFile(paramsbeta.filename.c_str(), paramsbeta.is_pcd, cloudbeta);
-  if (error_loading_file)
-    return (error_loading_file);
-
-  esf_calculator.setInputCloud(cloudalpha);
-  esf_calculator.compute(esfalpha);
-
-  esf_calculator.setInputCloud(cloudbeta);
-  esf_calculator.compute(esfbeta);
-
-  //pcl::visualization::PCLHistogramVisualizer visu;
-  //visu.addFeatureHistogram(esfalpha, 640, "alpha");
-  //visu.spin();
-  //visu.addFeatureHistogram(esfbeta, 640, "beta");
-  //visu.spin();
-
-  float distance = esfDistance(esfalpha.points[0].histogram, esfbeta.points[0].histogram);
-
-  pcl::console::print_highlight("Distance between the two clouds in ESF space: \n    %f\n", distance);
-
-  */
-
   pcl::console::print_highlight("\n\n=========\n\n");
 
   //int nbFiles = argc - 1;
@@ -69,6 +38,7 @@ int main(int argc, char **argv)
   std::vector<ESFMaker::PointCloudOut::Ptr> esf_out;
   ESFMaker esf_calculator;
 
+  // compute ESF descriptor for each point cloud (one point cloud per file)
   for (int i = 0; i < argc - 1; ++i)
   {
     params.push_back(new Params(argv[i + 1]));
@@ -76,7 +46,7 @@ int main(int argc, char **argv)
       return (params[i]->error);
 
     cloud.push_back(boost::shared_ptr<PointCloudT>(new PointCloudT));
-    int error_loading_file = cpr_loadFile(params[i]->filename.c_str(), params[i]->is_pcd, cloud[i]);
+    int error_loading_file = cpr_loadFile(params[i]->filename.c_str(), params[i], cloud[i]);
     if (error_loading_file)
       return (error_loading_file);
 
@@ -85,16 +55,21 @@ int main(int argc, char **argv)
     esf_calculator.compute(*esf_out[i]);
   }
 
+  // compute matrix of distances
+  // dist_mat(i, j) = ESF distance between point cloud i and pointcloud j
   MatrixDouble dist_mat(argc - 1, argc - 1);
   for (int i = 0; i < argc - 1; ++i)
     for (int j = 0; j < argc - 1; ++j)
       dist_mat(i, j) = esfDistance(esf_out[i]->points[0].histogram, esf_out[j]->points[0].histogram);
 
-  std::cout << std::endl << std::endl;
+  // print numbered list of point clouds
+  std::cout << std::endl << "List of point clouds:" << std::endl;
   for (int i = 0; i < argc - 1; ++i)
     std::cout << i << ".  " << argv[i + 1] << std::endl;
 
-  std::cout << std::endl << std::endl;
+  // print distance matrix between point clouds
+  std::cout << std::endl << "ESF distance matrix:" << std::endl;
+  std::cout << std::scientific << std::setprecision(0);
   std::cout << dist_mat;
   std::cout << std::endl << std::endl;
 
