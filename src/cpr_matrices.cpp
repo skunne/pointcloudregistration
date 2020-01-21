@@ -73,6 +73,21 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
   pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
 }
 
+// artificial constructor for debug purposes
+EdgeSimilarityMatrix::EdgeSimilarityMatrix(
+  std::map<std::pair<KeyT, KeyT>, unsigned int> const &srcEIndex,
+  std::map<std::pair<KeyT, KeyT>, unsigned int> const &dstEIndex,
+  MatrixDouble const &mat)
+  : sourceEdgeIndex(srcEIndex), destEdgeIndex(dstEIndex), m(mat)
+{
+}
+
+// artificial constructor for debug purposes
+VertexSimilarityMatrix::VertexSimilarityMatrix(MatrixDouble const &mat)
+  : m(mat)
+{
+}
+
 void printMatrixToFile(char const *filename, MatrixInt const &m)
 {
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);

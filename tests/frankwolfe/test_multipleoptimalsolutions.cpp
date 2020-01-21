@@ -106,54 +106,130 @@ void testmultiple_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_
   dst_ed[std::make_pair(3,2)] = dst_ed[std::make_pair(2,3)];  // tail
 }
 
+EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
+{
+  std::map<std::pair<KeyT, KeyT>, unsigned int> sourceEdgeIndex;
+  std::map<std::pair<KeyT, KeyT>, unsigned int> destEdgeIndex;
+  MatrixDouble esim_m(2*7, 2*8);
+
+  sourceEdgeIndex[std::make_pair(0,1)] = 0;
+  sourceEdgeIndex[std::make_pair(1,2)] = 2;
+  sourceEdgeIndex[std::make_pair(2,3)] = 4;
+  sourceEdgeIndex[std::make_pair(3,4)] = 6;
+  sourceEdgeIndex[std::make_pair(4,0)] = 8;
+  sourceEdgeIndex[std::make_pair(4,1)] = 10;
+  sourceEdgeIndex[std::make_pair(1,3)] = 12;
+
+  sourceEdgeIndex[std::make_pair(1,0)] = 1;
+  sourceEdgeIndex[std::make_pair(2,1)] = 3;
+  sourceEdgeIndex[std::make_pair(3,2)] = 5;
+  sourceEdgeIndex[std::make_pair(4,3)] = 7;
+  sourceEdgeIndex[std::make_pair(0,4)] = 9;
+  sourceEdgeIndex[std::make_pair(1,4)] = 11;
+  sourceEdgeIndex[std::make_pair(3,1)] = 13;
+
+  destEdgeIndex[std::make_pair(0,1)] = 0;
+  destEdgeIndex[std::make_pair(1,2)] = 2;
+  destEdgeIndex[std::make_pair(2,4)] = 4;
+  destEdgeIndex[std::make_pair(4,5)] = 6;
+  destEdgeIndex[std::make_pair(5,0)] = 8;
+  destEdgeIndex[std::make_pair(5,1)] = 10;
+  destEdgeIndex[std::make_pair(1,4)] = 12;
+  destEdgeIndex[std::make_pair(2,3)] = 14;
+
+  destEdgeIndex[std::make_pair(1,0)] = 1;
+  destEdgeIndex[std::make_pair(2,1)] = 3;
+  destEdgeIndex[std::make_pair(4,2)] = 5;
+  destEdgeIndex[std::make_pair(5,4)] = 7;
+  destEdgeIndex[std::make_pair(0,5)] = 9;
+  destEdgeIndex[std::make_pair(1,5)] = 11;
+  destEdgeIndex[std::make_pair(4,1)] = 13;
+  destEdgeIndex[std::make_pair(3,2)] = 15;
+
+  esim_m.fill(1.0);   // all edges have same similarity, so all solutions are equally good
+  // esim_1_m << 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  //             0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  //             0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  //             0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,
+  //             0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+  //             0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,
+  //             0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
+  //             0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
+  //             0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+  //             0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  //             0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,
+  //             0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+  //             0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
+  //             0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0;
+
+  return new EdgeSimilarityMatrix(sourceEdgeIndex, destEdgeIndex, esim_m);
+}
+
 void test_multiple_optimal_solutions()
 {
   int const ng = 5; // src graph has 5 nodes
   int const nh = 6; // dst graph has 6 nodes
-  ESFDescriptors  src_esf;
-  ESFDescriptors  dst_esf;
-  testmultiple_fill_esf_descr(src_esf, dst_esf);
-
-  EdgeDescriptors src_ed;
-  EdgeDescriptors dst_ed;
-  testmultiple_fill_edge_descr(src_ed, dst_ed);
 
   MatrixInt src_adj(ng,ng);
   MatrixInt dst_adj(nh,nh);
   testmultiple_fill_adjacency_matrices(src_adj, dst_adj);
 
-  VertexSimilarityMatrix vsim_0(src_esf, dst_esf);  // vertex similarity matrix from ESF descriptors
-  EdgeSimilarityMatrix esim(src_ed, dst_ed);
+  VertexSimilarityMatrix *vsim_ptr;
+  EdgeSimilarityMatrix   *esim_ptr;
 
-  MatrixDouble vsim_1_m(ng,nh);                     // artificial vertex similarity matrix
-  vsim_1_m << 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-              1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-              1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-              1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-              1.0, 1.0, 1.0, 1.0, 1.0, 1.0; // all solutions will be equally good
+  bool use_artificial_matrices = true;
 
-  //MatrixDouble &vsim_m = vsim_0.m;    // choose one or the other
-  MatrixDouble &vsim_m = vsim_1_m;    // choose one or the other
+  if (!use_artificial_matrices)
+  {
+    ESFDescriptors  src_esf;
+    ESFDescriptors  dst_esf;
+    testmultiple_fill_esf_descr(src_esf, dst_esf);
 
+    EdgeDescriptors src_ed;
+    EdgeDescriptors dst_ed;
+    testmultiple_fill_edge_descr(src_ed, dst_ed);
+
+    vsim_ptr = new VertexSimilarityMatrix(src_esf, dst_esf);  // vertex similarity matrix from ESF descriptors
+    esim_ptr = new EdgeSimilarityMatrix(src_ed, dst_ed);      // edge similarity matrix from edge descriptors
+  }
+  else // if use_artificial_matrices
+  {
+    MatrixDouble vsim_1_m(ng,nh);                     // artificial vertex similarity matrix
+    vsim_1_m.fill(1.0);           // all solutions will be equally good
+    vsim_ptr = new VertexSimilarityMatrix(vsim_1_m);
+    esim_ptr = testmultiple_artificial_edgesimilarity();
+  }
+
+  // output the chosen similarity matrices
   std::cout << std::fixed << std::setprecision(4);
   std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_m << std::endl << std::endl;
+  std::cout << vsim_ptr->m << std::endl << std::endl;
   std::cout.unsetf(std::ios_base::floatfield);
   std::cout << std::setprecision(1);
   std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim.m << std::endl << std::endl;
+  std::cout << esim_ptr->m << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
 
-  GraphMatchingPath gm(&vsim_m, &esim, &src_adj, &dst_adj);
+  // declare graph matching algorithm
+  GraphMatchingPath gm(&vsim_ptr->m, esim_ptr, &src_adj, &dst_adj);
 
+  // declare stochastic matrix which will hold the solution graph matching
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
+
+  // initialise with trivial feasible solution
   x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
        0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
        0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
        0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
        0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
 
+  // solve
   gm.frankWolfe(0.0, &x, &x);
 
+  // output final solution
   std::cout << x << std::endl;
+
+  // free memory
+  delete vsim_ptr;
+  delete esim_ptr;
 }

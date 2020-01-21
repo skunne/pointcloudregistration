@@ -12,6 +12,9 @@ public:
 
 public:
   VertexSimilarityMatrix(ESFDescriptors const &source, ESFDescriptors const &dest);
+
+  // artificial constructor for debug purposes only
+  VertexSimilarityMatrix(MatrixDouble const &mat);
 };
 
 class EdgeSimilarityMatrix
@@ -26,6 +29,12 @@ public:
 
 public:
   EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDescriptors const &dest);
+
+  // artificial constructor for debug purposes only
+  EdgeSimilarityMatrix(
+    std::map<std::pair<KeyT, KeyT>, unsigned int> const &srcEIndex,
+    std::map<std::pair<KeyT, KeyT>, unsigned int> const &dstEIndex,
+    MatrixDouble const &mat);
 };
 
 void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency,
