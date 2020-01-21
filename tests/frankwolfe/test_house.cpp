@@ -9,14 +9,14 @@ void testhouses_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
 {
   // house with bottomleft-topright diagonal
   src_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 1, 0,     // 4  /1
+             1, 0, 1, 1, 1,     // 4  /1
              0, 1, 0, 1, 0,     // 3/  2
              0, 1, 1, 0, 1,
              1, 1, 0, 1, 0;
 
   // house with topleft-bottomright diagonal
   dst_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 0, 0,     // 4\  1
+             1, 0, 1, 0, 1,     // 4\  1
              0, 1, 0, 1, 1,     // 3  \2
              0, 0, 1, 0, 1,
              1, 1, 1, 1, 0;

@@ -12,7 +12,7 @@ void testmultiple_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj
   // 4  /1
   // 3/  2
   src_adj << 0, 1, 0, 0, 1,  // roof
-             1, 0, 1, 1, 0,  // topright
+             1, 0, 1, 1, 1,  // topright
              0, 1, 0, 1, 0,  // bottomright
              0, 1, 1, 0, 1,  // bottomleft
              1, 1, 0, 1, 0;  // topleft
@@ -147,20 +147,8 @@ EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
   destEdgeIndex[std::make_pair(3,2)] = 15;
 
   esim_m.fill(1.0);   // all edges have same similarity, so all solutions are equally good
-  // esim_1_m << 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  //             0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  //             0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  //             0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,
-  //             0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
-  //             0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,
-  //             0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
-  //             0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
-  //             0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
-  //             0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  //             0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,
-  //             0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
-  //             0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-  //             0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0;
+
+  //esim_m.upperLeftCorner(14,14).setIdentity();
 
   return new EdgeSimilarityMatrix(sourceEdgeIndex, destEdgeIndex, esim_m);
 }
@@ -189,12 +177,12 @@ void test_multiple_optimal_solutions()
     EdgeDescriptors dst_ed;
     testmultiple_fill_edge_descr(src_ed, dst_ed);
 
-    vsim_ptr = new VertexSimilarityMatrix(src_esf, dst_esf);  // vertex similarity matrix from ESF descriptors
-    esim_ptr = new EdgeSimilarityMatrix(src_ed, dst_ed);      // edge similarity matrix from edge descriptors
+    vsim_ptr = new VertexSimilarityMatrix(src_esf, dst_esf);  // from ESF descriptors
+    esim_ptr = new EdgeSimilarityMatrix(src_ed, dst_ed);      // from edge descriptors
   }
   else // if use_artificial_matrices
   {
-    MatrixDouble vsim_1_m(ng,nh);                     // artificial vertex similarity matrix
+    MatrixDouble vsim_1_m(ng,nh); // artificial vertex similarity matrix
     vsim_1_m.fill(1.0);           // all solutions will be equally good
     vsim_ptr = new VertexSimilarityMatrix(vsim_1_m);
     esim_ptr = testmultiple_artificial_edgesimilarity();
