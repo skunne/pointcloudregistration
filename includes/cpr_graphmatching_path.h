@@ -30,11 +30,6 @@ private:
   //MatrixDouble sol_smooth;   // doubly stochastic
 
 protected:
-  double *x;
-  double *y;   // feasible vector for PII in frank-wolfe
-
-  double *xD;   // coeffs of linear objective when x is fixed
-
   std::size_t ng;
   std::size_t nh;
   std::size_t x_len;  // nb var = ng * nh
@@ -44,6 +39,10 @@ protected:
   std::vector<int> cons_coeff_rowindex;     // nonzero constraint coeff rowindex
   std::vector<int> cons_coeff_colindex;     // nonzero constraint coeff colindex
   std::vector<double> cons_coeff_value;  // nonzero constraint coeff value
+
+  double *x;
+  double *y;   // feasible vector for PII in frank-wolfe
+  double *xD;   // coeffs of linear objective when x is fixed
 
 protected:
   double f_concav() const;
@@ -55,8 +54,8 @@ protected:
   void initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
   double simplex(void);
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
-  double mult_xD(double *z);   // compute xDz reusing xD coeffs stored in variable xD
-  double bilinear(double *x, double *y); // recompute xDy
+  double mult_xD(double const *z) const;   // compute xDz reusing xD coeffs stored in variable xD
+  double bilinear(double const *x, double const *y) const; // recompute xDy
   void setYToSolutionOfLP(glp_prob *lp);  // set y to solution of solved lp
   void setXTo1minusMuXPlusMuY(double mu);  // x = (1.0 - mu) * x + mu * y;
 
