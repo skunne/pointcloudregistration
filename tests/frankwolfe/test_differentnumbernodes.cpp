@@ -106,6 +106,9 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
   dst_ed[std::make_pair(3,2)] = dst_ed[std::make_pair(2,3)];  // tail
 }
 
+// defined in printandcompare.cpp
+double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+
 void test_5nodes_with_6nodes()
 {
   int const ng = 5; // src graph has 5 nodes
@@ -141,17 +144,39 @@ void test_5nodes_with_6nodes()
   std::cout << esim_mat.m << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
 
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
-  //GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
+  // human-known graph-matching
+  MatrixDouble human_x(ng, nh);
+  human_x.topLeftCorner(3,3).setIdentity();     // g 0,1,2 <-> h 0,1,2
+  human_x.bottomRightCorner(2,2).setIdentity(); // g 3,4   <-> h 4,5
+  human_x.bottomLeftCorner(2,4).setZero();
+  human_x.topRightCorner(3,3).setZero();
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
-  x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
+  run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x);
 
-  gm.frankWolfe(0.0, &x, &x);
-
-  std::cout << x << std::endl;
+  // GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
+  // //GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
+  //
+  // Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
+  // x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
+  //
+  // // solve
+  // gm.frankWolfe(0.0, &x, &x);
+  //
+  // // output final solution
+  // std::cout << std::endl << "Final solution:" << std::endl;
+  // std::cout << x << std::endl;
+  //
+  // // output final score and compare with human score
+  // std::cout << "Final similarity score:" << std::endl;
+  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
+  // std::cout << std::endl << "Compare with human-known matching and score" << std::endl;
+  //
+  // std::cout << "Human-known matching:" << std::endl;
+  // std::cout << x << std::endl;
+  // std::cout << "Human-known score:" << std::endl;
+  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
 }

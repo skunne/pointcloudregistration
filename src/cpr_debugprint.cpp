@@ -19,10 +19,10 @@ namespace cprdbg
 
     void print_bilinears(double xDx_1, double xDx_2, double xDy_1, double xDy_2, double yDx, double yDy_1, double yDy_2, double mu)
     {
-      assert(xDx_1 == xDx_2);
-      assert(xDy_1 == xDy_2);
-      assert(yDx == xDy_2);
-      assert(yDy_1 == yDy_2);
+      assert(xDx_1 - xDx_2 < 0.00001);
+      assert(xDy_1 - xDy_2 < 0.00001);
+      assert(yDx - xDy_2 < 0.00001);
+      assert(yDy_1 - yDy_2 < 0.00001);
       pcl::console::print_info("    xDx: %f\n", xDx_1);
       pcl::console::print_info("    xDy: %f\n", xDy_1);
       pcl::console::print_info("    yDy: %f\n", yDy_1);

@@ -57,8 +57,6 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
     {
       destEdgeIndex[d_itr->first] = j;
-      // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
-      // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
       //std::cout << "EdgeSimilarityMatrix()  m(" << i << ',' << j << ") = " << m(i,j) << std::endl;
       ++j;

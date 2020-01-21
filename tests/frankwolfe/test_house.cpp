@@ -73,8 +73,14 @@ void testhouses_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed
   dst_ed[std::make_pair(2,4)] = dst_ed[std::make_pair(4,2)];
 }
 
+// defined in printandcompare.cpp
+double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+
 void test_two_house_graphs()
 {
+  int const ng = 5;
+  int const nh = 5;
+
   ESFDescriptors  src_esf;
   ESFDescriptors  dst_esf;
   testhouses_fill_esf_descr(src_esf, dst_esf);
@@ -83,14 +89,14 @@ void test_two_house_graphs()
   EdgeDescriptors dst_ed;
   testhouses_fill_edge_descr(src_ed, dst_ed);
 
-  MatrixInt src_adj(5,5);
-  MatrixInt dst_adj(5,5);
+  MatrixInt src_adj(ng,nh);
+  MatrixInt dst_adj(ng,nh);
   testhouses_fill_adjacency_matrices(src_adj, dst_adj);
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
-  MatrixDouble other_vsim(5,5);
+  MatrixDouble other_vsim(ng,nh);
   other_vsim << 0.95, 0.1, 0.1, 0.1, 0.1,
                 0.1, 0.95, 0.1, 0.1, 0.1,
                 0.1, 0.1, 0.95, 0.1, 0.1,
@@ -106,13 +112,19 @@ void test_two_house_graphs()
   std::cout << esim_mat.m << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
 
-  //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
-  GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
+  // human-known graph-matching
+  MatrixDouble human_x(ng, nh);
+  human_x.setIdentity();
 
-  MatrixDouble x(5,5);
-  x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+  run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x);
 
-  gm.frankWolfe(0.0, &x, &x);
-
-  std::cout << x << std::endl;
+  // //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
+  // GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
+  //
+  // MatrixDouble x(5,5);
+  // x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+  //
+  // gm.frankWolfe(0.0, &x, &x);
+  //
+  // std::cout << x << std::endl;
 }

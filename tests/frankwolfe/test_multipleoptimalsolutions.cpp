@@ -148,10 +148,13 @@ EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
 
   esim_m.fill(1.0);   // all edges have same similarity, so all solutions are equally good
 
-  //esim_m.upperLeftCorner(14,14).setIdentity();
+  //esim_m.topLeftCorner(14,14).setIdentity();
 
   return new EdgeSimilarityMatrix(sourceEdgeIndex, destEdgeIndex, esim_m);
 }
+
+// defined in printandcompare.cpp
+double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
 
 void test_multiple_optimal_solutions()
 {
@@ -198,24 +201,47 @@ void test_multiple_optimal_solutions()
   std::cout << esim_ptr->m << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
 
-  // declare graph matching algorithm
-  GraphMatchingPath gm(&vsim_ptr->m, esim_ptr, &src_adj, &dst_adj);
+  // human-known graph-matching
+  MatrixDouble human_x(ng, nh);
+  human_x.topLeftCorner(3,3).setIdentity();     // g 0,1,2 <-> h 0,1,2
+  human_x.bottomRightCorner(2,2).setIdentity(); // g 3,4   <-> h 4,5
+  human_x.bottomLeftCorner(2,4).setZero();
+  human_x.topRightCorner(3,3).setZero();
 
-  // declare stochastic matrix which will hold the solution graph matching
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
+  run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x);
 
-  // initialise with trivial feasible solution
-  x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-       0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
-
-  // solve
-  gm.frankWolfe(0.0, &x, &x);
-
-  // output final solution
-  std::cout << x << std::endl;
+  // // declare graph matching algorithm
+  // GraphMatchingPath gm(&vsim_ptr->m, esim_ptr, &src_adj, &dst_adj);
+  //
+  // // declare stochastic matrix which will hold the solution graph matching
+  // Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
+  //
+  // // initialise with trivial feasible solution
+  // x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
+  //
+  // // solve
+  // gm.frankWolfe(0.0, &x, &x);
+  //
+  // // output final solution
+  // std::cout << std::endl << "Final solution:" << std::endl;
+  // std::cout << x << std::endl;
+  //
+  // // output final score and compare with human score
+  // std::cout << "Final similarity score:" << std::endl;
+  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
+  // std::cout << std::endl << "Compare with human-known matching and score" << std::endl;
+  // x.topLeftCorner(3,3).setIdentity();     // g 0,1,2 <-> h 0,1,2
+  // x.bottomRightCorner(2,2).setIdentity(); // g 3,4   <-> h 4,5
+  // x.bottomLeftCorner(2,4).setZero();
+  // x.topRightCorner(3,3).setZero();
+  // std::cout << "Human-known matching:" << std::endl;
+  // std::cout << x << std::endl;
+  // std::cout << "Human-known score:" << std::endl;
+  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
 
   // free memory
   delete vsim_ptr;

@@ -13,8 +13,6 @@ namespace cprdbg
     void print_bilinears(double xDx_1, double xDx_2, double xDy_1, double xDy_2, double yDx, double yDy_1, double yDy_2, double mu);
     void print_info_glploadmatrix(unsigned int nb_nonzero_coeffs);
     void print_simplex(glp_prob *lp, int ng, int nh);
-
-
   }
 }
 

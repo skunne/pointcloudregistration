@@ -36,8 +36,8 @@ protected:
   std::size_t nb_constraints; // ng + nh (stochasticity constraints)
 
   glp_prob *lp;
-  std::vector<int> cons_coeff_rowindex;     // nonzero constraint coeff rowindex
-  std::vector<int> cons_coeff_colindex;     // nonzero constraint coeff colindex
+  std::vector<int> cons_coeff_rowindex;  // nonzero constraint coeff rowindex
+  std::vector<int> cons_coeff_colindex;  // nonzero constraint coeff colindex
   std::vector<double> cons_coeff_value;  // nonzero constraint coeff value
 
   double *x;
@@ -55,12 +55,12 @@ protected:
   double simplex(void);
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
   double mult_xD(double const *z) const;   // compute xDz reusing xD coeffs stored in variable xD
-  double bilinear(double const *x, double const *y) const; // recompute xDy
   void setYToSolutionOfLP(glp_prob *lp);  // set y to solution of solved lp
   void setXTo1minusMuXPlusMuY(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:
   void frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start);
+  double bilinear(double const *x, double const *y) const; // recompute xDy
   GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
   ~GraphMatchingPath();
   virtual void run();
