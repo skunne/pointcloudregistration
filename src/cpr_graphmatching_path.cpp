@@ -137,18 +137,20 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
     double xDx = mult_xD(x);
     yDy = bilinear(y, y);
     // be careful with sign of mu and maximize/minimize in lp??
-    mu = -(xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
+    //mu = -(xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
+    mu = frankWolfe::computeMu(xDx, xDy, yDy);
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
     cprdbg::frankWolfe::print_bilinears(xDx, bilinear(x,x), xDy, bilinear(x,y), bilinear(y,x), yDy, bilinear(y,y), mu);
-    if (yDy - xDy - xDy + xDx == 0)   // if x == y, nothing to do
-      mu = 0;
-    else if (mu >= 1.0)
+    //if (yDy - xDy - xDy + xDx == 0)   // if x == y, nothing to do
+    //  mu = 0;
+    //else
+    if (mu >= 1.0)
       memcpy(x, y, x_len * sizeof(*y)); // x = y
     else if (mu < 0)
     {
       assert(yDy == 0);
-      //pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
-      //pcl::console::print_info("    mu: %f\n", mu);
+      pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
+      pcl::console::print_info("    mu: %f\n", mu);
     }
     else
       setXTo1minusMuXPlusMuY(mu); // x = (1 - mu) * x + mu * y;
@@ -192,8 +194,10 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
 double GraphMatchingPath::simplex(void)
 {
   static std::size_t nb_calls = 0;
+  //std::cout << "\x1B[2J\x1B[H";   // non-portable hack to clear console
+  //std::cout << "\x1B[H";           // non-portable hack to clear console
   pcl::console::print_info("simplex call %u\n", nb_calls);
-  if (nb_calls > 5)
+  if (nb_calls > 20)
     exit(3);    // for debug
   ++nb_calls;
 
@@ -275,3 +279,57 @@ void GraphMatchingPath::setYToSolutionOfLP(glp_prob *lp)  // should be glp_prob 
   for (std::size_t j = 0; j < x_len; ++j)
     y[j] = glp_get_col_prim(lp, static_cast<int>(j + 1));  // library wants int, 1-indexed
 }
+
+double frankWolfe::computeMu(double xDx, double xDy, double yDy)
+{
+  // mu maximizes quadratic formula v(mu) = (mu(y-x)+x)D(mu(y-x)+x) on interval [0,1]
+  // hence either mu = 0, or mu = 1, or derivative v'(mu) at mu is 0
+  // v'(mu) = 0  <==>  mu = (xDx-yDx) / (xDx-2xDy+yDy)
+  double denominator = xDx - xDy - xDy + yDy;   // this should be negative or zero
+  //assert (denominator <= 0);
+  if (denominator == 0)
+    return (1.0);
+
+  double mu_suchthat_derivative_is_zero = (xDx - xDy) / denominator;
+
+  std::vector<double> mu = {0, 1.0, mu_suchthat_derivative_is_zero};
+  std::vector<double> v = {xDx, yDy, mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx};
+  // calculate three values of v: v(0), v(1), v(mu_suchthat_derivative_is_zero)
+  double max_if_mu_is_zero = xDx;
+  double max_if_mu_is_one = yDy;
+  double max_if_derivative_at_mu_is_zero =
+    mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx;
+
+  // return mu that maximizes v(mu)
+  if (max_if_mu_is_zero > max_if_mu_is_one && max_if_mu_is_zero > max_if_derivative_at_mu_is_zero)
+    return 0;
+  else if (max_if_mu_is_one > max_if_derivative_at_mu_is_zero)
+    return 1.0;
+  else
+    return mu_suchthat_derivative_is_zero;
+  // std::map<double, double, std::greater_than> mu;   // map v to mu
+  // mu[xDx] = 0;
+  // mu[yDy] = 1.0;
+  // mu[mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx] = mu_suchthat_derivative_is_zero;
+  // return mu.cbegin()->second;  // return mu that maximizes v
+}
+
+// double frankWolfe::computeMu(double xDx, double xDy, double yDy)
+// {
+//   // mu maximizes quadratic formula v(mu) = (mu(y-x)+x)D(mu(y-x)+x) on interval [0,1]
+//   // hence either mu = 0, or mu = 1, or derivative v'(mu) at mu is 0
+//   // v'(mu) = 0  <==>  mu = (xDx-yDx) / (xDx-2xDy+yDy)
+//   double denominator = xDx - xDy - xDy + yDy;   // this should be negative or zero
+//   //assert (denominator <= 0);
+//   if (denominator == 0)
+//     return (1.0);
+//
+//   double mu_suchthat_derivative_is_zero = (xDx - xDy) / denominator;
+//
+//   // calculate three values of v: v(0), v(1), v(mu_suchthat_derivative_is_zero)
+//   std::vector<double> mu = {0, 1.0, mu_suchthat_derivative_is_zero};
+//   std::vector<double> v = {xDx, yDy, mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx};
+//
+//   // return mu that maximizes v(mu)
+//   return mu[std::distance(std::max_element(v.cbegin(), v.cend()), v.cbegin())];
+// }

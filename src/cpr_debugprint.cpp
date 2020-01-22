@@ -34,29 +34,31 @@ namespace cprdbg
       pcl::console::print_info("glp_load_matrix with %u nonzero constraint coeffs.\n", nb_nonzero_coeffs);
     }
 
-    void print_simplex(glp_prob *lp, int ng, int nh)
+    void print_simplex(glp_prob *lp, int const ng, int const nh)
     {
       // print constraints
       pcl::console::print_info("constraints:\n");
-      int ind[7];       // must be at least max(ng,nh)+1
-      double coef[31];  // must be at least ng*nh+1
+      int ind[1+(ng<nh?nh:ng)];       // must be at least max(ng,nh)+1
+      double coef[ng*nh+1];  // must be at least ng*nh+1
       ind[0] = 43; coef[0] = 43.0;  // cell [0] is never used because everything in the glp library is 1-indexed :-(
       for (int row = 1; row <= ng+nh; ++row)
       {
         int nb_nonzero = glp_get_mat_row(lp, row, ind, coef);
         int rowtype = glp_get_row_type(lp, row);
-        double rhs = glp_get_row_ub(lp, row);
+        double upperbound = glp_get_row_ub(lp, row);
+        double lowerbound = glp_get_row_lb(lp, row);
         assert(ind[0] == 43);
         assert(coef[0] == 43.0);
         if ((row-1) < ng && nb_nonzero != nh)
           pcl::console::print_info("Wrong number of nonzero coeffs for constraint %d!! (has %d, should have %d = nh)\n", row, nb_nonzero, nh);
         else if ((row-1) >= ng && nb_nonzero != ng)
           pcl::console::print_info("Wrong number of nonzero coeffs for constraint %d!! (has %d, should have %d = ng)\n", row, nb_nonzero, ng);
+        pcl::console::print_info("%.2f <= ", lowerbound);
         pcl::console::print_info("%.2f * x%02d", coef[1], ind[1]-1);
-        for (int col = 2; col <= 5; ++col)
+        for (int col = 2; col <= (row-1<ng?nh:ng); ++col)
           pcl::console::print_info(" + %.2f * x%02d", coef[col], ind[col]-1);
         assert(rowtype == GLP_DB);
-        pcl::console::print_info(" <= %.2f\n", rhs);
+        pcl::console::print_info(" <= %.2f\n", upperbound);
       }
       pcl::console::print_info("objective:\n");
       assert(glp_get_obj_dir(lp) == GLP_MAX);

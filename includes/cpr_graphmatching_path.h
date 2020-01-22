@@ -45,8 +45,8 @@ protected:
   double *xD;   // coeffs of linear objective when x is fixed
 
 protected:
-  double f_concav() const;
-  double f_convex() const;
+  //double f_concav() const;
+  //double f_convex() const;
   double f_smooth(MatrixDouble const *p) const;
   double f(double lambda, MatrixDouble const *p) const;
   //void frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start);
@@ -66,5 +66,10 @@ public:
   virtual void run();
   //unsigned int mappedVertex(unsigned int) const;
 };
+
+namespace frankWolfe
+{
+  double computeMu(double xDx, double xDy, double yDy);
+}
 
 #endif /* __DEF_GRAPHMATCHINGPATH_H__ */
