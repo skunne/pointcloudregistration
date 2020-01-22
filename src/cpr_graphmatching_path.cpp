@@ -86,9 +86,14 @@ void GraphMatchingPath::run()
   // copy p into this->matching and convert double to int
 }
 
+// input p = graph-matching matrix
 double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 {
   double result = 0;       // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
+    // article is unclear
+    // this should maybe be abs(length(e) - length(matched(e)))
+    // instead of esim(e, matched(e))
+
   unsigned int eg = 0;  // index of edge in G
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
   {
@@ -106,9 +111,9 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
       ;
     auto edgeToIndex_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
     if (edgeToIndex_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
-      result -= esim->m(eg, edgeToIndex_h_itr->second);
+      result += esim->m(eg, edgeToIndex_h_itr->second);
     else          // if edge in G not mapped to an edge in H
-      result -= 1.0; // this is the worst possible penalty, since esim->m is normalized
+      result += 1.0 - 1.0; // this is the worst possible penalty, since esim->m is normalized
   }
   result /= x_len;   // result = result / (ng * nh)
   return result;

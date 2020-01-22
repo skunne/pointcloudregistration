@@ -9,7 +9,7 @@
 #include "cpr_graphmatching.h"
 
 /**
-A graph matching algorithm inspired by Zaslavskiy and Huang
+A graph matching algorithm based on Frank-Wolfe, inspired by Zaslavskiy and Huang
 
 	@author Stephan Kunne <stephan.kunne@univ-nantes.fr>
 */
