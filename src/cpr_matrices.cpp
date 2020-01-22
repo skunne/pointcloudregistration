@@ -110,3 +110,14 @@ void printMatrixToFile(char const *filename, MatrixDouble const &m)
   else
     output << m << std::endl;
 }
+
+template<class T>
+void printVectorAsMatrix(std::vector<T> const &v, std::size_t height, std::size_t width)
+{
+  for (std::size_t row = 0; row < height; ++row)
+  {
+    for (std::size_t col = 0; col < width; ++col)
+      std::cout << v[row * width + col] << ' ';
+    std::cout << std::endl;
+  }
+}

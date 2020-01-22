@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "cpr_main.h"               // EdgeSimilarityMatrix, MatrixDouble, MatrixInt
+#include "cpr_matrices.h"           // printVectorAsMatrix<T>
 #include "cpr_graphmatching_path.h" // GraphMatchingPath
 //#include "cpr_matrices.h"           // EdgeSimilarityMatrix
 
@@ -11,24 +12,32 @@ double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarit
 
   // declare stochastic matrix which will hold the solution graph matching
   MatrixDouble x(ng,nh);
+  //std::vector<double> x;
 
   // initialise with trivial feasible solution
   x.fill(1.0 / (ng < nh ? nh : ng));
+  //std::fill(x.begin(), x.end(), 1.0 / (ng < nh ? nh : ng));
 
   // solve
   gm.frankWolfe(0.0, &x, &x);
 
   // compute scores
-  double solved_score = gm.bilinear(x.data(), x.data());
-  double human_score = gm.bilinear(humansolution->data(), humansolution->data());
+  std::vector<double>humancopyvector;
+  humancopyvector.assign(humansolution->data(), humansolution->data()+ng*nh);
+  std::vector<double>xcopy;
+  xcopy.assign(x.data(), x.data()+ng*nh);
+  double solved_score = gm.bilinear(xcopy, xcopy);
+  double human_score = gm.bilinear(humancopyvector, humancopyvector);
 
   // output initial solution
   std::cout << "Starting solution:" << std::endl;
   std::cout << x << std::endl;
+  //printVectorAsMatrix(x, ng, nh);
 
   // output final solution
   std::cout << std::endl << "Final solution:" << std::endl;
   std::cout << x << std::endl;
+  //printVectorAsMatrix(x, ng, nh);
 
   // output final score and compare with human score
   std::cout << "Final similarity score:" << std::endl;
@@ -37,6 +46,7 @@ double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarit
 
   std::cout << "Human-known matching:" << std::endl;
   std::cout << *humansolution << std::endl;
+  //printVectorAsMatrix(humancopyvector, ng, nh);
   std::cout << "Human-known score:" << std::endl;
   std::cout << "    " << human_score << std::endl;
 

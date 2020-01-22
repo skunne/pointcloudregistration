@@ -6,7 +6,7 @@ namespace cprdbg
 {
   namespace frankWolfe
   {
-    void print_x(char const *name, double *x, std::size_t width, std::size_t height)
+    void print_x(char const *name, std::vector<double> const &x, std::size_t width, std::size_t height)
     {
       std::cout << "Printing " << name << std::endl;
       for (std::size_t row = 0; row < height; ++row)

@@ -16,13 +16,11 @@
 
 GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : GraphMatching(vsim, esim, g_adj, h_adj),
-  ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh),
-  x((double *) malloc(x_len * sizeof(*x))), y((double *) malloc(x_len * sizeof(*y))),
-  xD((double *) malloc(x_len * sizeof(*xD)))
+  ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh)
 {
-  //x = (double *) malloc(x_len * sizeof(*x));
-  //y = (double *) malloc(x_len * sizeof(*y));
-  //xD = (double *) malloc(x_len * sizeof(*xD));
+  x.reserve(x_len);
+  y.reserve(x_len);
+  xD.reserve(x_len);
 
   cons_coeff_rowindex.push_back(1);   // duplicate coeff at pos 0 and pos 1 because apparently these three vectors should be 1-indexed??
   cons_coeff_colindex.push_back(1);
@@ -48,9 +46,6 @@ GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMat
 
 GraphMatchingPath::~GraphMatchingPath()
 {
-  free(x);
-  free(y);
-  free(xD);
 }
 
 void GraphMatchingPath::run()
@@ -87,12 +82,14 @@ void GraphMatchingPath::run()
 }
 
 // input p = graph-matching matrix
+// this one is probably the wrong version. see below
 double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 {
   double result = 0;       // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
     // article is unclear
     // this should maybe be abs(length(e) - length(matched(e)))
     // instead of esim(e, matched(e))
+    // and anyway this only makes sense if p only has 0 and 1 coeffs
 
   unsigned int eg = 0;  // index of edge in G
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
@@ -114,10 +111,35 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
       result += esim->m(eg, edgeToIndex_h_itr->second);
     else          // if edge in G not mapped to an edge in H
       result += 1.0 - 1.0; // this is the worst possible penalty, since esim->m is normalized
+    ++eg;
   }
   result /= x_len;   // result = result / (ng * nh)
   return result;
 }
+
+// // this one is probably the correct version?
+// double GraphMatchingPath::f_smooth(MatrixDouble const *p, EdgeDescriptors const &g_edge_descriptors, EdgeDescriptors const &h_edge_descriptors) const
+// {
+//   double result = 0;
+//   // result = - sum_{edge e in G}
+//   //              sum_{vertex i in H}
+//   //                sum_{vertex j in H}
+//   //                  p[e[0],i] * p[e[1],j] * abs(length(e) - length(i,j)) / (ng * nh)
+//   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
+//   {
+//     for (std::size_t i = 0; i < nh; ++i)
+//     {
+//       double length_e = std::get<3>(g_edge_descriptors.at(edge_g_itr->first.first, edge_g_itr->first.second));
+//       for (std::size_t j = 0; j < nh; ++j)
+//       {
+//         double length_ij = std::get<3>(h_edge_descriptors.at(i, j));
+//         result += p(edge_g_itr->first.first, i) * p(edge_g_itr->first.second, j) * abs(length_e - length_ij);
+//       }
+//     }
+//   }
+//   result /= x_len;    // result = result / (ng * nh)
+//   return result;
+// }
 
 double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
 {
@@ -129,8 +151,10 @@ double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
 void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start)
 {
   // assert x basic feasible
-  memcpy(x, x_start->data(), x_len * sizeof(*x));
-  memcpy(y, x, x_len * sizeof(*x)); // y = x
+  //memcpy(x, x_start->data(), x_len * sizeof(*x));
+  //memcpy(y, x, x_len * sizeof(*x)); // y = x
+  x.assign(x_start->data(), x_start->data() + x_len);
+  y = x;
 
   double mu = 1.0;    // initialise with arbitrary nonzero
   double yDy = 1.0;   // initialise with arbitrary nonzero
@@ -150,7 +174,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
     //  mu = 0;
     //else
     if (mu >= 1.0)
-      memcpy(x, y, x_len * sizeof(*y)); // x = y
+      x = y;
     else if (mu < 0)
     {
       assert(yDy == 0);
@@ -158,16 +182,18 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
       pcl::console::print_info("    mu: %f\n", mu);
     }
     else
-      setXTo1minusMuXPlusMuY(mu); // x = (1 - mu) * x + mu * y;
+      for (std::size_t k = 0; k < x_len; ++k)
+        x[k] = (1.0 - mu) * x[k] + mu * y[k];
   }
-  memcpy(x_return->data(), y, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  memcpy(x_return->data(), y.data(), x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  //x_return = y;
 }     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
-void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
-{
-  for (std::size_t i = 0; i < x_len; ++i)
-    x[i] = (1.0 - mu) * x[i] + mu * y[i];
-}
+// void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
+// {
+//   for (std::size_t i = 0; i < x_len; ++i)
+//     x[i] = (1.0 - mu) * x[i] + mu * y[i];
+// }
 
 #include <glpk.h>
 
@@ -226,7 +252,8 @@ double GraphMatchingPath::simplex(void)
 void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
 {
   // start from 0
-  memset(xD, 0, x_len * sizeof(*xD));
+  //memset(xD, 0, x_len * sizeof(*xD));
+  std::fill(xD.begin(), xD.end(), 0);
   // add edge related rewards
   for (auto edge_g : esim->sourceEdgeIndex)
   {
@@ -250,7 +277,7 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   cprdbg::frankWolfe::print_x("objective coeffs", xD, nh, ng);
 }
 
-double GraphMatchingPath::mult_xD(double const *z) const
+double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
 {
   double result = 0;
   for (std::size_t k = 0; k < x_len; ++k)
@@ -259,7 +286,7 @@ double GraphMatchingPath::mult_xD(double const *z) const
 }
 
 // compute x D y
-double GraphMatchingPath::bilinear(double const *x, const double *y) const
+double GraphMatchingPath::bilinear(std::vector<double> const &x, std::vector<double> const &y) const
 {
   double result = 0;
   for (auto edge_g : esim->sourceEdgeIndex)

@@ -108,6 +108,7 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
 
 // defined in printandcompare.cpp
 double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+//double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, std::vector<double> const *humansolution);
 
 void test_5nodes_with_6nodes()
 {
