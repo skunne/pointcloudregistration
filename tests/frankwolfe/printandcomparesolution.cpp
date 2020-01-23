@@ -19,6 +19,11 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
   x.fill(1.0 / (ng < nh ? nh : ng));
   //std::fill(x.begin(), x.end(), 1.0 / (ng < nh ? nh : ng));
 
+  // output initial solution
+  std::cout << "Starting solution:" << std::endl;
+  std::cout << x << std::endl;
+  //printVectorAsMatrix(x, ng, nh);
+
   // solve
   gm.frankWolfe(0.0, &x, &x);
 
@@ -29,11 +34,6 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
   xcopy.assign(x.data(), x.data()+ng*nh);
   double solved_score = gm.bilinear(xcopy, xcopy);
   double human_score = gm.bilinear(humancopyvector, humancopyvector);
-
-  // output initial solution
-  std::cout << "Starting solution:" << std::endl;
-  std::cout << x << std::endl;
-  //printVectorAsMatrix(x, ng, nh);
 
   // output final solution
   std::cout << std::endl << "Final solution:" << std::endl;

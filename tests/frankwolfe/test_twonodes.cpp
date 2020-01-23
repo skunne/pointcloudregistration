@@ -10,7 +10,7 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
 void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
 void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
-void test_two_twonodes_graphs()
+double test_two_twonodes_graphs()
 {
   int const ng = 2;
   int const nh = 2;
@@ -29,21 +29,7 @@ void test_two_twonodes_graphs()
 
   EdgeSimilarityMatrix esim_mat(ed, ed);  // both graphs have the same edge
 
-  // MatrixDouble x(ng,nh);
-  // x << 0.5, 0.5,   // starting solution
-  //      0.5, 0.5;
-  //
-  // GraphMatchingPath gm(&vsim_mat, &esim_mat, &adj, &adj);
-
   print_similarity_matrices(vsim_mat, esim_mat.m);
-  // std::cout << std::endl << "Vertex distance matrix:" << std::endl;
-  // std::cout << vsim_mat << std::endl;
-  //
-  // std::cout << "Edge distance matrix:" << std::endl;
-  // std::cout << esim_mat.m << std::endl << std::endl;
-
-  // std::cout << "Starting solution:" << std::endl;
-  // std::cout << x << std::endl << std::endl;
 
   print_matrix_D(ng, nh, &vsim_mat, &esim_mat);
 
@@ -51,11 +37,5 @@ void test_two_twonodes_graphs()
   MatrixDouble human_x(ng, nh);
   human_x.setIdentity();
 
-  run_print_compare(ng, nh, &vsim_mat, &esim_mat, &adj, &adj, &human_x);
-  //
-  //
-  // gm.frankWolfe(0.0, &x, &x);
-  //
-  // std::cout << "Final solution:" << std::endl;
-  // std::cout << x << std::endl << std::endl;
+  return run_print_compare(ng, nh, &vsim_mat, &esim_mat, &adj, &adj, &human_x);
 }

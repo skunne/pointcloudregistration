@@ -157,7 +157,7 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
 void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
 void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
-void test_multiple_optimal_solutions()
+double test_multiple_optimal_solutions()
 {
   int const ng = 5; // src graph has 5 nodes
   int const nh = 6; // dst graph has 6 nodes
@@ -204,42 +204,10 @@ void test_multiple_optimal_solutions()
   human_x.bottomLeftCorner(2,4).setZero();
   human_x.topRightCorner(3,3).setZero();
 
-  run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x);
+  double result = run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x);
 
-  // // declare graph matching algorithm
-  // GraphMatchingPath gm(&vsim_ptr->m, esim_ptr, &src_adj, &dst_adj);
-  //
-  // // declare stochastic matrix which will hold the solution graph matching
-  // Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> x(ng,nh);
-  //
-  // // initialise with trivial feasible solution
-  // x << 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-  //      0.16, 0.16, 0.16, 0.16, 0.16, 0.16;
-  //
-  // // solve
-  // gm.frankWolfe(0.0, &x, &x);
-  //
-  // // output final solution
-  // std::cout << std::endl << "Final solution:" << std::endl;
-  // std::cout << x << std::endl;
-  //
-  // // output final score and compare with human score
-  // std::cout << "Final similarity score:" << std::endl;
-  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
-  // std::cout << std::endl << "Compare with human-known matching and score" << std::endl;
-  // x.topLeftCorner(3,3).setIdentity();     // g 0,1,2 <-> h 0,1,2
-  // x.bottomRightCorner(2,2).setIdentity(); // g 3,4   <-> h 4,5
-  // x.bottomLeftCorner(2,4).setZero();
-  // x.topRightCorner(3,3).setZero();
-  // std::cout << "Human-known matching:" << std::endl;
-  // std::cout << x << std::endl;
-  // std::cout << "Human-known score:" << std::endl;
-  // std::cout << "    " << gm.bilinear(x.data(), x.data()) << std::endl;
-
-  // free memory
   delete vsim_ptr;
   delete esim_ptr;
+  
+  return result;
 }
