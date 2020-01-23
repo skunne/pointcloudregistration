@@ -17,4 +17,4 @@ include_directories("../../includes")
 
 add_executable (${NAME} ${SRC})
 target_link_libraries (${NAME} PUBLIC ${PCL_LIBRARIES})
-target_compile_options(${NAME} PRIVATE -Wall -Wextra -Wfloat-conversion)
+target_compile_options(${NAME} PRIVATE -Wall -Wextra -Wfloat-conversion -Wfloat-equal)

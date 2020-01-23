@@ -52,12 +52,12 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
   std::cout << "    " << human_score << std::endl;
 
   std::cout << std::endl << "Algorithm did ";
-  if (solved_score < human_score)
-    std::cout << "worse than human" << std::endl;
-  if (solved_score > human_score)
-    std::cout << "better than human" << std::endl;
-  if (solved_score == human_score)
+  if (abs(solved_score - human_score) < 0.00001)
     std::cout << "as good as human" << std::endl;
+  else if (solved_score < human_score)
+    std::cout << "worse than human" << std::endl;
+  else if (solved_score > human_score)
+    std::cout << "better than human" << std::endl;
 
   return (solved_score - human_score);
 }

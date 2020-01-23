@@ -102,12 +102,12 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
     unsigned int mapped_vertex_1, mapped_vertex_2;
     for (
       mapped_vertex_1 = 0;
-      mapped_vertex_1 < p->cols() && (*p)(edge_g_itr->first.first, mapped_vertex_1) == 0;
+      mapped_vertex_1 < p->cols() && (*p)(edge_g_itr->first.first, mapped_vertex_1) > 0.5;
       ++mapped_vertex_1)
       ;
     for (
       mapped_vertex_2 = 0;
-      mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
+      mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) > 0.5;
       ++mapped_vertex_2)
       ;
     auto edgeToIndex_h_itr = esim->destEdgeIndex.find(
@@ -164,7 +164,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
 
   double mu = 1.0;    // initialise with arbitrary nonzero
   double yDy = 1.0;   // initialise with arbitrary nonzero
-  while (yDy != 0 && mu != 0) // TODO find correct stop criterion    //(zz != 0)
+  while (yDy > 0.00001 && mu > 0.00001) // TODO find correct stop criterion    //(zz != 0)
   {
     cprdbg::frankWolfe::print_x("x", x, nh, ng);   // debug
     cprdbg::frankWolfe::print_x("y", y, nh, ng);   // debug
@@ -183,7 +183,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
       x = y;
     else if (mu < 0)
     {
-      assert(yDy == 0);
+      assert(yDy <= 0.00001);
       pcl::console::print_highlight("NEGATIVE MU!!!!!\n");
       pcl::console::print_info("    mu: %f\n", mu);
     }
@@ -331,10 +331,10 @@ double frankWolfe::computeMu(double xDx, double xDy, double yDy)
   // mu maximizes quadratic formula v(mu) = (mu(y-x)+x)D(mu(y-x)+x) on interval [0,1]
   // hence either mu = 0, or mu = 1, or derivative v'(mu) at mu is 0
   // v'(mu) = 0  <==>  mu = (xDx-yDx) / (xDx-2xDy+yDy)
-  double denominator = xDx - xDy - xDy + yDy;   // this should be negative or zero
+  double denominator = xDx - xDy - xDy + yDy;   // this should be negative or zero?
   //assert (denominator <= 0);
-  if (denominator == 0)
-    return (1.0);
+  if (abs(denominator < 0.00001))
+    return (0.0);
 
   double mu_suchthat_derivative_is_zero = (xDx - xDy) / denominator;
 
