@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
 #include "cpr_main.h"               // EdgeSimilarityMatrix, MatrixDouble, MatrixInt
 #include "cpr_matrices.h"           // printVectorAsMatrix<T>
@@ -59,4 +60,17 @@ double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarit
     std::cout << "as good as human" << std::endl;
 
   return (solved_score - human_score);
+}
+
+void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim)
+{
+  // output the chosen similarity matrices
+  std::cout << std::fixed << std::setprecision(4);
+  std::cout << "Vertex similarity matrix:" << std::endl;
+  std::cout << vsim << std::endl << std::endl;
+  std::cout.unsetf(std::ios_base::floatfield);
+  std::cout << std::setprecision(1);
+  std::cout << "Edge similarity matrix:" << std::endl;
+  std::cout << esim << std::endl << std::endl;
+  std::cout << std::fixed << std::setprecision(2);
 }

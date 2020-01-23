@@ -75,7 +75,7 @@ void testhouses_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed
 
 // defined in printandcompare.cpp
 double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-//double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, std::vector<double> const *humansolution);
+void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
 
 void test_two_house_graphs()
 {
@@ -104,14 +104,17 @@ void test_two_house_graphs()
                 0.1, 0.1, 0.1, 0.95, 0.1,
                 0.1, 0.1, 0.1, 0.1, 0.95;    // almost identity matrix
 
-  std::cout << std::fixed << std::setprecision(4);
-  std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_mat.m << std::endl << std::endl;
-  std::cout.unsetf(std::ios_base::floatfield);
-  std::cout << std::setprecision(1);
-  std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl << std::endl;
-  std::cout << std::fixed << std::setprecision(2);
+  // std::cout << std::fixed << std::setprecision(4);
+  // std::cout << "Vertex similarity matrix:" << std::endl;
+  // std::cout << vsim_mat.m << std::endl << std::endl;
+  // std::cout.unsetf(std::ios_base::floatfield);
+  // std::cout << std::setprecision(1);
+  // std::cout << "Edge similarity matrix:" << std::endl;
+  // std::cout << esim_mat.m << std::endl << std::endl;
+  // std::cout << std::fixed << std::setprecision(2);
+
+  print_similarity_matrices(vsim_mat.m, esim_mat.m);
+
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);

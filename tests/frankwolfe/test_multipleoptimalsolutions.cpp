@@ -1,5 +1,4 @@
 #include <iostream>   // std::cout
-#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
@@ -155,7 +154,7 @@ EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
 
 // defined in printandcompare.cpp
 double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-//double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, std::vector<double> const *humansolution);
+void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
 
 void test_multiple_optimal_solutions()
 {
@@ -193,14 +192,7 @@ void test_multiple_optimal_solutions()
   }
 
   // output the chosen similarity matrices
-  std::cout << std::fixed << std::setprecision(4);
-  std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_ptr->m << std::endl << std::endl;
-  std::cout.unsetf(std::ios_base::floatfield);
-  std::cout << std::setprecision(1);
-  std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim_ptr->m << std::endl << std::endl;
-  std::cout << std::fixed << std::setprecision(2);
+  print_similarity_matrices(vsim_ptr->m, esim_ptr->m);
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);

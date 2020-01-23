@@ -108,7 +108,7 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
 
 // defined in printandcompare.cpp
 double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-//double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, std::vector<double> const *humansolution);
+void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
 
 void test_5nodes_with_6nodes()
 {
@@ -136,14 +136,16 @@ void test_5nodes_with_6nodes()
                 0.07, 0.07, 0.07, 0.20, 0.95, 0.07,
                 0.07, 0.07, 0.07, 0.20, 0.07, 0.95; // almost identity matrix
 
-  std::cout << std::fixed << std::setprecision(4);
-  std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_mat.m << std::endl << std::endl;
-  std::cout.unsetf(std::ios_base::floatfield);
-  std::cout << std::setprecision(1);
-  std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl << std::endl;
-  std::cout << std::fixed << std::setprecision(2);
+  print_similarity_matrices(vsim_mat.m, esim_mat.m);
+
+  // std::cout << std::fixed << std::setprecision(4);
+  // std::cout << "Vertex similarity matrix:" << std::endl;
+  // std::cout << vsim_mat.m << std::endl << std::endl;
+  // std::cout.unsetf(std::ios_base::floatfield);
+  // std::cout << std::setprecision(1);
+  // std::cout << "Edge similarity matrix:" << std::endl;
+  // std::cout << esim_mat.m << std::endl << std::endl;
+  // std::cout << std::fixed << std::setprecision(2);
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);
