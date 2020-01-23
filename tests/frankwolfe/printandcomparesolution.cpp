@@ -6,7 +6,7 @@
 #include "cpr_graphmatching_path.h" // GraphMatchingPath
 //#include "cpr_matrices.h"           // EdgeSimilarityMatrix
 
-double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution)
+double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution)
 {
   // declare graph matching algorithm
   GraphMatchingPath gm(vsim, esim, g_adj, h_adj);
@@ -73,4 +73,25 @@ void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esi
   std::cout << "Edge similarity matrix:" << std::endl;
   std::cout << esim << std::endl << std::endl;
   std::cout << std::fixed << std::setprecision(2);
+}
+
+void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim)
+{
+  MatrixDouble D(ng*nh, ng*nh);
+  D.setZero();
+  for (auto const edge_g : esim->sourceEdgeIndex)
+  {
+    for (auto const edge_h : esim->sourceEdgeIndex)
+    {
+      std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
+      std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
+      D(kx,ky) = esim->m(edge_g.second, edge_h.second);
+    }
+  }
+  for (KeyT ig = 0; ig < ng; ++ig)
+    for (KeyT ih = 0; ih < nh; ++ih)
+      D(ig * nh + ih, ig * nh + ih) = (*vsim)(ig, ih);
+
+  std::cout << "Printing matrix D" << std::endl;
+  std::cout << D << std::endl << std::endl;
 }

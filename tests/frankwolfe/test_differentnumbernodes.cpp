@@ -107,8 +107,9 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
 }
 
 // defined in printandcompare.cpp
-double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
 void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
+void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
 void test_5nodes_with_6nodes()
 {
@@ -146,6 +147,9 @@ void test_5nodes_with_6nodes()
   // std::cout << "Edge similarity matrix:" << std::endl;
   // std::cout << esim_mat.m << std::endl << std::endl;
   // std::cout << std::fixed << std::setprecision(2);
+
+
+  print_matrix_D(ng, nh, &vsim_mat.m, &esim_mat);
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);

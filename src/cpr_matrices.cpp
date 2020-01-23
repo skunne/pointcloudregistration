@@ -15,20 +15,28 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Matri
   }
 }
 
-// assumes all coeffs are positive!!
+// do we really want to normalize to [0,1] and not to [epsilon, 1] ?
+// otherwise matching edge to worst edge is as bad as matching edge to no edge
 void normalizeMatrixTo01(MatrixDouble &mat)
 {
-  double coeffMax = 0;
+  double coeffMax = mat(0,0);
+  double coeffMin = mat(0,0);
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
+    {
       coeffMax = (mat(i,j) > coeffMax ? mat(i,j) : coeffMax);
+      coeffMin = (mat(i,j) < coeffMin ? mat(i,j) : coeffMin);
+    }
 
-  if (coeffMax > 0)
+  if (coeffMax > coeffMin) // affine send coeffMin,coeffMax to 1,0
   {
     for (int i = 0; i < mat.rows(); ++i)
       for (int j = 0; j < mat.cols(); ++j)
-        //mat(i,j) = (mat(i,j)) / coeffMax;
-        mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+        mat(i,j) = (coeffMax - mat(i,j)) / (coeffMax - coeffMin);
+  }
+  else // all coeffs are the same
+  {
+    mat.fill(1.0);
   }
 }
 
