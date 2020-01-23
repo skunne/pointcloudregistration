@@ -260,8 +260,8 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   // start from 0
   //memset(xD, 0, x_len * sizeof(*xD));
   std::fill(xD.begin(), xD.end(), 0.0);
-  std::cout << "This is xD("<<&xD<<") and it should all be zero:" << std::endl;
-  cprdbg::frankWolfe::print_x("xD", xD, nh, ng);
+  //std::cout << "This is xD("<<&xD<<") and it should all be zero:" << std::endl;
+  //cprdbg::frankWolfe::print_x("xD", xD, nh, ng);
   // add edge related rewards
   for (auto const &edge_g : esim->sourceEdgeIndex)
   {
