@@ -2,7 +2,8 @@
 #ifndef __DEF_GRAPHMATCHINGPATH_H__
 # define __DEF_GRAPHMATCHINGPATH_H__
 
-#include <sstream>
+//#include <sstream>
+#include <vector>
 #include <glpk.h>   // linear programming solver
 #include "cpr_main.h"
 #include "cpr_matrices.h"
@@ -40,9 +41,9 @@ protected:
   std::vector<int> cons_coeff_colindex;  // nonzero constraint coeff colindex
   std::vector<double> cons_coeff_value;  // nonzero constraint coeff value
 
-  double *x;
-  double *y;   // feasible vector for PII in frank-wolfe
-  double *xD;   // coeffs of linear objective when x is fixed
+  std::vector<double> x;
+  std::vector<double> y;   // feasible vector for PII in frank-wolfe
+  std::vector<double> xD;   // coeffs of linear objective when x is fixed
 
 protected:
   //double f_concav() const;
@@ -54,13 +55,13 @@ protected:
   void initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av);
   double simplex(void);
   void compute_lp_obj_coeffs(glp_prob *lp);  // compute lp objective function coefficients
-  double mult_xD(double const *z) const;   // compute xDz reusing xD coeffs stored in variable xD
+  double mult_xD(std::vector<double> const &z) const;   // compute xDz reusing xD coeffs stored in variable xD
   void setYToSolutionOfLP(glp_prob *lp);  // set y to solution of solved lp
-  void setXTo1minusMuXPlusMuY(double mu);  // x = (1.0 - mu) * x + mu * y;
+  //void setXTo1minusMuXPlusMuY(double mu);  // x = (1.0 - mu) * x + mu * y;
 
 public:
   void frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start);
-  double bilinear(double const *x, double const *y) const; // recompute xDy
+  double bilinear(std::vector<double> const &x, std::vector<double> const &y) const; // recompute xDy
   GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
   ~GraphMatchingPath();
   virtual void run();

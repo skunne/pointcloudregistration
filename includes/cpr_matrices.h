@@ -43,4 +43,7 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency,
 void printMatrixToFile(char const *filename, MatrixInt const &m);
 void printMatrixToFile(char const *filename, MatrixDouble const &m);
 
+template<class T>
+void printVectorAsMatrix(std::vector<T> const &v, std::size_t height, std::size_t width);
+
 #endif /* __DEF_CPR_MATRICES_H__ */

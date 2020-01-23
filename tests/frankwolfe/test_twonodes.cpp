@@ -6,7 +6,9 @@
 #include "cpr_main.h"
 
 // defined in printandcompare.cpp
-double run_print_compare(int ng, int nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
+void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
+void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
 void test_two_twonodes_graphs()
 {
@@ -33,14 +35,17 @@ void test_two_twonodes_graphs()
   //
   // GraphMatchingPath gm(&vsim_mat, &esim_mat, &adj, &adj);
 
-  std::cout << std::endl << "Vertex distance matrix:" << std::endl;
-  std::cout << vsim_mat << std::endl;
-
-  std::cout << "Edge distance matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl << std::endl;
+  print_similarity_matrices(vsim_mat, esim_mat.m);
+  // std::cout << std::endl << "Vertex distance matrix:" << std::endl;
+  // std::cout << vsim_mat << std::endl;
+  //
+  // std::cout << "Edge distance matrix:" << std::endl;
+  // std::cout << esim_mat.m << std::endl << std::endl;
 
   // std::cout << "Starting solution:" << std::endl;
   // std::cout << x << std::endl << std::endl;
+
+  print_matrix_D(ng, nh, &vsim_mat, &esim_mat);
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);

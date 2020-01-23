@@ -1,4 +1,5 @@
 #include <iostream>   // std::cout
+#include <vector>
 
 #include "cpr_graphmatching_path.h"
 
@@ -6,7 +7,7 @@ namespace cprdbg
 {
   namespace frankWolfe
   {
-    void print_x(char const *name, double *x, std::size_t width, std::size_t height)
+    void print_x(char const *name, std::vector<double> const &x, std::size_t width, std::size_t height)
     {
       std::cout << "Printing " << name << std::endl;
       for (std::size_t row = 0; row < height; ++row)
@@ -15,18 +16,53 @@ namespace cprdbg
           std::cout << x[row * width + col] << ' ';
         std::cout << std::endl;
       }
+      assert(x.size() == width * height);
+    }
+
+    void print_xz_when_calculating_x_D_z(double result, std::vector<double> const &x, std::vector<double> const &z, std::size_t width, std::size_t height)
+    {
+      std::cout << "Calculating x*D*z="<<result<<"! here are current values of x("<< &x <<") and z("<< &z <<"):" << std::endl;
+      print_x("x", x, width, height);
+      print_x("z", z, width, height);
+      std::cout << endl;
+    }
+
+    void print_x_when_calculating_x_D(std::vector<double> const &x, std::size_t width, std::size_t height)
+    {
+      std::cout << "Calculating x*D! here is current value of x("<< &x <<"):" << std::endl;
+      print_x("x", x, width, height);
+      std::cout << std::endl;
+    }
+
+    void print_z_when_calculating_xD_z(double result, std::vector<double> const &z, std::size_t width, std::size_t height)
+    {
+      std::cout << "Calculating xD*z="<<result<<"! here is current value of z("<< &z <<"):" << std::endl;
+      print_x("z", z, width, height);
+      std::cout << endl;
     }
 
     void print_bilinears(double xDx_1, double xDx_2, double xDy_1, double xDy_2, double yDx, double yDy_1, double yDy_2, double mu)
     {
-      assert(xDx_1 - xDx_2 < 0.00001);
-      assert(xDy_1 - xDy_2 < 0.00001);
-      assert(yDx - xDy_2 < 0.00001);
-      assert(yDy_1 - yDy_2 < 0.00001);
-      pcl::console::print_info("    xDx: %f\n", xDx_1);
-      pcl::console::print_info("    xDy: %f\n", xDy_1);
-      pcl::console::print_info("    yDy: %f\n", yDy_1);
-      pcl::console::print_info("    mu:  %f\n", mu);
+      if (xDx_1 - xDx_2 < 0.00001 && xDy_1 - xDy_2 < 0.00001
+          && yDx - xDy_2 < 0.00001 && yDy_1 - yDy_2 < 0.00001)
+      {
+        pcl::console::print_info("    xDx: %f\n", xDx_1);
+        pcl::console::print_info("    xDy: %f\n", xDy_1);
+        pcl::console::print_info("    yDy: %f\n", yDy_1);
+        pcl::console::print_info("    mu:  %f\n", mu);
+      }
+      else
+      {
+        pcl::console::print_info("    xDx: %f == %f\n", xDx_1, xDx_2);
+        pcl::console::print_info("    xDy: %f == %f\n", xDy_1, xDy_2);
+        pcl::console::print_info("    yDx:           == %f\n", yDx);
+        pcl::console::print_info("    yDy: %f == %f\n", yDy_1, yDy_2);
+        pcl::console::print_info("    mu:  %f\n", mu);
+        assert(xDx_1 - xDx_2 < 0.00001);
+        assert(xDy_1 - xDy_2 < 0.00001);
+        assert(yDx - xDy_2 < 0.00001);
+        assert(yDy_1 - yDy_2 < 0.00001);
+      }
     }
 
     void print_info_glploadmatrix(unsigned int nb_nonzero_coeffs)

@@ -8,6 +8,8 @@
 
 #include <cstdlib>  // malloc, free
 #include <cstring>  // memcpy, memset
+#include <algorithm> // std::fill
+#include <vector>   // paranoia
 
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
@@ -17,12 +19,11 @@
 GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : GraphMatching(vsim, esim, g_adj, h_adj),
   ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh),
-  x((double *) malloc(x_len * sizeof(*x))), y((double *) malloc(x_len * sizeof(*y))),
-  xD((double *) malloc(x_len * sizeof(*xD)))
+  x(x_len), y(x_len), xD(x_len)
 {
-  //x = (double *) malloc(x_len * sizeof(*x));
-  //y = (double *) malloc(x_len * sizeof(*y));
-  //xD = (double *) malloc(x_len * sizeof(*xD));
+  // x.reserve(x_len);
+  // y.reserve(x_len);
+  // xD.reserve(x_len);
 
   cons_coeff_rowindex.push_back(1);   // duplicate coeff at pos 0 and pos 1 because apparently these three vectors should be 1-indexed??
   cons_coeff_colindex.push_back(1);
@@ -48,9 +49,6 @@ GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMat
 
 GraphMatchingPath::~GraphMatchingPath()
 {
-  free(x);
-  free(y);
-  free(xD);
 }
 
 void GraphMatchingPath::run()
@@ -87,12 +85,15 @@ void GraphMatchingPath::run()
 }
 
 // input p = graph-matching matrix
+// this one is probably the wrong version. see below
 double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 {
-  double result = 0;       // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
+  // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
     // article is unclear
     // this should maybe be abs(length(e) - length(matched(e)))
     // instead of esim(e, matched(e))
+    // and anyway this only makes sense if p only has 0 and 1 coeffs
+  double result = 0;
 
   unsigned int eg = 0;  // index of edge in G
   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
@@ -109,15 +110,42 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
       mapped_vertex_2 < p->cols() && (*p)(edge_g_itr->first.second, mapped_vertex_2) == 0;
       ++mapped_vertex_2)
       ;
-    auto edgeToIndex_h_itr = esim->destEdgeIndex.find(std::make_pair(mapped_vertex_1, mapped_vertex_2));
+    auto edgeToIndex_h_itr = esim->destEdgeIndex.find(
+      std::make_pair(mapped_vertex_1, mapped_vertex_2)
+    );
     if (edgeToIndex_h_itr != esim->destEdgeIndex.end())  // if edge in G mapped to edge in H
       result += esim->m(eg, edgeToIndex_h_itr->second);
     else          // if edge in G not mapped to an edge in H
       result += 1.0 - 1.0; // this is the worst possible penalty, since esim->m is normalized
+    ++eg;
   }
   result /= x_len;   // result = result / (ng * nh)
   return result;
 }
+
+// // this one is probably the correct version?
+// double GraphMatchingPath::f_smooth(MatrixDouble const *p, EdgeDescriptors const &g_edge_descriptors, EdgeDescriptors const &h_edge_descriptors) const
+// {
+//   double result = 0;
+//   // result = - sum_{edge e in G}
+//   //              sum_{vertex i in H}
+//   //                sum_{vertex j in H}
+//   //                  p[e[0],i] * p[e[1],j] * abs(length(e) - length(i,j)) / (ng * nh)
+//   for (auto edge_g_itr = esim->sourceEdgeIndex.cbegin(); edge_g_itr != esim->sourceEdgeIndex.cend(); ++edge_g_itr)
+//   {
+//     for (std::size_t i = 0; i < nh; ++i)
+//     {
+//       double length_e = std::get<3>(g_edge_descriptors.at(edge_g_itr->first.first, edge_g_itr->first.second));
+//       for (std::size_t j = 0; j < nh; ++j)
+//       {
+//         double length_ij = std::get<3>(h_edge_descriptors.at(i, j));
+//         result += p(edge_g_itr->first.first, i) * p(edge_g_itr->first.second, j) * abs(length_e - length_ij);
+//       }
+//     }
+//   }
+//   result /= x_len;    // result = result / (ng * nh)
+//   return result;
+// }
 
 double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
 {
@@ -129,8 +157,10 @@ double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
 void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start)
 {
   // assert x basic feasible
-  memcpy(x, x_start->data(), x_len * sizeof(*x));
-  memcpy(y, x, x_len * sizeof(*x)); // y = x
+  //memcpy(x, x_start->data(), x_len * sizeof(*x));
+  //memcpy(y, x, x_len * sizeof(*x)); // y = x
+  x.assign(x_start->data(), x_start->data() + x_len);
+  y = x;
 
   double mu = 1.0;    // initialise with arbitrary nonzero
   double yDy = 1.0;   // initialise with arbitrary nonzero
@@ -150,7 +180,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
     //  mu = 0;
     //else
     if (mu >= 1.0)
-      memcpy(x, y, x_len * sizeof(*y)); // x = y
+      x = y;
     else if (mu < 0)
     {
       assert(yDy == 0);
@@ -158,16 +188,18 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
       pcl::console::print_info("    mu: %f\n", mu);
     }
     else
-      setXTo1minusMuXPlusMuY(mu); // x = (1 - mu) * x + mu * y;
+      for (std::size_t k = 0; k < x_len; ++k)
+        x[k] = (1.0 - mu) * x[k] + mu * y[k];
   }
-  memcpy(x_return->data(), y, x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  memcpy(x_return->data(), y.data(), x_len * sizeof(double)); // TODO remove memcpy and make x_return->data() point to z
+  //x_return = y;
 }     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
-void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
-{
-  for (std::size_t i = 0; i < x_len; ++i)
-    x[i] = (1.0 - mu) * x[i] + mu * y[i];
-}
+// void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
+// {
+//   for (std::size_t i = 0; i < x_len; ++i)
+//     x[i] = (1.0 - mu) * x[i] + mu * y[i];
+// }
 
 #include <glpk.h>
 
@@ -201,7 +233,7 @@ double GraphMatchingPath::simplex(void)
   static std::size_t nb_calls = 0;
   //std::cout << "\x1B[2J\x1B[H";   // non-portable hack to clear console
   //std::cout << "\x1B[H";           // non-portable hack to clear console
-  pcl::console::print_info("simplex call %u\n", nb_calls);
+  pcl::console::print_highlight("simplex call %u\n\n", nb_calls);
   if (nb_calls > 20)
     exit(3);    // for debug
   ++nb_calls;
@@ -226,11 +258,14 @@ double GraphMatchingPath::simplex(void)
 void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
 {
   // start from 0
-  memset(xD, 0, x_len * sizeof(*xD));
+  //memset(xD, 0, x_len * sizeof(*xD));
+  std::fill(xD.begin(), xD.end(), 0.0);
+  //std::cout << "This is xD("<<&xD<<") and it should all be zero:" << std::endl;
+  //cprdbg::frankWolfe::print_x("xD", xD, nh, ng);
   // add edge related rewards
-  for (auto edge_g : esim->sourceEdgeIndex)
+  for (auto const &edge_g : esim->sourceEdgeIndex)
   {
-    for (auto edge_h : esim->destEdgeIndex)
+    for (auto const &edge_h : esim->destEdgeIndex)
     {
       std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
       std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
@@ -247,24 +282,28 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   for (std::size_t ky = 0; ky < x_len; ++ky)
     glp_set_obj_coef(lp, static_cast<int>(ky) + 1, xD[ky]);   // int 1-indexed
 
+  cprdbg::frankWolfe::print_x_when_calculating_x_D(x, nh, ng);
   cprdbg::frankWolfe::print_x("objective coeffs", xD, nh, ng);
 }
 
-double GraphMatchingPath::mult_xD(double const *z) const
+double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
 {
   double result = 0;
   for (std::size_t k = 0; k < x_len; ++k)
     result += xD[k] * z[k];
+
+  cprdbg::frankWolfe::print_z_when_calculating_xD_z(result, z, nh, ng);
+
   return result;
 }
 
 // compute x D y
-double GraphMatchingPath::bilinear(double const *x, const double *y) const
+double GraphMatchingPath::bilinear(std::vector<double> const &x, std::vector<double> const &y) const
 {
   double result = 0;
-  for (auto edge_g : esim->sourceEdgeIndex)
+  for (auto const &edge_g : esim->sourceEdgeIndex)
   {
-    for (auto edge_h : esim->destEdgeIndex)
+    for (auto const &edge_h : esim->destEdgeIndex)
     {
       std::size_t kx = edge_g.first.first * nh + edge_h.first.first;
       std::size_t ky = edge_g.first.second * nh + edge_h.first.second;
@@ -274,6 +313,8 @@ double GraphMatchingPath::bilinear(double const *x, const double *y) const
   for (KeyT ig = 0; ig < ng; ++ig)
     for (KeyT ih = 0; ih < nh; ++ih)
       result += x[ig * nh + ih] * y[ig * nh + ih] * (*vsim)(ig, ih);
+
+  cprdbg::frankWolfe::print_xz_when_calculating_x_D_z(result, x, y, nh, ng);
 
   return result; // = sum_(jg,jh) (sum_(ig,ih) x[ig,ih] D[(ig,ih)(jg,jh)]) y[jg,jh]
 }
@@ -306,12 +347,16 @@ double frankWolfe::computeMu(double xDx, double xDy, double yDy)
     mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx;
 
   // return mu that maximizes v(mu)
-  if (max_if_mu_is_zero > max_if_mu_is_one && max_if_mu_is_zero > max_if_derivative_at_mu_is_zero)
+  if (
+      max_if_mu_is_zero > max_if_mu_is_one
+      && max_if_mu_is_zero > max_if_derivative_at_mu_is_zero
+  ) {
     return 0;
+  }
   else if (max_if_mu_is_one > max_if_derivative_at_mu_is_zero)
-    return 1.0;
+    { return 1.0; }
   else
-    return mu_suchthat_derivative_is_zero;
+    { return mu_suchthat_derivative_is_zero; }
   // std::map<double, double, std::greater_than> mu;   // map v to mu
   // mu[xDx] = 0;
   // mu[yDy] = 1.0;
@@ -336,5 +381,10 @@ double frankWolfe::computeMu(double xDx, double xDy, double yDy)
 //   std::vector<double> v = {xDx, yDy, mu_suchthat_derivative_is_zero * (xDy - xDx) + xDx};
 //
 //   // return mu that maximizes v(mu)
-//   return mu[std::distance(std::max_element(v.cbegin(), v.cend()), v.cbegin())];
+//   return mu[
+//     std::distance(
+//       std::max_element(v.cbegin(), v.cend()),
+//       v.cbegin()
+//     )
+//   ];
 // }
