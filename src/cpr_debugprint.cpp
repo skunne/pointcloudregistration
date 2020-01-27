@@ -142,5 +142,12 @@ namespace cprdbg
         pcl::console::print_error("%d -> %d, %f, %f, %f.\n", vertex, index, r, g, b);
       }
     }
+
+    void print_both_sets_of_sample_points(std::vector<KeyT> const &sample_g, std::vector<KeyT> const &sample_h)
+    {
+      assert(sample_g.size() == sample_h.size());
+      for (std::size_t i = 0; i < sample_g.size(); ++i)
+        std::cout << "    (" << i << ")    " << sample_g[i] << "    " << sample_h[i] << std::endl;
+    }
   }    // namespace visualisation
 }      // namespace cprdbg

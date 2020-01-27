@@ -9,8 +9,13 @@ namespace cprdbg
   {
     int const verbosity = 3;
 
-    void print_point_index_and_colour(KeyT vertex, int index,
+    void print_point_index_and_colour(
+      KeyT vertex, int index,
       double r, double g, double b, int verbosity);
+
+    void print_both_sets_of_sample_points(
+      std::vector<KeyT> const &sample_g,
+      std::vector<KeyT> const &sample_h);
   }
 }
 

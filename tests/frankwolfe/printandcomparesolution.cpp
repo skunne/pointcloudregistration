@@ -6,12 +6,15 @@
 #include "cpr_graphmatching_path.h" // GraphMatchingPath
 //#include "cpr_matrices.h"           // EdgeSimilarityMatrix
 
+#include "test_frankwolfe.h"
+
 void set_almost_identity(MatrixDouble &almost_identity, int ng, int nh);
 
 double run_print_compare(std::size_t ng, std::size_t nh,
   MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
   MatrixInt const *g_adj, MatrixInt const *h_adj,
-  MatrixDouble const *humansolution, char const *human_solution_name)
+  MatrixDouble const *humansolution, char const *human_solution_name,
+  MatrixDouble *return_solution)
 {
   // declare graph matching algorithm
   GraphMatchingPath gm(vsim, esim, g_adj, h_adj);
@@ -76,6 +79,9 @@ double run_print_compare(std::size_t ng, std::size_t nh,
   else if (solved_score > human_score)
     std::cout << "better than " << human_solution_name << std::endl;
 
+  if (return_solution != NULL)
+    *return_solution = x;
+
   return (solved_score - human_score);
 }
 
@@ -89,6 +95,24 @@ double run_print_compare(std::size_t ng, std::size_t nh,
   return run_print_compare(ng, nh, vsim, esim, g_adj, h_adj, &almost_identity, "Identity");
 }
 
+double run_print_compare(std::size_t ng, std::size_t nh,
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+  MatrixInt const *g_adj, MatrixInt const *h_adj,
+  MatrixDouble const *humansolution, char const *human_solution_name)
+{
+  return run_print_compare(ng, nh, vsim, esim, g_adj, h_adj, humansolution, human_solution_name, NULL);
+}
+
+double run_print_compare(std::size_t ng, std::size_t nh,
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+  MatrixInt const *g_adj, MatrixInt const *h_adj,
+  MatrixDouble *return_solution)
+{
+  MatrixDouble almost_identity(ng, nh);
+  set_almost_identity(almost_identity, ng, nh);  // rectangular matrix, (Identity Block | Zero Block)
+
+  return run_print_compare(ng, nh, vsim, esim, g_adj, h_adj, &almost_identity, "Identity", return_solution);
+}
 
 void set_almost_identity(MatrixDouble &almost_identity, int ng, int nh)
 {

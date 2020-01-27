@@ -14,12 +14,22 @@ void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esi
 double run_print_compare(std::size_t ng, std::size_t nh,
   MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
   MatrixInt const *g_adj, MatrixInt const *h_adj,
+  MatrixDouble const *humansolution, char const *human_solution_name,
+  MatrixDouble *return_solution);
+
+double run_print_compare(std::size_t ng, std::size_t nh,
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+  MatrixInt const *g_adj, MatrixInt const *h_adj,
   MatrixDouble const *humansolution, char const *human_solution_name);
 
 double run_print_compare(std::size_t ng, std::size_t nh,
-    MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
-    MatrixInt const *g_adj, MatrixInt const *h_adj);
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+  MatrixInt const *g_adj, MatrixInt const *h_adj,
+  MatrixDouble *return_solution);
 
+double run_print_compare(std::size_t ng, std::size_t nh,
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+  MatrixInt const *g_adj, MatrixInt const *h_adj);
 
 void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
