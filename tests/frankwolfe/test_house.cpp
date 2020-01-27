@@ -1,6 +1,8 @@
 #include <iostream>   // std::cout
 #include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
+#include "test_frankwolfe.h"
+
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
@@ -72,11 +74,6 @@ void testhouses_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed
   dst_ed[std::make_pair(4,1)] = dst_ed[std::make_pair(1,4)];
   dst_ed[std::make_pair(2,4)] = dst_ed[std::make_pair(4,2)];
 }
-
-// defined in printandcompare.cpp
-double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
-void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
 double test_two_house_graphs()
 {

@@ -2,20 +2,7 @@
 #include <iostream> // std::cout
 #include <vector>
 
-// test_house.cpp
-double test_two_house_graphs();
-
-// test_twonodes.cpp
-double test_two_twonodes_graphs();
-
-// test_differentnumbernodes.cpp
-double test_5nodes_with_6nodes();
-
-// test_multipleoptimalsolutions.cpp
-double test_multiple_optimal_solutions();
-
-// test_with_pointclouds.cpp
-double test_with_pointclouds (int argc, char ** argv);
+#include "test_frankwolfe.h"
 
 int main(int argc, char ** argv)
 {

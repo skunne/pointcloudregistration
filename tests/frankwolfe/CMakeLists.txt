@@ -15,7 +15,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 set(SRC main_test.cpp printandcomparesolution.cpp test_with_pointclouds.cpp test_house.cpp test_twonodes.cpp test_differentnumbernodes.cpp test_multipleoptimalsolutions.cpp ../../src/cpr_debugprint.cpp ../../src/cpr_processedpointcloud.cpp ../../src/cpr_clustering.cpp ../../src/cpr_connectedcomponents.cpp ../../src/cpr_features.cpp ../../src/cpr_matrices.cpp ../../src/cpr_graphmatching.cpp ../../src/cpr_graphmatching_path.cpp ../../src/cpr_visualisation.cpp ../../src/cpr_params.cpp ../../src/cpr_loadfiles.cpp)
 
-include_directories("../../includes")
+include_directories("../../includes" "./includes")
 
 add_executable (${NAME} ${SRC})
 target_link_libraries (${NAME} PUBLIC ${PCL_LIBRARIES})

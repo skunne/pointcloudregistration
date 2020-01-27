@@ -1,5 +1,7 @@
 #include <iostream>   // std::cout
 
+#include "test_frankwolfe.h"
+
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
@@ -152,11 +154,6 @@ EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
   return new EdgeSimilarityMatrix(sourceEdgeIndex, destEdgeIndex, esim_m);
 }
 
-// defined in printandcompare.cpp
-double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
-void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
-
 double test_multiple_optimal_solutions()
 {
   int const ng = 5; // src graph has 5 nodes
@@ -208,6 +205,6 @@ double test_multiple_optimal_solutions()
 
   delete vsim_ptr;
   delete esim_ptr;
-  
+
   return result;
 }

@@ -1,14 +1,12 @@
 //#include <iostream>   // std::cout
 //#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
+#include "test_frankwolfe.h"  // run_print_compare(), print_matrix_D()
+
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-// defined in printandcompare.cpp
-double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj, MatrixDouble const *humansolution);
-void print_similarity_matrices(MatrixDouble const &vsim, MatrixDouble const &esim);
-void print_matrix_D(std::size_t ng, std::size_t nh, MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim);
 
 double test_two_twonodes_graphs()
 {
