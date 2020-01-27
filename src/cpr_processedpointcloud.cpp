@@ -16,22 +16,19 @@ ProcessedPointCloud::ProcessedPointCloud(char const *metadata_filename)
 {
 }
 
-int ProcessedPointCloud::error() const
+int ProcessedPointCloud::error(void) const
 {
   return params.error;
 }
 
-int ProcessedPointCloud::build()
+int ProcessedPointCloud::build(void)
 {
   int error_loading_file = loadFile(); //(argv[1], params.is_pcd, cloud);
   if (error_loading_file)
     return (error_loading_file);
 
-  //////////////////////////////  //////////////////////////////
-  ////// Building the graph
-  //////////////////////////////  //////////////////////////////
-
   buildGraph();
+
   buildFeatures();
 
   return (0);
@@ -44,7 +41,7 @@ int ProcessedPointCloud::build()
 ** defined in file cpr_loadfiles.cpp
 */
 
-void ProcessedPointCloud::buildGraph()
+void ProcessedPointCloud::buildGraph(void)
 {
   //pcl::SupervoxelClustering<PointT> super (params.voxel_resolution, params.seed_resolution);
   performClustering(cloud, super, &params, supervoxel_clusters, supervoxel_adjacency);
@@ -69,12 +66,8 @@ void ProcessedPointCloud::buildGraph()
   printMatrixToFile(params.adjacency_filename.c_str(), adjacency_matrix);
 }
 
-void ProcessedPointCloud::buildFeatures()
+void ProcessedPointCloud::buildFeatures(void)
 {
-  //////////////////////////////  //////////////////////////////
-  ////// ESF and edge descriptors calculation
-  //////////////////////////////  //////////////////////////////
-
   calculateDescriptors(supervoxel_clusters, supervoxel_adjacency, params.voxel_resolution, esf_descriptors, edge_descriptors);
   // save features to file
   //writeDescriptorsToCSV(argv[1], esf_descriptors, edge_descriptors);
@@ -82,7 +75,7 @@ void ProcessedPointCloud::buildFeatures()
 }
 
 //pcl::visualization::PCLVisualizer::Ptr
-pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise()
+pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise(void)
 {
   // maybe encapsulate this in Boost::Thread or call fork() ?
   pcl::console::print_highlight ("Initialising visualisation\n");

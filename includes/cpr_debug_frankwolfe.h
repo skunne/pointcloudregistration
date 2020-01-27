@@ -1,14 +1,14 @@
 
-#ifndef __DEF_CPR_DEBUG_H__
-# define __DEF_CPR_DEBUG_H__
+#ifndef __DEF_CPR_DEBUG_FRANKWOLFE_H__
+# define __DEF_CPR_DEBUG_FRANKWOLFE_H__
 #include "cpr_main.h"
 
 namespace cprdbg
 {
-  int const verbosity = 1;
-
   namespace frankWolfe
   {
+    int const verbosity = 1;
+    
     void print_x(char const *name, std::vector<double> const &x,
       std::size_t width, std::size_t height, int verbosity);
 
@@ -33,4 +33,4 @@ namespace cprdbg
 }
 
 
-#endif /* __DEF_CPR_DEBUG_H__ */
+#endif /* __DEF_CPR_DEBUG_FRANKWOLFE_H__ */

@@ -3,6 +3,7 @@
 #include "cpr_main.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_visualisation.h"
+#include "cpr_debug_visualisation.h"
 
 void make_colour(int n, double &r, double &g, double &b)
 {
@@ -26,10 +27,12 @@ void ProcessedPointCloud::addSomeColours(pcl::visualization::PCLVisualizer::Ptr 
   for (std::vector<KeyT>::const_iterator nodes_itr = nodes.cbegin(); nodes_itr != nodes.cend(); ++nodes_itr)
   {
     std::stringstream ss;
-    ss << params.filename << i;
+    ss << params.filename << i;   // unique identifiers for every object added to the viewer
     double r,g,b;
     make_colour(i, r, g, b);
-    pcl::console::print_error("%d -> %d, %f, %f, %f.\n", *nodes_itr, i, r, g, b);
+
+    cprdbg::visualisation::print_point_index_and_colour(*nodes_itr, i, r, g, b, cprdbg::visualisation::verbosity);
+    //pcl::console::print_error("%d -> %d, %f, %f, %f.\n", *nodes_itr, i, r, g, b);
     viewer->addSphere(supervoxel_clusters[*nodes_itr]->centroid_, 3.0, r, g, b, ss.str());
     ++i;
   }

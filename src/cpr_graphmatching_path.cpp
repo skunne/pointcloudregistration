@@ -14,7 +14,7 @@
 #include "cpr_graphmatching.h"
 #include "cpr_graphmatching_path.h"
 
-#include "cpr_debug.h"
+#include "cpr_debug_frankwolfe.h"
 
 GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : GraphMatching(vsim, esim, g_adj, h_adj),
@@ -166,8 +166,8 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
   double yDy = 1.0;   // initialise with arbitrary nonzero
   while (yDy > 0.00001 && mu > 0.00001) // TODO find correct stop criterion    //(zz != 0)
   {
-    cprdbg::frankWolfe::print_x("x", x, nh, ng, cprdbg::verbosity);   // debug
-    cprdbg::frankWolfe::print_x("y", y, nh, ng, cprdbg::verbosity);   // debug
+    cprdbg::frankWolfe::print_x("x", x, nh, ng, cprdbg::frankWolfe::verbosity);   // debug
+    cprdbg::frankWolfe::print_x("y", y, nh, ng, cprdbg::frankWolfe::verbosity);   // debug
     double xDy = simplex();  // y = argmax x^T D y, A y = 1, 0 <= y <= 1
     double xDx = mult_xD(x);
     yDy = bilinear(y, y);
@@ -175,7 +175,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
     //mu = -(xDx - xDy) / (yDy - xDy - xDy + xDx); // at this point xDy is known.
     mu = frankWolfe::computeMu(xDx, xDy, yDy);
     //double mu = 0; // TODO solve for mu    // mu = (ww - wz) / (zz - wz - wz + ww);
-    cprdbg::frankWolfe::print_bilinears(xDx, bilinear(x,x), xDy, bilinear(x,y), bilinear(y,x), yDy, bilinear(y,y), mu, cprdbg::verbosity);
+    cprdbg::frankWolfe::print_bilinears(xDx, bilinear(x,x), xDy, bilinear(x,y), bilinear(y,x), yDy, bilinear(y,y), mu, cprdbg::frankWolfe::verbosity);
     //if (yDy - xDy - xDy + xDx == 0)   // if x == y, nothing to do
     //  mu = 0;
     //else
@@ -221,7 +221,7 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
     glp_set_col_bnds(lp, col, GLP_DB, 0.0, 1.0);  // 0 <= x[.] <= 1
 
   // load constraints
-  cprdbg::frankWolfe::print_info_glploadmatrix(iv.size()-1, cprdbg::verbosity);
+  cprdbg::frankWolfe::print_info_glploadmatrix(iv.size()-1, cprdbg::frankWolfe::verbosity);
   glp_load_matrix(lp, iv.size()-1, iv.data(), jv.data(), av.data());
   for (std::size_t row = 0; row < nb_constraints; ++row)
     glp_set_row_bnds(lp, row + 1, GLP_DB, 0.0, 1.0);    // row is 1-indexed
@@ -242,7 +242,7 @@ double GraphMatchingPath::simplex(void)
   // load objective function
   compute_lp_obj_coeffs(lp);
 
-  cprdbg::frankWolfe::print_simplex(lp, ng, nh, cprdbg::verbosity);
+  cprdbg::frankWolfe::print_simplex(lp, ng, nh, cprdbg::frankWolfe::verbosity);
 
   // solve problem
   glp_simplex(lp, NULL);
@@ -261,7 +261,7 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   //memset(xD, 0, x_len * sizeof(*xD));
   std::fill(xD.begin(), xD.end(), 0.0);
   //std::cout << "This is xD("<<&xD<<") and it should all be zero:" << std::endl;
-  //cprdbg::frankWolfe::print_x("xD", xD, nh, ng, cprdbg::verbosity);
+  //cprdbg::frankWolfe::print_x("xD", xD, nh, ng, cprdbg::frankWolfe::verbosity);
   // add edge related rewards
   for (auto const &edge_g : esim->sourceEdgeIndex)
   {
@@ -282,8 +282,8 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   for (std::size_t ky = 0; ky < x_len; ++ky)
     glp_set_obj_coef(lp, static_cast<int>(ky) + 1, xD[ky]);   // int 1-indexed
 
-  cprdbg::frankWolfe::print_x_when_calculating_x_D(x, nh, ng, cprdbg::verbosity);
-  cprdbg::frankWolfe::print_x("objective coeffs", xD, nh, ng, cprdbg::verbosity);
+  cprdbg::frankWolfe::print_x_when_calculating_x_D(x, nh, ng, cprdbg::frankWolfe::verbosity);
+  cprdbg::frankWolfe::print_x("objective coeffs", xD, nh, ng, cprdbg::frankWolfe::verbosity);
 }
 
 double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
@@ -292,7 +292,7 @@ double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
   for (std::size_t k = 0; k < x_len; ++k)
     result += xD[k] * z[k];
 
-  cprdbg::frankWolfe::print_z_when_calculating_xD_z(result, z, nh, ng, cprdbg::verbosity);
+  cprdbg::frankWolfe::print_z_when_calculating_xD_z(result, z, nh, ng, cprdbg::frankWolfe::verbosity);
 
   return result;
 }
@@ -314,7 +314,7 @@ double GraphMatchingPath::bilinear(std::vector<double> const &x, std::vector<dou
     for (KeyT ih = 0; ih < nh; ++ih)
       result += x[ig * nh + ih] * y[ig * nh + ih] * (*vsim)(ig, ih);
 
-  cprdbg::frankWolfe::print_xz_when_calculating_x_D_z(result, x, y, nh, ng, cprdbg::verbosity);
+  cprdbg::frankWolfe::print_xz_when_calculating_x_D_z(result, x, y, nh, ng, cprdbg::frankWolfe::verbosity);
 
   return result; // = sum_(jg,jh) (sum_(ig,ih) x[ig,ih] D[(ig,ih)(jg,jh)]) y[jg,jh]
 }

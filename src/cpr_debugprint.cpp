@@ -132,4 +132,15 @@ namespace cprdbg
       }
     }  // print_simplex()
   }    // namespace frankWolfe
+
+  namespace visualisation
+  {
+    void print_point_index_and_colour(KeyT vertex, int index, double r, double g, double b, int verbosity)
+    {
+      if (verbosity >= 2)
+      {
+        pcl::console::print_error("%d -> %d, %f, %f, %f.\n", vertex, index, r, g, b);
+      }
+    }
+  }    // namespace visualisation
 }      // namespace cprdbg
