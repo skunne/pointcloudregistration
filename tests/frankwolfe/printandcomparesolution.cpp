@@ -20,8 +20,11 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
   //std::fill(x.begin(), x.end(), 1.0 / (ng < nh ? nh : ng));
 
   // output initial solution
-  std::cout << "Starting solution:" << std::endl;
-  std::cout << x << std::endl;
+  if (ng < 20 && nh < 20)
+  {
+    std::cout << "Starting solution:" << std::endl;
+    std::cout << x << std::endl;
+  }
   //printVectorAsMatrix(x, ng, nh);
 
   // solve
@@ -36,18 +39,24 @@ double run_print_compare(std::size_t ng, std::size_t nh, MatrixDouble const *vsi
   double human_score = gm.bilinear(humancopyvector, humancopyvector);
 
   // output final solution
-  std::cout << std::endl << "Final solution:" << std::endl;
-  std::cout << x << std::endl;
-  //printVectorAsMatrix(x, ng, nh);
+  if (ng < 20 && nh < 20)
+  {
+    std::cout << std::endl << "Final solution:" << std::endl;
+    std::cout << x << std::endl;
+    //printVectorAsMatrix(x, ng, nh);
+  }
 
   // output final score and compare with human score
   std::cout << "Final similarity score:" << std::endl;
   std::cout << "    " << solved_score << std::endl;
   std::cout << std::endl << "Compare with human-known matching and score" << std::endl;
 
-  std::cout << "Human-known matching:" << std::endl;
-  std::cout << *humansolution << std::endl;
-  //printVectorAsMatrix(humancopyvector, ng, nh);
+  if (ng < 20 && nh < 20)
+  {
+    std::cout << "Human-known matching:" << std::endl;
+    std::cout << *humansolution << std::endl;
+    //printVectorAsMatrix(humancopyvector, ng, nh);
+  }
   std::cout << "Human-known score:" << std::endl;
   std::cout << "    " << human_score << std::endl;
 
