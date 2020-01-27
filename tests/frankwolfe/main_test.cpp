@@ -21,6 +21,8 @@ int main(int argc, char ** argv)
   names.push_back("multiple optimal");
   diff_with_human.push_back(test_multiple_optimal_solutions());
 
+  //int ac = 3;
+  //char const *av[3] = {"./tests/frankwolfe/test_frankwolfe", "metadata/big1.meta", "metadata/big3.meta"};
   names.push_back("pointclouds");
   diff_with_human.push_back(test_with_pointclouds(argc, argv));
 
