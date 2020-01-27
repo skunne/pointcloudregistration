@@ -111,7 +111,7 @@ void printMatrixToFile(char const *filename, MatrixDouble const &m)
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
   pcl::console::print_info("    Saving matrix to:\n      ");
-  pcl::console::print_info(filename);
+  pcl::console::print_info("%s", filename);
   pcl::console::print_info("\n");
   if (!output)
     errorLoadingFile("output", filename);

@@ -48,5 +48,7 @@ double test_multiple_optimal_solutions();
 // test_with_pointclouds.cpp
 double test_with_pointclouds (int argc, char ** argv);
 
+// test_metricisgood.cpp
+double test_metricisgood(char const *metadata_filename);
 
 #endif /* __DEF_TEST_FRANKWOLFE_H__ */
