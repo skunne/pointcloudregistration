@@ -201,7 +201,7 @@ double test_multiple_optimal_solutions()
   human_x.bottomLeftCorner(2,4).setZero();
   human_x.topRightCorner(3,3).setZero();
 
-  double result = run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x);
+  double result = run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x, "known solution");
 
   delete vsim_ptr;
   delete esim_ptr;

@@ -31,9 +31,9 @@ double test_two_twonodes_graphs()
 
   print_matrix_D(ng, nh, &vsim_mat, &esim_mat);
 
-  // human-known graph-matching
-  MatrixDouble human_x(ng, nh);
-  human_x.setIdentity();
+  // // human-known graph-matching
+  // MatrixDouble human_x(ng, nh);
+  // human_x.setIdentity();
 
-  return run_print_compare(ng, nh, &vsim_mat, &esim_mat, &adj, &adj, &human_x);
+  return run_print_compare(ng, nh, &vsim_mat, &esim_mat, &adj, &adj);//, &human_x);
 }

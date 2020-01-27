@@ -107,9 +107,9 @@ double test_two_house_graphs()
 
   print_matrix_D(ng, nh, &vsim_mat.m, &esim_mat);
 
-  // human-known graph-matching
-  MatrixDouble human_x(ng, nh);
-  human_x.setIdentity();
+  // // human-known graph-matching
+  // MatrixDouble human_x(ng, nh);
+  // human_x.setIdentity();
 
-  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x);
+  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj);//, &human_x);
 }

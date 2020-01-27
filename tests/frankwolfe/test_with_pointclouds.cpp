@@ -1,11 +1,12 @@
 
+#include <Eigen/Core>
+
 #include "test_frankwolfe.h"
 #include "cpr_main.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
 #include "cpr_graphmatching_path.h"
-
 
 double test_with_pointclouds (int argc, char ** argv)
 {
@@ -29,25 +30,41 @@ double test_with_pointclouds (int argc, char ** argv)
   VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
   EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
-  pcl::visualization::PCLVisualizer::Ptr viewer_source =
-    ppc_source.visualise();
-  pcl::visualization::PCLVisualizer::Ptr viewer_dest =
-    ppc_dest.visualise();
-
-  while (!viewer_source->wasStopped())
-    viewer_source->spinOnce(100);
-  while (!viewer_dest->wasStopped())
-    viewer_dest->spinOnce(100);
-
-  // TODO match graphs
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   int const ng = ppc_source.getNbVertices();
   int const nh = ppc_dest.getNbVertices();
-  int const min_ng_nh = ng < nh ? ng : nh;
 
-  MatrixDouble almost_identity(ng, nh);
-  almost_identity.topLeftCorner(min_ng_nh, min_ng_nh).setIdentity();
+  // MatrixDouble almost_identity(ng, nh);
+  // if (ng == nh)
+  // {
+  //   almost_identity.setIdentity();
+  // }
+  // else if (ng < nh)
+  // {
+  //   almost_identity.topLeftCorner(ng, ng).setIdentity();
+  //   almost_identity.topRightCorner(ng, nh-ng).setZero();
+  // }
+  // else // nh < ng
+  // {
+  //   almost_identity.topLeftCorner(nh, nh).setIdentity();
+  //   almost_identity.bottomLeftCorner(ng-nh, nh).setZero();
+  // }
+  //
+  // std::cout << almost_identity;
 
-  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix, &almost_identity);
+  double result =
+    run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);//, &almost_identity);
+
+  // pcl::visualization::PCLVisualizer::Ptr viewer_source =
+  //   ppc_source.visualise();
+  // pcl::visualization::PCLVisualizer::Ptr viewer_dest =
+  //   ppc_dest.visualise();
+  //
+  // while (!viewer_source->wasStopped())
+  //   viewer_source->spinOnce(100);
+  // while (!viewer_dest->wasStopped())
+  //   viewer_dest->spinOnce(100);
+
+  return result;
 }

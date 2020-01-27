@@ -146,5 +146,5 @@ double test_5nodes_with_6nodes()
   human_x.bottomLeftCorner(2,4).setZero();
   human_x.topRightCorner(3,3).setZero();
 
-  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x);
+  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x, "known solution");
 }

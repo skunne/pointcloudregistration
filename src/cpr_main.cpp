@@ -153,7 +153,6 @@ main (int argc, char ** argv)
   //while (!(viewer_source->wasStopped() && viewer_dest->wasStopped()))
   //  ;   // wait for user to close window before halting
 
-  // TODO match graphs
   GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   int const ng = ppc_source.getNbVertices();
