@@ -1,5 +1,4 @@
 #include <iostream>   // std::cout
-#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
 #include "test_frankwolfe.h"
 
@@ -7,14 +6,14 @@
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-void testdifferent_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
+void testmultiple_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
 {
   // house with 5 nodes and 7 edges
   //   0
   // 4  /1
   // 3/  2
   src_adj << 0, 1, 0, 0, 1,  // roof
-             1, 0, 1, 1, 0,  // topright
+             1, 0, 1, 1, 1,  // topright
              0, 1, 0, 1, 0,  // bottomright
              0, 1, 1, 0, 1,  // bottomleft
              1, 1, 0, 1, 0;  // topleft
@@ -34,7 +33,7 @@ void testdifferent_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_ad
 // fill src_esf[0,1,2,3,4] with pseudo-random numbers in [0, 1]
 // fill dst_esf[0,1,2,4,5] with a small perturbation of src_esf
 // dst_esf[3] = pseudo-random
-void testdifferent_fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
+void testmultiple_fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_esf)
 {
   int random = 197546;
 
@@ -70,7 +69,7 @@ void testdifferent_fill_esf_descr(ESFDescriptors &src_esf, ESFDescriptors &dst_e
   }
 }
 
-void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed)
+void testmultiple_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed)
 {
   src_ed[std::make_pair(0,1)] = std::make_tuple(3.14/4.0, 3.14/4.0, 0, 1.4);
   src_ed[std::make_pair(1,2)] = std::make_tuple(0.0, 3.14/2.0, 0, 1.0);
@@ -108,36 +107,92 @@ void testdifferent_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst
   dst_ed[std::make_pair(3,2)] = dst_ed[std::make_pair(2,3)];  // tail
 }
 
-double test_5nodes_with_6nodes()
+EdgeSimilarityMatrix *testmultiple_artificial_edgesimilarity()
+{
+  std::map<std::pair<KeyT, KeyT>, unsigned int> sourceEdgeIndex;
+  std::map<std::pair<KeyT, KeyT>, unsigned int> destEdgeIndex;
+  MatrixDouble esim_m(2*7, 2*8);
+
+  sourceEdgeIndex[std::make_pair(0,1)] = 0;
+  sourceEdgeIndex[std::make_pair(1,2)] = 2;
+  sourceEdgeIndex[std::make_pair(2,3)] = 4;
+  sourceEdgeIndex[std::make_pair(3,4)] = 6;
+  sourceEdgeIndex[std::make_pair(4,0)] = 8;
+  sourceEdgeIndex[std::make_pair(4,1)] = 10;
+  sourceEdgeIndex[std::make_pair(1,3)] = 12;
+
+  sourceEdgeIndex[std::make_pair(1,0)] = 1;
+  sourceEdgeIndex[std::make_pair(2,1)] = 3;
+  sourceEdgeIndex[std::make_pair(3,2)] = 5;
+  sourceEdgeIndex[std::make_pair(4,3)] = 7;
+  sourceEdgeIndex[std::make_pair(0,4)] = 9;
+  sourceEdgeIndex[std::make_pair(1,4)] = 11;
+  sourceEdgeIndex[std::make_pair(3,1)] = 13;
+
+  destEdgeIndex[std::make_pair(0,1)] = 0;
+  destEdgeIndex[std::make_pair(1,2)] = 2;
+  destEdgeIndex[std::make_pair(2,4)] = 4;
+  destEdgeIndex[std::make_pair(4,5)] = 6;
+  destEdgeIndex[std::make_pair(5,0)] = 8;
+  destEdgeIndex[std::make_pair(5,1)] = 10;
+  destEdgeIndex[std::make_pair(1,4)] = 12;
+  destEdgeIndex[std::make_pair(2,3)] = 14;
+
+  destEdgeIndex[std::make_pair(1,0)] = 1;
+  destEdgeIndex[std::make_pair(2,1)] = 3;
+  destEdgeIndex[std::make_pair(4,2)] = 5;
+  destEdgeIndex[std::make_pair(5,4)] = 7;
+  destEdgeIndex[std::make_pair(0,5)] = 9;
+  destEdgeIndex[std::make_pair(1,5)] = 11;
+  destEdgeIndex[std::make_pair(4,1)] = 13;
+  destEdgeIndex[std::make_pair(3,2)] = 15;
+
+  esim_m.fill(1.0);   // all edges have same similarity, so all solutions are equally good
+
+  //esim_m.topLeftCorner(14,14).setIdentity();
+
+  return new EdgeSimilarityMatrix(sourceEdgeIndex, destEdgeIndex, esim_m);
+}
+
+double test_multiple_optimal_solutions()
 {
   int const ng = 5; // src graph has 5 nodes
   int const nh = 6; // dst graph has 6 nodes
-  ESFDescriptors  src_esf;
-  ESFDescriptors  dst_esf;
-  testdifferent_fill_esf_descr(src_esf, dst_esf);
-
-  EdgeDescriptors src_ed;
-  EdgeDescriptors dst_ed;
-  testdifferent_fill_edge_descr(src_ed, dst_ed);
 
   MatrixInt src_adj(ng,ng);
   MatrixInt dst_adj(nh,nh);
-  testdifferent_fill_adjacency_matrices(src_adj, dst_adj);
+  testmultiple_fill_adjacency_matrices(src_adj, dst_adj);
 
-  VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
-  EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
+  VertexSimilarityMatrix *vsim_ptr;
+  EdgeSimilarityMatrix   *esim_ptr;
 
-  MatrixDouble other_vsim(ng,nh);
-  other_vsim << 0.95, 0.07, 0.07, 0.20, 0.07, 0.07,
-                0.07, 0.95, 0.07, 0.20, 0.07, 0.07,
-                0.07, 0.07, 0.95, 0.20, 0.07, 0.07,
-                0.07, 0.07, 0.07, 0.20, 0.95, 0.07,
-                0.07, 0.07, 0.07, 0.20, 0.07, 0.95; // almost identity matrix
+  bool use_artificial_matrices = true;
 
-  print_similarity_matrices(vsim_mat.m, esim_mat.m);
+  if (!use_artificial_matrices)
+  {
+    ESFDescriptors  src_esf;
+    ESFDescriptors  dst_esf;
+    testmultiple_fill_esf_descr(src_esf, dst_esf);
 
+    EdgeDescriptors src_ed;
+    EdgeDescriptors dst_ed;
+    testmultiple_fill_edge_descr(src_ed, dst_ed);
 
-  print_matrix_D(ng, nh, &vsim_mat.m, &esim_mat);
+    vsim_ptr = new VertexSimilarityMatrix(src_esf, dst_esf);  // from ESF descriptors
+    esim_ptr = new EdgeSimilarityMatrix(src_ed, dst_ed);      // from edge descriptors
+  }
+  else // if use_artificial_matrices
+  {
+    MatrixDouble vsim_1_m(ng,nh); // artificial vertex similarity matrix
+    vsim_1_m.fill(1.0);           // all solutions will be equally good
+    vsim_ptr = new VertexSimilarityMatrix(vsim_1_m);
+    esim_ptr = testmultiple_artificial_edgesimilarity();
+  }
+
+  // output the chosen similarity matrices
+  print_similarity_matrices(vsim_ptr->m, esim_ptr->m);
+
+  print_matrix_D(ng, nh, &vsim_ptr->m, esim_ptr);
 
   // human-known graph-matching
   MatrixDouble human_x(ng, nh);
@@ -146,5 +201,10 @@ double test_5nodes_with_6nodes()
   human_x.bottomLeftCorner(2,4).setZero();
   human_x.topRightCorner(3,3).setZero();
 
-  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj, &human_x, "known solution");
+  double result = run_print_compare(ng, nh, &vsim_ptr->m, esim_ptr, &src_adj, &dst_adj, &human_x, "known solution");
+
+  delete vsim_ptr;
+  delete esim_ptr;
+
+  return result;
 }

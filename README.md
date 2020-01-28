@@ -11,8 +11,9 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
  * Build vertex similarity matrix using distance between ESF descriptors
  * Build edge similarity matrix using distance between 4-descriptors
  * Match the two resulting graphs using Frank-Wolfe algorithm for quadratic programming (5)
- * TODO Apply RANSAC algorithm (6) to the point clouds
- * TODO Apply ICP algorithm (7, 8) to the point clouds
+ * TODO Apply RANSAC algorithm (6) to the graph vertices to remove outliers
+ * TODO Find a rigid geometric transform to map the first set of graph vertices to the second set
+ * TODO Apply ICP algorithm (7, 8) to the graph vertices as a final refinement
 
 
 ### Dependencies

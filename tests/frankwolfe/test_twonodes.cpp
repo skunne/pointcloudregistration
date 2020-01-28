@@ -1,17 +1,23 @@
-#include <iostream>   // std::cout
+//#include <iostream>   // std::cout
 //#include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
+
+#include "test_frankwolfe.h"  // run_print_compare(), print_matrix_D()
 
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 
-void test_two_twonodes_graphs()
+
+double test_two_twonodes_graphs()
 {
-  MatrixInt adj(2,2);    // graph = 2 nodes with one edge
+  int const ng = 2;
+  int const nh = 2;
+
+  MatrixInt adj(ng,ng);    // graph = 2 nodes with one edge
   adj << 0, 1,            // second graph = first graph
          1, 0;
 
-  MatrixDouble vsim_mat(2,2);  // similarity matrix = 1111 - identity ==> solution to the graph matching problem must be identity
+  MatrixDouble vsim_mat(ng,nh);  // similarity matrix = 1111 - identity ==> solution to the graph matching problem must be identity
   vsim_mat << 0.95, 0.10,
               0.12, 0.90;
 
@@ -21,23 +27,13 @@ void test_two_twonodes_graphs()
 
   EdgeSimilarityMatrix esim_mat(ed, ed);  // both graphs have the same edge
 
-  MatrixDouble x(2,2);
-  x << 0.5, 0.5,   // starting solution
-       0.5, 0.5;
+  print_similarity_matrices(vsim_mat, esim_mat.m);
 
-  GraphMatchingPath gm(&vsim_mat, &esim_mat, &adj, &adj);
+  print_matrix_D(ng, nh, &vsim_mat, &esim_mat);
 
-  std::cout << std::endl << "Vertex distance matrix:" << std::endl;
-  std::cout << vsim_mat << std::endl;
+  // // human-known graph-matching
+  // MatrixDouble human_x(ng, nh);
+  // human_x.setIdentity();
 
-  std::cout << "Edge distance matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl << std::endl;
-
-  std::cout << "Starting solution:" << std::endl;
-  std::cout << x << std::endl << std::endl;
-
-  gm.frankWolfe(0.0, &x, &x);
-
-  std::cout << "Final solution:" << std::endl;
-  std::cout << x << std::endl << std::endl;
+  return run_print_compare(ng, nh, &vsim_mat, &esim_mat, &adj, &adj);//, &human_x);
 }

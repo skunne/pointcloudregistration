@@ -15,20 +15,28 @@ void buildAdjacencyMatrix(SupervoxelAdjacency const &supervoxel_adjacency, Matri
   }
 }
 
-// assumes all coeffs are positive!!
+// do we really want to normalize to [0,1] and not to [epsilon, 1] ?
+// otherwise matching edge to worst edge is as bad as matching edge to no edge
 void normalizeMatrixTo01(MatrixDouble &mat)
 {
-  double coeffMax = 0;
+  double coeffMax = mat(0,0);
+  double coeffMin = mat(0,0);
   for (int i = 0; i < mat.rows(); ++i)
     for (int j = 0; j < mat.cols(); ++j)
+    {
       coeffMax = (mat(i,j) > coeffMax ? mat(i,j) : coeffMax);
+      coeffMin = (mat(i,j) < coeffMin ? mat(i,j) : coeffMin);
+    }
 
-  if (coeffMax > 0)
+  if (coeffMax > coeffMin) // affine send coeffMin,coeffMax to 1,0
   {
     for (int i = 0; i < mat.rows(); ++i)
       for (int j = 0; j < mat.cols(); ++j)
-        //mat(i,j) = (mat(i,j)) / coeffMax;
-        mat(i,j) = 1.0 - (mat(i,j)) / coeffMax;   // reverse 0 and 1 because this is similarity matrix, not distance matrix
+        mat(i,j) = (coeffMax - mat(i,j)) / (coeffMax - coeffMin);
+  }
+  else // all coeffs are the same
+  {
+    mat.fill(1.0);
   }
 }
 
@@ -57,8 +65,6 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
     for (auto d_itr = dest.cbegin(); d_itr != dest.cend(); ++d_itr)
     {
       destEdgeIndex[d_itr->first] = j;
-      // OF COURSE THIS MEANS WE MUST KEEP AN ORDERED LIST OF THE EDGES SOMEWHERE
-      // but that's ok because in c++, std::map is guaranteed to be sorted by key
       m(i,j) = edgeDistance(s_itr->second, d_itr->second);
       //std::cout << "EdgeSimilarityMatrix()  m(" << i << ',' << j << ") = " << m(i,j) << std::endl;
       ++j;
@@ -71,6 +77,21 @@ EdgeSimilarityMatrix::EdgeSimilarityMatrix(EdgeDescriptors const &source, EdgeDe
   //std::cout << "EdgeSimilarityMatrix after normalisation:" << std::endl;
   //std::cout << m << std::endl;
   pcl::console::print_info("    Successfully built %lu,%lu edge similarity matrix.\n", source.size(), dest.size());
+}
+
+// artificial constructor for debug purposes
+EdgeSimilarityMatrix::EdgeSimilarityMatrix(
+  std::map<std::pair<KeyT, KeyT>, unsigned int> const &srcEIndex,
+  std::map<std::pair<KeyT, KeyT>, unsigned int> const &dstEIndex,
+  MatrixDouble const &mat)
+  : sourceEdgeIndex(srcEIndex), destEdgeIndex(dstEIndex), m(mat)
+{
+}
+
+// artificial constructor for debug purposes
+VertexSimilarityMatrix::VertexSimilarityMatrix(MatrixDouble const &mat)
+  : m(mat)
+{
 }
 
 void printMatrixToFile(char const *filename, MatrixInt const &m)
@@ -90,10 +111,21 @@ void printMatrixToFile(char const *filename, MatrixDouble const &m)
   std::fstream output(filename, std::fstream::out | std::fstream::trunc);
 
   pcl::console::print_info("    Saving matrix to:\n      ");
-  pcl::console::print_info(filename);
+  pcl::console::print_info("%s", filename);
   pcl::console::print_info("\n");
   if (!output)
     errorLoadingFile("output", filename);
   else
     output << m << std::endl;
+}
+
+template<class T>
+void printVectorAsMatrix(std::vector<T> const &v, std::size_t height, std::size_t width)
+{
+  for (std::size_t row = 0; row < height; ++row)
+  {
+    for (std::size_t col = 0; col < width; ++col)
+      std::cout << v[row * width + col] << ' ';
+    std::cout << std::endl;
+  }
 }

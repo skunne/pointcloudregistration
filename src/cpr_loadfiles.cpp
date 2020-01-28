@@ -21,12 +21,19 @@ int ProcessedPointCloud::loadFile(void) //char const *filename, bool is_pc)//, P
   }
 }
 
-int cpr_loadFile(char const *filename, bool is_pcd, PointCloudT::Ptr cloud)
+int cpr_loadFile(char const *filename, Params *params, PointCloudT::Ptr cloud)
 {
-  if (is_pcd)
+  if (params->is_pcd)
     return loadPCDFile(filename, cloud);
-  else
+  else if (params->is_vtk)
     return loadVTKFile(filename, cloud);
+  else if (params->is_ply)
+    return loadPLYFile(filename, cloud);
+  else
+  {
+    pcl::console::print_error("Unknown file format for pointcloud file %s\n", filename);
+    return 7;
+  }
 }
 
 int errorLoadingFile(char const *type, char const *name)

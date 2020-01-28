@@ -1,6 +1,8 @@
 #include <iostream>   // std::cout
 #include <iomanip>    // std::fixed, std::setprecision to print doubles/floats
 
+#include "test_frankwolfe.h"
+
 #include "cpr_graphmatching_path.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
@@ -9,14 +11,14 @@ void testhouses_fill_adjacency_matrices(MatrixInt &src_adj, MatrixInt &dst_adj)
 {
   // house with bottomleft-topright diagonal
   src_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 1, 0,     // 4  /1
+             1, 0, 1, 1, 1,     // 4  /1
              0, 1, 0, 1, 0,     // 3/  2
              0, 1, 1, 0, 1,
              1, 1, 0, 1, 0;
 
   // house with topleft-bottomright diagonal
   dst_adj << 0, 1, 0, 0, 1,     //   0
-             1, 0, 1, 0, 0,     // 4\  1
+             1, 0, 1, 0, 1,     // 4\  1
              0, 1, 0, 1, 1,     // 3  \2
              0, 0, 1, 0, 1,
              1, 1, 1, 1, 0;
@@ -73,8 +75,11 @@ void testhouses_fill_edge_descr(EdgeDescriptors &src_ed, EdgeDescriptors &dst_ed
   dst_ed[std::make_pair(2,4)] = dst_ed[std::make_pair(4,2)];
 }
 
-void test_two_house_graphs()
+double test_two_house_graphs()
 {
+  int const ng = 5;
+  int const nh = 5;
+
   ESFDescriptors  src_esf;
   ESFDescriptors  dst_esf;
   testhouses_fill_esf_descr(src_esf, dst_esf);
@@ -83,36 +88,28 @@ void test_two_house_graphs()
   EdgeDescriptors dst_ed;
   testhouses_fill_edge_descr(src_ed, dst_ed);
 
-  MatrixInt src_adj(5,5);
-  MatrixInt dst_adj(5,5);
+  MatrixInt src_adj(ng,nh);
+  MatrixInt dst_adj(ng,nh);
   testhouses_fill_adjacency_matrices(src_adj, dst_adj);
 
   VertexSimilarityMatrix vsim_mat(src_esf, dst_esf);
   EdgeSimilarityMatrix esim_mat(src_ed, dst_ed);
 
-  MatrixDouble other_vsim(5,5);
+  MatrixDouble other_vsim(ng,nh);
   other_vsim << 0.95, 0.1, 0.1, 0.1, 0.1,
                 0.1, 0.95, 0.1, 0.1, 0.1,
                 0.1, 0.1, 0.95, 0.1, 0.1,
                 0.1, 0.1, 0.1, 0.95, 0.1,
                 0.1, 0.1, 0.1, 0.1, 0.95;    // almost identity matrix
 
-  std::cout << std::fixed << std::setprecision(4);
-  std::cout << "Vertex similarity matrix:" << std::endl;
-  std::cout << vsim_mat.m << std::endl << std::endl;
-  std::cout.unsetf(std::ios_base::floatfield);
-  std::cout << std::setprecision(1);
-  std::cout << "Edge similarity matrix:" << std::endl;
-  std::cout << esim_mat.m << std::endl << std::endl;
-  std::cout << std::fixed << std::setprecision(2);
+  print_similarity_matrices(vsim_mat.m, esim_mat.m);
 
-  //GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &src_adj, &dst_adj);
-  GraphMatchingPath gm(&other_vsim, &esim_mat, &src_adj, &dst_adj);
 
-  MatrixDouble x(5,5);
-  x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
+  print_matrix_D(ng, nh, &vsim_mat.m, &esim_mat);
 
-  gm.frankWolfe(0.0, &x, &x);
+  // // human-known graph-matching
+  // MatrixDouble human_x(ng, nh);
+  // human_x.setIdentity();
 
-  std::cout << x << std::endl;
+  return run_print_compare(ng, nh, &vsim_mat.m, &esim_mat, &src_adj, &dst_adj);//, &human_x);
 }

@@ -27,14 +27,13 @@ public:
   ProcessedPointCloud(Params const &p);
   ProcessedPointCloud(char const *metadata_filename);
   //int setParams(int argc, char const *const *argv);
-  int loadFile();
-  int error() const;
-  void buildGraph();
-  void buildFeatures();
-  int build();
+  int loadFile(void);
+  int error(void) const;
+  void buildGraph(void);
+  void buildFeatures(void);
+  int build(void);
 
-  pcl::visualization::PCLVisualizer::Ptr
-    visualise();
+  pcl::visualization::PCLVisualizer::Ptr visualise(void);
   void addToViewer(pcl::visualization::PCLVisualizer::Ptr viewer);
 
   //void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer);
