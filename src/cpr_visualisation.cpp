@@ -5,6 +5,18 @@
 #include "cpr_visualisation.h"
 #include "cpr_debug_visualisation.h"
 
+/*
+** The following two functions were written by (or adapted from) J. Papon
+** as part of his tutorial on supervoxel clustering with the PCL library:
+**
+**   ProcessedPointCloud::addToViewer()
+**   addSupervoxelConnectionsToViewer()
+**
+** Originals can be found at:
+**
+**   http://pointclouds.org/documentation/tutorials/supervoxel_clustering.php
+*/
+
 void make_colour(int n, double &r, double &g, double &b)
 {
   if (n == 0)
