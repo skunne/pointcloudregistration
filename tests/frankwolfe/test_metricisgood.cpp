@@ -7,6 +7,24 @@
 
 #include "test_frankwolfe.h"
 
+/*
+**  This test is to be used in conjunction with
+**  the python script ../../scripts_python/display_scores.py
+**
+**  The function test_metricisgood() below will write a text file
+**  output/scores_as_function_of_matching_quality.txt
+**  consisting of several lines containing space-separated numbers
+**  Each line if of the form:
+**  c  score1 score2 score3 score4...
+**  where c represents a number of transpositions (i,j)
+**  and all the scores on the line are the result of the product x D x
+**  where x is a permutation matrix obtained by multiplying c random transpositions
+**  and D is the similarity matrix of the input pointcloud (given with the metadata_filename argument)
+**
+**  The python script display_scores.py will read the file output/scores_as_function_of_matching_quality.txt
+**  And display a scatterplot (and save it to output/scores_as_function_of_matching_quality.png)
+*/
+
 void testmetric_printscorestofile(std::vector<std::vector<double>> const &scores)
 {
   char const *filename = "output/scores_as_function_of_matching_quality.txt";
@@ -45,6 +63,8 @@ void testmetric_swaprows(std::vector<double> &v, std::size_t width, std::size_t 
 // "x has complexity c" <==> x was constructed from c random transpositions
 double testmetric_testonagraph(MatrixInt const &adj_m, VertexSimilarityMatrix const &vsim, EdgeSimilarityMatrix const &esim)
 {
+  std::cout << "testmetric_testonagraph()" << std::endl;
+
   std::size_t const width = adj_m.cols();
   std::size_t const nb_experiments = 1000;
   std::size_t const max_complexity = 3 * width;
@@ -78,6 +98,7 @@ double testmetric_testonagraph(MatrixInt const &adj_m, VertexSimilarityMatrix co
       // compute score
       scores[complexity].push_back(gm.bilinear(x, x));
     }
+    std::cout << k << ' ' << std::flush;
   }
 
   testmetric_printscorestofile(scores);
@@ -87,6 +108,7 @@ double testmetric_testonagraph(MatrixInt const &adj_m, VertexSimilarityMatrix co
 
 double test_metricisgood(char const *metadata_filename)
 {
+  std::cout << "test_metricisgood()" << std::endl;
   //////////////
   // Load file
   //////////////
