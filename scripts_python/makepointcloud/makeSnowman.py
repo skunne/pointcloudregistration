@@ -39,7 +39,7 @@ def drawSnowman():
     addPointsOnSphere(0,0,40+40+20, 20, 400, pointcloud)  # torso
     addPointsOnSphere(0,0,80+40+10, 10, 100, pointcloud)  # head
     (thetaEye, phiEye) = (0.26, math.pi / 4)
-    (xEye,yEye,zEye) = (10*math.sin(phiEye)*math.cos(-thetaEye),10*math.sin(phiEye)*math.sin(-thetaEye),120+10*math.cos(phiEye))
+    (xEye,yEye,zEye) = (10*math.sin(phiEye)*math.cos(-thetaEye), 10*math.sin(phiEye)*math.sin(-thetaEye), 120+10*math.cos(phiEye))
     addPointsOnSphere(xEye, -yEye, zEye, 4, 20, pointcloud)         # left eye
     addPointsOnSphere(xEye, yEye, zEye, 4, 20, pointcloud)          # right eye
     addPointsOnHorizontalCone(-8,0,120, 4, -16, 50, pointcloud)    # nose
@@ -72,11 +72,14 @@ def printToMeta(outf):
     outf.write('normal_importance 1.0\n')
     outf.write('adjacency_filename output/snowman.adj\n')
 
-
-if __name__ == '__main__':
+def main():
     random.seed()
     pointcloud = drawSnowman()
     with open('pointclouds/snowman.pcd', 'w') as outf:
         printToPcd(outf, pointcloud)
     with open('metadata/snowman.meta', 'w') as outf:
         printToMeta(outf)
+
+
+if __name__ == '__main__':
+    main()
