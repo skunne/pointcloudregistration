@@ -5,7 +5,7 @@ Generate files pointclouds/snowman.pcd, pointclouds/nuclei.pcd, pointclouds/bead
 Must be run from the project root folder, because paths of output files are given relative to root folder.
 
 ### makepointcloud/dig_hole.py
-Read a pcd file and write a new pcd file with the same cloud, minus all points in a rectangular parallelepiped. Does not write the corresponding metadata file.
+Read a pcd file and write a new pcd file with the same cloud, minus all points in a rectangular parallelepiped. Does not write the corresponding metadata file. The point cloud must be "unorganized", i.e. the value of "HEIGHT" in the header of the pcd file must be 1.
 
 Example: read the pointcloud `nuclei.pcd`, filter out points in the cubic box [0,3]\*[0,3]\*[0,3], and write the resulting point cloud to `nuclei_hole.pcd`.
 ~~~~

@@ -69,6 +69,16 @@ def dont_kill_it(x,y,z, xmin,ymin,zmin,xmax,ymax,zmax):
 def filter_pointcloud(pointcloud, xmin,ymin,zmin,xmax,ymax,zmax):
     return [(x,y,z,rgba) for (x,y,z,rgba) in pointcloud if dont_kill_it(x,y,z, xmin,ymin,zmin,xmax,ymax,zmax)]
 
+def fix_header(header, new_nb_points):
+    new_header = []
+    for line in header:
+        row = line.split()
+        if row[0] in ['WIDTH', 'POINTS']:
+            new_header.append('{} {}\n'.format(row[0], new_nb_points))
+        else:
+            new_header.append(line)
+    return new_header
+
 def write_file(header, pointcloud, outfilename):
     with open(outfilename, 'w') as f:
         for line in header:
@@ -80,6 +90,7 @@ def main():
     (infilename, outfilename, xmin,ymin,zmin,xmax,ymax,zmax) = get_args()
     header, pointcloud = read_file(infilename)
     filtered_pointcloud = filter_pointcloud(pointcloud, xmin,ymin,zmin,xmax,ymax,zmax)
+    header = fix_header(header, len(filtered_pointcloud))
     write_file(header, filtered_pointcloud, outfilename)
 
 if __name__ == '__main__':
