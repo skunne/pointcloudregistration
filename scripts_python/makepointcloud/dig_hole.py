@@ -1,7 +1,6 @@
 import sys          # argv, exit()
 
 def print_usage_and_exit():
-    print('PLACEHOLDER FOR HELP ABOUT {}'.format(sys.argv[0]))
     print('SYNOPSIS')
     print()
     print('{} [-h | --help]'.format(sys.argv[0]))

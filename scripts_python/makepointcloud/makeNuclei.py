@@ -1,6 +1,6 @@
-import random
-import makeSnowman as snow
-
+import random               # random.seed()
+import makeSnowman as snow  # addPointsOnSphere()
+import sys                  # argv, exit()
 
 def drawNuclei(centers, r, n):
     pointcloud = []
@@ -25,10 +25,35 @@ def printToMeta(outf):
     outf.write('normal_importance 1.0\n')
     outf.write('adjacency_filename output/nuclei.adj\n')
 
+def print_usage_and_exit():
+    print('SYNOPSIS')
+    print()
+    print('{} [-h | --help]'.format(sys.argv[0]))
+    print('    print this help message and exit')
+    print()
+    print('{} [nb_nuclei [nb_points]]'.format(sys.argv[0]))
+    print('    Generate a point cloud made of <nb_points> points randomly spread')
+    print('    over the surface of <nb_nuclei> spheres with random centers')
+    print('    Default parameters:')
+    print('        nb_nuclei = 5')
+    print('        nb_points = nb_nuclei * 480')
+    print()
+    sys.exit()
+
+def get_args():
+    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']) or len(sys.argv) > 3:
+        print_usage_and_exit()
+    nb_nuclei = 5
+    if len(sys.argv) > 1:
+        nb_nuclei = int(sys.argv[1])
+    nb_points = 480 * nb_nuclei
+    if len(sys.argv) > 2:
+        nb_points = int(sys.argv[2])
+    return nb_nuclei, nb_points
+
 def main():
     random.seed()
-    nb_nuclei = 5
-    nb_points = 2400
+    nb_nuclei, nb_points = get_args()
     centers = chooseCenters(10.0, 10.0, 10.0, nb_nuclei)
     pointcloud = drawNuclei(centers, 1.0, nb_points)
     with open('pointclouds/nuclei.pcd', 'w') as outf:
