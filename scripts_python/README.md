@@ -1,6 +1,8 @@
 ## Scripts python
-### makepointcloud/makeSnowman.py, makepointcloud/makeNucleii.py, makepointcloud/makeBeads.py
-Generate files pointclouds/snowman.pcd, pointclouds/nucleii.pcd, pointclouds/beads.pcd, and the corresponding files metadata/snowman.meta, metadata/nucleii.meta, metadata/beads.meta
+### makepointcloud/makeSnowman.py
+### makepointcloud/makeNuclei.py
+### makepointcloud/makeBeads.py
+Generate files pointclouds/snowman.pcd, pointclouds/nuclei.pcd, pointclouds/beads.pcd, and the corresponding files metadata/snowman.meta, metadata/nuclei.meta, metadata/beads.meta
 
 Must be run from the project root folder, because paths of output files are given relative to root folder.
 
