@@ -55,10 +55,10 @@ def printToPcd(outf, pointcloud):
     outf.write("SIZE 4 4 4 4\n")
     outf.write("TYPE F F F U\n")
     outf.write("COUNT 1 1 1 1\n")
-    outf.write("WIDTH {:d}\n".format(nbPointsTotal))
+    outf.write("WIDTH {:d}\n".format(len(pointcloud)))
     outf.write("HEIGHT 1\n")
     outf.write("VIEWPOINT 0 0 0 1 0 0 0\n")
-    outf.write("POINTS {:d}\n".format(nbPointsTotal))
+    outf.write("POINTS {:d}\n".format(len(pointcloud)))
     outf.write("DATA ascii\n")
     for p in pointcloud:
         outf.write('{:.2f} {:.2f} {:.2f} 4294967295\n'.format(p[0], p[1], p[2]))

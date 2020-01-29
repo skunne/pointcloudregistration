@@ -1,5 +1,5 @@
 filename pointclouds/beads_minus000333.pcd
-voxel_resolution 0.01
+voxel_resolution 0.1
 seed_resolution 0.7721033670224241
 color_importance 0.2
 spatial_importance 1.0
