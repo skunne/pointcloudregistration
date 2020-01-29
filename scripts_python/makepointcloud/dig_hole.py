@@ -57,6 +57,7 @@ def read_file(infilename):
                 (sx,sy,sz,srgba) = row
                 (x,y,z,rgba) = (float(sx), float(sy), float(sz), int(srgba))
                 pointcloud.append((x,y,z,rgba))
+    return header, pointcloud
 
 def dont_kill_it(x,y,z, xmin,ymin,zmin,xmax,ymax,zmax):
     return (
@@ -68,10 +69,17 @@ def dont_kill_it(x,y,z, xmin,ymin,zmin,xmax,ymax,zmax):
 def filter_pointcloud(pointcloud, xmin,ymin,zmin,xmax,ymax,zmax):
     return [(x,y,z,rgba) for (x,y,z,rgba) in pointcloud if dont_kill_it(x,y,z, xmin,ymin,zmin,xmax,ymax,zmax)]
 
+def write_file(header, pointcloud, outfilename):
+    with open(outfilename, 'w') as f:
+        for line in header:
+            f.write(line)
+        for (x,y,z,rgba) in pointcloud:
+            f.write("{} {} {} {}\nq".format(x, y, z, rgba))
+
 def main():
     (infilename, outfilename, xmin,ymin,zmin,xmax,ymax,zmax) = get_args()
     header, pointcloud = read_file(infilename)
-    filtered_pointcloud = filter_pointcloud(pointcloud)
+    filtered_pointcloud = filter_pointcloud(pointcloud, xmin,ymin,zmin,xmax,ymax,zmax)
     write_file(header, filtered_pointcloud, outfilename)
 
 if __name__ == '__main__':
