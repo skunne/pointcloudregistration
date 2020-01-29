@@ -18,9 +18,9 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
 
 ### Dependencies
 
- * Point Cloud Library http://pointclouds.org/
- * Eigen http://eigen.tuxfamily.org/
- * GLPK https://en.wikibooks.org/wiki/GLPK/
+ * Point Cloud Library <http://pointclouds.org/>
+ * Eigen <http://eigen.tuxfamily.org/>
+ * GLPK <https://en.wikibooks.org/wiki/GLPK/>
 
 ### Install
 

@@ -1,7 +1,5 @@
 ## Scripts python
-### makepointcloud/makeSnowman.py
-### makepointcloud/makeNuclei.py
-### makepointcloud/makeBeads.py
+### makepointcloud/make*.py
 Generate files pointclouds/snowman.pcd, pointclouds/nuclei.pcd, pointclouds/beads.pcd, and the corresponding files metadata/snowman.meta, metadata/nuclei.meta, metadata/beads.meta
 
 Must be run from the project root folder, because paths of output files are given relative to root folder.
@@ -9,7 +7,7 @@ Must be run from the project root folder, because paths of output files are give
 ### makepointcloud/dig_hole.py
 Read a pcd file and write a new pcd file with the same cloud, minus all points in a rectangular parallelepiped. Does not write the corresponding metadata file.
 
-Example: read the pointcloud `nuclei.pcd`, filter out points in the cubic box [0,3]*[0,3]*[0,3], and write the resulting point cloud to `nuclei_hole.pcd`.
+Example: read the pointcloud `nuclei.pcd`, filter out points in the cubic box [0,3]\*[0,3]\*[0,3], and write the resulting point cloud to `nuclei_hole.pcd`.
 ~~~~
 python3 makepointcloud/dig_hole.py ../pointclouds/nuclei.pcd ../pointclouds/nuclei_hole.pcd 3 3 3
 ~~~~
