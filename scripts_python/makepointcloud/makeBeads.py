@@ -1,7 +1,7 @@
-import random
-import makeSnowman as snow
-from math import sqrt
-
+import random               # random.seed()
+import makeSnowman as snow  # addPointsOnSphere()
+from math import sqrt       # square root
+import sys                  # argv, exit()
 
 def drawBeads(centers, r, n):
     pointcloud = []
@@ -63,12 +63,11 @@ def get_args():
 def main():
     random.seed()
     nb_beads, nb_points = get_args()
-    nb_beads = 20
-    nb_points = 200
+    radius = 0.05
     centers = chooseCenters(10.0, 10.0, 10.0, nb_beads)
     min_distance = minDistance(centers)
     print('Minimum distance between beads: {}\nBeads radius: {}'.format(min_distance, 0.05))
-    pointcloud = drawBeads(centers, 0.05, nb_points)
+    pointcloud = drawBeads(centers, radius, nb_points)
     with open('pointclouds/beads.pcd', 'w') as outf:
         snow.printToPcd(outf, pointcloud)
     with open('metadata/beads.meta', 'w') as outf:
