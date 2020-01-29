@@ -19,8 +19,8 @@ def chooseCenters(xmax, ymax, zmax, n):
 
 def printToMeta(outf, min_distance):
     outf.write('filename pointclouds/beads.pcd\n')
-    outf.write('voxel_resolution 0.01\n')   # approx = sqrt((4 pi r^2)/n) where r is radius of sphere and n is nb points per sphere
-    outf.write('seed_resolution {}\n'.format(min_distance))      # seed_resolution > voxel_resolution
+    outf.write('voxel_resolution 0.1\n')   # approx = sqrt((4 pi r^2)/n) where r is radius of sphere and n is nb points per sphere
+    outf.write('seed_resolution {}\n'.format(min_distance/2))      # seed_resolution > voxel_resolution
     outf.write('color_importance 0.2\n')    # could be 0, we did not use colour
     outf.write('spatial_importance 1.0\n')
     outf.write('normal_importance 1.0\n')
@@ -36,10 +36,12 @@ def minDistance(centers):
 
 def main():
     random.seed()
-    centers = chooseCenters(10.0, 10.0, 10.0, 20)
+    nb_beads = 20
+    nb_points = 200
+    centers = chooseCenters(10.0, 10.0, 10.0, nb_beads)
     min_distance = minDistance(centers)
     print('Minimum distance between beads: {}\nBeads radius: {}'.format(min_distance, 0.05))
-    pointcloud = drawBeads(centers, 0.05, 200)
+    pointcloud = drawBeads(centers, 0.05, nb_points)
     with open('pointclouds/beads.pcd', 'w') as outf:
         snow.printToPcd(outf, pointcloud)
     with open('metadata/beads.meta', 'w') as outf:

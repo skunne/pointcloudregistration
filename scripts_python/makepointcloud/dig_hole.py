@@ -84,7 +84,7 @@ def write_file(header, pointcloud, outfilename):
         for line in header:
             f.write(line)
         for (x,y,z,rgba) in pointcloud:
-            f.write("{} {} {} {}\nq".format(x, y, z, rgba))
+            f.write("{} {} {} {}\n".format(x, y, z, rgba))
 
 def main():
     (infilename, outfilename, xmin,ymin,zmin,xmax,ymax,zmax) = get_args()

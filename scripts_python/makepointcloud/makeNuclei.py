@@ -27,8 +27,10 @@ def printToMeta(outf):
 
 def main():
     random.seed()
-    centers = chooseCenters(10.0, 10.0, 10.0, 5)
-    pointcloud = drawNuclei(centers, 1.0, 2400)
+    nb_nuclei = 5
+    nb_points = 2400
+    centers = chooseCenters(10.0, 10.0, 10.0, nb_nuclei)
+    pointcloud = drawNuclei(centers, 1.0, nb_points)
     with open('pointclouds/nuclei.pcd', 'w') as outf:
         snow.printToPcd(outf, pointcloud)
     with open('metadata/nuclei.meta', 'w') as outf:

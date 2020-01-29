@@ -1,6 +1,6 @@
 filename pointclouds/beads.pcd
-voxel_resolution 0.01
-seed_resolution 1.2622431791146733
+voxel_resolution 0.1
+seed_resolution 0.7458522377047451
 color_importance 0.2
 spatial_importance 1.0
 normal_importance 1.0
