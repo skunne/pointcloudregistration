@@ -3,6 +3,7 @@ from math import pi,sin,cos
 # import random
 import sys
 
+#default values:
 xmin = -10
 xmax = 10
 ymin = -10
@@ -14,51 +15,14 @@ nb_points = 6
 def apply_linear(M, pointcloud):
     ((a, c), (b, d)) = M
     return [(a*x+c*y, b*x+d*y, z, rgba) for (x,y,z,rgba) in pointcloud]
-    #return [(y, -x, z, rgba) for (x,y,z,rgba) in pointcloud]
 
 def apply_translat(a,b, X,Y):
     return [x+a for x in X], [y+b for y in Y]
-
-# def make_custom_data():
-#     return (
-#         [ 5, 0,10, 5, 5, 1],
-#         [ 0, 5, 5,10,18,24]
-#     )
-
-# def make_random_data(n):
-#     return (
-#         [random.uniform(0.9*xmin,0.9*xmax) for i in range(n)],
-#         [random.uniform(0.9*ymin,0.9*ymax) for i in range(n)]
-#     )
-#
-# def plotplot(X,Y, filename):
-#     #fig,ax=plt.subplots()
-#     plt.figure(figsize=(8,8))
-#     plt.scatter(X,Y,c='blue', s=50)
-#     plt.axis('off')
-#     #plt.set_aspect(1)
-#     plt.xlim(xmin,xmax)
-#     plt.ylim(ymin,ymax)
-#     for i,(x,y) in enumerate(zip(X,Y)):
-#         plt.annotate(str(i), xy=(x,y), xytext=(x+0.32,y+0.32), fontsize='xx-large')
-#     plt.savefig(filename)
-#     plt.show()
-#     #plt.close(fig)
 
 def make_rotation_matrix(theta):
     costheta = cos(theta)
     sintheta = sin(theta)
     return ((costheta,-sintheta), (sintheta, costheta))
-
-# def main():
-#     #X,Y = make_custom_data()
-#     random.seed()
-#     X,Y = make_random_data(nb_points)
-#     m = make_rotation_matrix(rotation_angle)
-#     X2,Y2 = apply_linear(m, X,Y)
-#     #X2,Y2 = apply_translat(35,0, X2,Y2)
-#     plotplot(X,Y, 'img1.png')
-#     plotplot(X2,Y2, 'img2.png')
 
 def read_file(infilename):
     header = []
@@ -128,3 +92,41 @@ def main():
 
 if __name__=='__main__':
     main()
+
+
+
+# def make_custom_data():
+#     return (
+#         [ 5, 0,10, 5, 5, 1],
+#         [ 0, 5, 5,10,18,24]
+#     )
+#
+# def make_random_data(n):
+#     return (
+#         [random.uniform(0.9*xmin,0.9*xmax) for i in range(n)],
+#         [random.uniform(0.9*ymin,0.9*ymax) for i in range(n)]
+#     )
+#
+# def plotplot(X,Y, filename):
+#     #fig,ax=plt.subplots()
+#     plt.figure(figsize=(8,8))
+#     plt.scatter(X,Y,c='blue', s=50)
+#     plt.axis('off')
+#     #plt.set_aspect(1)
+#     plt.xlim(xmin,xmax)
+#     plt.ylim(ymin,ymax)
+#     for i,(x,y) in enumerate(zip(X,Y)):
+#         plt.annotate(str(i), xy=(x,y), xytext=(x+0.32,y+0.32), fontsize='xx-large')
+#     plt.savefig(filename)
+#     plt.show()
+#     #plt.close(fig)
+#
+# def main():
+#     #X,Y = make_custom_data()
+#     random.seed()
+#     X,Y = make_random_data(nb_points)
+#     m = make_rotation_matrix(rotation_angle)
+#     X2,Y2 = apply_linear(m, X,Y)
+#     #X2,Y2 = apply_translat(35,0, X2,Y2)
+#     plotplot(X,Y, 'img1.png')
+#     plotplot(X2,Y2, 'img2.png')
