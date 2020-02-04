@@ -13,37 +13,37 @@ nb_points = 6
 
 def apply_linear(M, pointcloud):
     ((a, c), (b, d)) = M
-    #return [(a*x+c*y, b*x+d*y, z, rgba) for (x,y,z,rgba) in pointcloud]
-    return [(y, -x, z, c) for (x,y,z,c) in pointcloud]
+    return [(a*x+c*y, b*x+d*y, z, rgba) for (x,y,z,rgba) in pointcloud]
+    #return [(y, -x, z, rgba) for (x,y,z,rgba) in pointcloud]
 
 def apply_translat(a,b, X,Y):
     return [x+a for x in X], [y+b for y in Y]
 
-def make_custom_data():
-    return (
-        [ 5, 0,10, 5, 5, 1],
-        [ 0, 5, 5,10,18,24]
-    )
+# def make_custom_data():
+#     return (
+#         [ 5, 0,10, 5, 5, 1],
+#         [ 0, 5, 5,10,18,24]
+#     )
 
-def make_random_data(n):
-    return (
-        [random.uniform(0.9*xmin,0.9*xmax) for i in range(n)],
-        [random.uniform(0.9*ymin,0.9*ymax) for i in range(n)]
-    )
-
-def plotplot(X,Y, filename):
-    #fig,ax=plt.subplots()
-    plt.figure(figsize=(8,8))
-    plt.scatter(X,Y,c='blue', s=50)
-    plt.axis('off')
-    #plt.set_aspect(1)
-    plt.xlim(xmin,xmax)
-    plt.ylim(ymin,ymax)
-    for i,(x,y) in enumerate(zip(X,Y)):
-        plt.annotate(str(i), xy=(x,y), xytext=(x+0.32,y+0.32), fontsize='xx-large')
-    plt.savefig(filename)
-    plt.show()
-    #plt.close(fig)
+# def make_random_data(n):
+#     return (
+#         [random.uniform(0.9*xmin,0.9*xmax) for i in range(n)],
+#         [random.uniform(0.9*ymin,0.9*ymax) for i in range(n)]
+#     )
+#
+# def plotplot(X,Y, filename):
+#     #fig,ax=plt.subplots()
+#     plt.figure(figsize=(8,8))
+#     plt.scatter(X,Y,c='blue', s=50)
+#     plt.axis('off')
+#     #plt.set_aspect(1)
+#     plt.xlim(xmin,xmax)
+#     plt.ylim(ymin,ymax)
+#     for i,(x,y) in enumerate(zip(X,Y)):
+#         plt.annotate(str(i), xy=(x,y), xytext=(x+0.32,y+0.32), fontsize='xx-large')
+#     plt.savefig(filename)
+#     plt.show()
+#     #plt.close(fig)
 
 def make_rotation_matrix(theta):
     costheta = cos(theta)
@@ -97,27 +97,32 @@ def print_usage_and_exit():
     print('{} [-h | --help]'.format(sys.argv[0]))
     print('    print this help message and exit')
     print()
-    print('{} ifile ofile'.format(sys.argv[0]))
-    print('    Read the point cloud in pcd file <ifile>')
-    print('    Apply a rotation to every point')
-    print('    Write result in pcd format in <ofile>')
+    print('{} ifile ofile [theta]'.format(sys.argv[0]))
+    print('    Read a point cloud from pcd file <ifile>')
+    print('    Apply a rotation of angle theta in the plane xy to every point')
+    print('    Write result in pcd format to <ofile>')
+    print('    Default values:')
+    print('        theta = 1.73')
     print()
     sys.exit()
 
 def get_args():
-    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
+    infile = 'in.pcd'
+    outfile = 'out.pcd'
+    theta = rotation_angle
+    if (len(sys.argv) <= 1 or len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
         print_usage_and_exit()
-    elif (len(sys.argv) > 2):
-        return (sys.argv[1], sys.argv[2])
-    else:
-        print_usage_and_exit()
+    if (len(sys.argv) > 2):
+        (infile, outfile) = (sys.argv[1], sys.argv[2])
+    if (len(sys.argv) > 3):
+        theta = float(sys.argv[3])
+    return (infile, outfile, theta)
 
 def main():
-    (infilename, outfilename) = get_args()
+    (infilename, outfilename, rotation_angle) = get_args()
     header, pointcloud = read_file(infilename)
     rotation_matrix = make_rotation_matrix(rotation_angle)
     rotated_pointcloud = apply_linear(rotation_matrix, pointcloud)
-    #filtered_pointcloud = filter_pointcloud(pointcloud, xmin,ymin,zmin,xmax,ymax,zmax)
     #header = fix_header(header, len(filtered_pointcloud))
     write_file(header, rotated_pointcloud, outfilename)
 
