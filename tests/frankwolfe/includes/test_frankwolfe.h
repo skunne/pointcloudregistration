@@ -46,7 +46,8 @@ double test_5nodes_with_6nodes();
 double test_multiple_optimal_solutions();
 
 // test_with_pointclouds.cpp
-double test_with_pointclouds (int argc, char ** argv);
+//double test_with_pointclouds (int argc, char ** argv);
+double test_with_pointclouds (int argc, char const *const *argv);
 
 // test_metricisgood.cpp
 double test_metricisgood(char const *metadata_filename);

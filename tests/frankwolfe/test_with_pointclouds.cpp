@@ -41,7 +41,7 @@ int testwpc_find_matching_points(std::vector<KeyT> const &samplepoints_g, std::v
   return nb_points_without_matching;
 }
 
-double test_with_pointclouds (int argc, char ** argv)
+double test_with_pointclouds (int argc, char const *const *argv)
 {
   //////////////
   // Load files, run supervoxel clustering, add features
