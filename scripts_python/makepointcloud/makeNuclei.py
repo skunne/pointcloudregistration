@@ -29,7 +29,7 @@ def print_usage_and_exit():
     print('SYNOPSIS')
     print()
     print('{} [-h | --help]'.format(sys.argv[0]))
-    print('    print this help message and exit')
+    print('    Print this help message and exit')
     print()
     print('{} [nb_nuclei [nb_points]]'.format(sys.argv[0]))
     print('    Generate a point cloud made of <nb_points> points randomly spread')
@@ -51,14 +51,17 @@ def get_args():
         nb_points = int(sys.argv[2])
     return nb_nuclei, nb_points
 
+pcdfilename = 'nuclei.pcd'
+metafilename = 'nuclei.meta'
+
 def main():
     random.seed()
     nb_nuclei, nb_points = get_args()
     centers = chooseCenters(10.0, 10.0, 10.0, nb_nuclei)
     pointcloud = drawNuclei(centers, 1.0, nb_points)
-    with open('pointclouds/nuclei.pcd', 'w') as outf:
+    with open(pcdfilename, 'w') as outf:
         snow.printToPcd(outf, pointcloud)
-    with open('metadata/nuclei.meta', 'w') as outf:
+    with open(metafilename, 'w') as outf:
         printToMeta(outf)
 
 if __name__ == '__main__':
