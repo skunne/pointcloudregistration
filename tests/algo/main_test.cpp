@@ -1,7 +1,9 @@
 #include <iomanip>  // std::left std::setw()
 #include <iostream> // std::cout
 #include <vector>
+#include <fstream>  // print matching to csv files
 
+#include "cpr_loadfiles.h"
 #include "cpr_params.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
@@ -18,11 +20,47 @@ int test_printUsage(char const *cmd)
   return 1;
 }
 
-void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixDouble const &permutation_matrix)
+std::size_t test_getmatch(std::size_t i, MatrixDouble const &permutation_matrix)
+{
+  int j;
+  for (
+    j = 0;
+    j < permutation_matrix.cols() && permutation_matrix(i,j) < 0.00001;
+    ++j
+  );
+  assert(j == permutation_matrix.cols() || abs(1-permutation_matrix(i,j)) < 0.00001);
+  return (j);
+}
+
+void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixDouble const &permutation_matrix, char const *filenamesrc, char const *filenamedst)
 {
   std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
   std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
-  
+
+  std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
+  std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
+
+  src_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
+  dst_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
+
+  if (!src_out)
+    errorLoadingFile("output", filenamesrc);
+  if (!dst_out)
+    errorLoadingFile("output", filenamedst);
+
+  for (std::size_t i = 0; i < pc_source.size(); ++i)
+  {
+    std::size_t j = test_getmatch(i, permutation_matrix);
+    if (j < pc_dest.size())
+    {
+      src_out << i << ',' << std::get<0>(pc_source[i])
+                   << ',' << std::get<1>(pc_source[i])
+                   << ',' << std::get<2>(pc_source[i]) << std::endl;
+      dst_out << i << ',' << std::get<0>(pc_source[j])
+                   << ',' << std::get<1>(pc_source[j])
+                   << ',' << std::get<2>(pc_source[j]) << std::endl;
+    }
+  }
 }
 
 int main(int argc, char ** argv)
@@ -63,7 +101,11 @@ int main(int argc, char ** argv)
     GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
     gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
 
-    test_writeresult(ppc_source, ppc_dest, permutation_matrix);
+    std::stringstream srcoutfilename;
+    srcoutfilename << "src_" << argv[i];
+    std::stringstream dstoutfilename;
+    dstoutfilename << "dst_" << argv[i];
+    test_writeresult(ppc_source, ppc_dest, permutation_matrix, srcoutfilename.str().c_str(), dstoutfilename.str().c_str());
     //results.push_back(???);
   }
 
