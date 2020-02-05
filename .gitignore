@@ -1,6 +1,13 @@
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-register_pointclouds
+
 pointclouds/Armadillo.ply
 pointclouds/dragon_vrip_res2.ply
+
+register_pointclouds
+tests/algo/run_tests
+tests/esf/test_esf
+tests/test_frankwolfe
+tests/qp/test_qp
+tests/smalltests

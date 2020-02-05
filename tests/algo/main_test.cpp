@@ -6,14 +6,17 @@
 
 int test_printUsage(char const *cmd)
 {
-  std::cout << "Wrong usage" << std::endl;
+  std::cout << "SYNOPSIS" << std::endl << std::endl;
+  std::cout << cmd << "<meta> <pc0> <pc1> [<pc2> ... <pcn>]"
+  std::cout << "    Use the algorithm to register <pc0> against <pc1>, <pc2>, ..., <pcn>" << std::endl;
+  std::cout << "    <meta> must be the name of a metadata file. The point cloud filename given inside <meta> is ignored; only the parameters are used." << std::endl;
   return 1;
 }
 
 int main(int argc, char ** argv)
 {
-  // if (argc < 2)
-  //   return test_printUsage(argv[0]);
+  if (argc <= 3)
+    return test_printUsage(argv[0]);
 
   //test_metricisgood(argv[1]);
 
@@ -29,7 +32,27 @@ int main(int argc, char ** argv)
   // diff_with_human.push_back(test_with_pointclouds(ac,av));
 //  diff_with_human.push_back(test_with_pointclouds(argc, argv));
 
+  Params params_source(argv[1]);
+  params_source.filename = argv[2];
+  ProcessedPointCloud ppc_source(params_source);
 
+  ppc_source.build();
+
+  Params params_dest = params_source;
+  for (int i = 3; i < argc; ++i)
+  {
+    params_dest.filename = argv[i];
+    ProcessedPointCloud ppc_dest(params_dest);
+    ppc_dest.build();
+
+    VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
+    EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
+
+    GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+
+    names.push_back(argv[i]);
+    results.push_back()
+  }
 
   std::cout << std::endl << std::endl << "Tests passed:" << std::endl;
   for (std::size_t i = 0; i < diff_with_human.size(); ++i)
