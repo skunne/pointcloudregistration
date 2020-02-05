@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/stephan/huang_registration/tests/frankwolfe
+CMAKE_SOURCE_DIR = /home/stephan/huang_registration/tests/algo
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/stephan/huang_registration/tests/frankwolfe
+CMAKE_BINARY_DIR = /home/stephan/huang_registration/tests/algo
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/stephan/huang_registration/tests/frankwolfe/CMakeFiles /home/stephan/huang_registration/tests/frankwolfe/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stephan/huang_registration/tests/algo/CMakeFiles /home/stephan/huang_registration/tests/algo/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/stephan/huang_registration/tests/frankwolfe/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stephan/huang_registration/tests/algo/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named test_frankwolfe
+# Target rules for targets named run_tests
 
 # Build rule for target.
-test_frankwolfe: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_frankwolfe
-.PHONY : test_frankwolfe
+run_tests: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 run_tests
+.PHONY : run_tests
 
 # fast build rule for target.
-test_frankwolfe/fast:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/build
-.PHONY : test_frankwolfe/fast
+run_tests/fast:
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+.PHONY : run_tests/fast
 
 home/stephan/huang_registration/src/cpr_clustering.o: home/stephan/huang_registration/src/cpr_clustering.cpp.o
 
@@ -129,7 +129,7 @@ home/stephan/huang_registration/src/cpr_clustering.o: home/stephan/huang_registr
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_clustering.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_clustering.cpp.o
 
 home/stephan/huang_registration/src/cpr_clustering.i: home/stephan/huang_registration/src/cpr_clustering.cpp.i
@@ -138,7 +138,7 @@ home/stephan/huang_registration/src/cpr_clustering.i: home/stephan/huang_registr
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_clustering.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_clustering.cpp.i
 
 home/stephan/huang_registration/src/cpr_clustering.s: home/stephan/huang_registration/src/cpr_clustering.cpp.s
@@ -147,7 +147,7 @@ home/stephan/huang_registration/src/cpr_clustering.s: home/stephan/huang_registr
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_clustering.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_clustering.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_clustering.cpp.s
 
 home/stephan/huang_registration/src/cpr_connectedcomponents.o: home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.o
@@ -156,7 +156,7 @@ home/stephan/huang_registration/src/cpr_connectedcomponents.o: home/stephan/huan
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.o
 
 home/stephan/huang_registration/src/cpr_connectedcomponents.i: home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.i
@@ -165,7 +165,7 @@ home/stephan/huang_registration/src/cpr_connectedcomponents.i: home/stephan/huan
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.i
 
 home/stephan/huang_registration/src/cpr_connectedcomponents.s: home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.s
@@ -174,7 +174,7 @@ home/stephan/huang_registration/src/cpr_connectedcomponents.s: home/stephan/huan
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_connectedcomponents.cpp.s
 
 home/stephan/huang_registration/src/cpr_debugprint.o: home/stephan/huang_registration/src/cpr_debugprint.cpp.o
@@ -183,7 +183,7 @@ home/stephan/huang_registration/src/cpr_debugprint.o: home/stephan/huang_registr
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_debugprint.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_debugprint.cpp.o
 
 home/stephan/huang_registration/src/cpr_debugprint.i: home/stephan/huang_registration/src/cpr_debugprint.cpp.i
@@ -192,7 +192,7 @@ home/stephan/huang_registration/src/cpr_debugprint.i: home/stephan/huang_registr
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_debugprint.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_debugprint.cpp.i
 
 home/stephan/huang_registration/src/cpr_debugprint.s: home/stephan/huang_registration/src/cpr_debugprint.cpp.s
@@ -201,7 +201,7 @@ home/stephan/huang_registration/src/cpr_debugprint.s: home/stephan/huang_registr
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_debugprint.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_debugprint.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_debugprint.cpp.s
 
 home/stephan/huang_registration/src/cpr_features.o: home/stephan/huang_registration/src/cpr_features.cpp.o
@@ -210,7 +210,7 @@ home/stephan/huang_registration/src/cpr_features.o: home/stephan/huang_registrat
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_features.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_features.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_features.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_features.cpp.o
 
 home/stephan/huang_registration/src/cpr_features.i: home/stephan/huang_registration/src/cpr_features.cpp.i
@@ -219,7 +219,7 @@ home/stephan/huang_registration/src/cpr_features.i: home/stephan/huang_registrat
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_features.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_features.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_features.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_features.cpp.i
 
 home/stephan/huang_registration/src/cpr_features.s: home/stephan/huang_registration/src/cpr_features.cpp.s
@@ -228,7 +228,7 @@ home/stephan/huang_registration/src/cpr_features.s: home/stephan/huang_registrat
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_features.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_features.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_features.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_features.cpp.s
 
 home/stephan/huang_registration/src/cpr_graphmatching.o: home/stephan/huang_registration/src/cpr_graphmatching.cpp.o
@@ -237,7 +237,7 @@ home/stephan/huang_registration/src/cpr_graphmatching.o: home/stephan/huang_regi
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_graphmatching.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching.cpp.o
 
 home/stephan/huang_registration/src/cpr_graphmatching.i: home/stephan/huang_registration/src/cpr_graphmatching.cpp.i
@@ -246,7 +246,7 @@ home/stephan/huang_registration/src/cpr_graphmatching.i: home/stephan/huang_regi
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_graphmatching.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching.cpp.i
 
 home/stephan/huang_registration/src/cpr_graphmatching.s: home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
@@ -255,7 +255,7 @@ home/stephan/huang_registration/src/cpr_graphmatching.s: home/stephan/huang_regi
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_graphmatching.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
 
 home/stephan/huang_registration/src/cpr_graphmatching_path.o: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
@@ -264,7 +264,7 @@ home/stephan/huang_registration/src/cpr_graphmatching_path.o: home/stephan/huang
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
 
 home/stephan/huang_registration/src/cpr_graphmatching_path.i: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
@@ -273,7 +273,7 @@ home/stephan/huang_registration/src/cpr_graphmatching_path.i: home/stephan/huang
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
 
 home/stephan/huang_registration/src/cpr_graphmatching_path.s: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
@@ -282,7 +282,7 @@ home/stephan/huang_registration/src/cpr_graphmatching_path.s: home/stephan/huang
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
 
 home/stephan/huang_registration/src/cpr_loadfiles.o: home/stephan/huang_registration/src/cpr_loadfiles.cpp.o
@@ -291,7 +291,7 @@ home/stephan/huang_registration/src/cpr_loadfiles.o: home/stephan/huang_registra
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_loadfiles.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_loadfiles.cpp.o
 
 home/stephan/huang_registration/src/cpr_loadfiles.i: home/stephan/huang_registration/src/cpr_loadfiles.cpp.i
@@ -300,7 +300,7 @@ home/stephan/huang_registration/src/cpr_loadfiles.i: home/stephan/huang_registra
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_loadfiles.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_loadfiles.cpp.i
 
 home/stephan/huang_registration/src/cpr_loadfiles.s: home/stephan/huang_registration/src/cpr_loadfiles.cpp.s
@@ -309,7 +309,7 @@ home/stephan/huang_registration/src/cpr_loadfiles.s: home/stephan/huang_registra
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_loadfiles.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_loadfiles.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_loadfiles.cpp.s
 
 home/stephan/huang_registration/src/cpr_matrices.o: home/stephan/huang_registration/src/cpr_matrices.cpp.o
@@ -318,7 +318,7 @@ home/stephan/huang_registration/src/cpr_matrices.o: home/stephan/huang_registrat
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_matrices.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_matrices.cpp.o
 
 home/stephan/huang_registration/src/cpr_matrices.i: home/stephan/huang_registration/src/cpr_matrices.cpp.i
@@ -327,7 +327,7 @@ home/stephan/huang_registration/src/cpr_matrices.i: home/stephan/huang_registrat
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_matrices.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_matrices.cpp.i
 
 home/stephan/huang_registration/src/cpr_matrices.s: home/stephan/huang_registration/src/cpr_matrices.cpp.s
@@ -336,7 +336,7 @@ home/stephan/huang_registration/src/cpr_matrices.s: home/stephan/huang_registrat
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_matrices.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_matrices.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_matrices.cpp.s
 
 home/stephan/huang_registration/src/cpr_params.o: home/stephan/huang_registration/src/cpr_params.cpp.o
@@ -345,7 +345,7 @@ home/stephan/huang_registration/src/cpr_params.o: home/stephan/huang_registratio
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_params.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_params.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_params.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_params.cpp.o
 
 home/stephan/huang_registration/src/cpr_params.i: home/stephan/huang_registration/src/cpr_params.cpp.i
@@ -354,7 +354,7 @@ home/stephan/huang_registration/src/cpr_params.i: home/stephan/huang_registratio
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_params.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_params.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_params.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_params.cpp.i
 
 home/stephan/huang_registration/src/cpr_params.s: home/stephan/huang_registration/src/cpr_params.cpp.s
@@ -363,7 +363,7 @@ home/stephan/huang_registration/src/cpr_params.s: home/stephan/huang_registratio
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_params.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_params.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_params.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_params.cpp.s
 
 home/stephan/huang_registration/src/cpr_processedpointcloud.o: home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.o
@@ -372,7 +372,7 @@ home/stephan/huang_registration/src/cpr_processedpointcloud.o: home/stephan/huan
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.o
 
 home/stephan/huang_registration/src/cpr_processedpointcloud.i: home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.i
@@ -381,7 +381,7 @@ home/stephan/huang_registration/src/cpr_processedpointcloud.i: home/stephan/huan
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.i
 
 home/stephan/huang_registration/src/cpr_processedpointcloud.s: home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.s
@@ -390,7 +390,7 @@ home/stephan/huang_registration/src/cpr_processedpointcloud.s: home/stephan/huan
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_processedpointcloud.cpp.s
 
 home/stephan/huang_registration/src/cpr_visualisation.o: home/stephan/huang_registration/src/cpr_visualisation.cpp.o
@@ -399,7 +399,7 @@ home/stephan/huang_registration/src/cpr_visualisation.o: home/stephan/huang_regi
 
 # target to build an object file
 home/stephan/huang_registration/src/cpr_visualisation.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.o
 .PHONY : home/stephan/huang_registration/src/cpr_visualisation.cpp.o
 
 home/stephan/huang_registration/src/cpr_visualisation.i: home/stephan/huang_registration/src/cpr_visualisation.cpp.i
@@ -408,7 +408,7 @@ home/stephan/huang_registration/src/cpr_visualisation.i: home/stephan/huang_regi
 
 # target to preprocess a source file
 home/stephan/huang_registration/src/cpr_visualisation.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.i
 .PHONY : home/stephan/huang_registration/src/cpr_visualisation.cpp.i
 
 home/stephan/huang_registration/src/cpr_visualisation.s: home/stephan/huang_registration/src/cpr_visualisation.cpp.s
@@ -417,7 +417,7 @@ home/stephan/huang_registration/src/cpr_visualisation.s: home/stephan/huang_regi
 
 # target to generate assembly for a file
 home/stephan/huang_registration/src/cpr_visualisation.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/home/stephan/huang_registration/src/cpr_visualisation.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_visualisation.cpp.s
 
 main_test.o: main_test.cpp.o
@@ -426,7 +426,7 @@ main_test.o: main_test.cpp.o
 
 # target to build an object file
 main_test.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/main_test.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/main_test.cpp.o
 .PHONY : main_test.cpp.o
 
 main_test.i: main_test.cpp.i
@@ -435,7 +435,7 @@ main_test.i: main_test.cpp.i
 
 # target to preprocess a source file
 main_test.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/main_test.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/main_test.cpp.i
 .PHONY : main_test.cpp.i
 
 main_test.s: main_test.cpp.s
@@ -444,7 +444,7 @@ main_test.s: main_test.cpp.s
 
 # target to generate assembly for a file
 main_test.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/main_test.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/main_test.cpp.s
 .PHONY : main_test.cpp.s
 
 printandcomparesolution.o: printandcomparesolution.cpp.o
@@ -453,7 +453,7 @@ printandcomparesolution.o: printandcomparesolution.cpp.o
 
 # target to build an object file
 printandcomparesolution.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/printandcomparesolution.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.o
 .PHONY : printandcomparesolution.cpp.o
 
 printandcomparesolution.i: printandcomparesolution.cpp.i
@@ -462,7 +462,7 @@ printandcomparesolution.i: printandcomparesolution.cpp.i
 
 # target to preprocess a source file
 printandcomparesolution.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/printandcomparesolution.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.i
 .PHONY : printandcomparesolution.cpp.i
 
 printandcomparesolution.s: printandcomparesolution.cpp.s
@@ -471,143 +471,8 @@ printandcomparesolution.s: printandcomparesolution.cpp.s
 
 # target to generate assembly for a file
 printandcomparesolution.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/printandcomparesolution.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.s
 .PHONY : printandcomparesolution.cpp.s
-
-test_differentnumbernodes.o: test_differentnumbernodes.cpp.o
-
-.PHONY : test_differentnumbernodes.o
-
-# target to build an object file
-test_differentnumbernodes.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_differentnumbernodes.cpp.o
-.PHONY : test_differentnumbernodes.cpp.o
-
-test_differentnumbernodes.i: test_differentnumbernodes.cpp.i
-
-.PHONY : test_differentnumbernodes.i
-
-# target to preprocess a source file
-test_differentnumbernodes.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_differentnumbernodes.cpp.i
-.PHONY : test_differentnumbernodes.cpp.i
-
-test_differentnumbernodes.s: test_differentnumbernodes.cpp.s
-
-.PHONY : test_differentnumbernodes.s
-
-# target to generate assembly for a file
-test_differentnumbernodes.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_differentnumbernodes.cpp.s
-.PHONY : test_differentnumbernodes.cpp.s
-
-test_house.o: test_house.cpp.o
-
-.PHONY : test_house.o
-
-# target to build an object file
-test_house.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_house.cpp.o
-.PHONY : test_house.cpp.o
-
-test_house.i: test_house.cpp.i
-
-.PHONY : test_house.i
-
-# target to preprocess a source file
-test_house.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_house.cpp.i
-.PHONY : test_house.cpp.i
-
-test_house.s: test_house.cpp.s
-
-.PHONY : test_house.s
-
-# target to generate assembly for a file
-test_house.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_house.cpp.s
-.PHONY : test_house.cpp.s
-
-test_metricisgood.o: test_metricisgood.cpp.o
-
-.PHONY : test_metricisgood.o
-
-# target to build an object file
-test_metricisgood.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_metricisgood.cpp.o
-.PHONY : test_metricisgood.cpp.o
-
-test_metricisgood.i: test_metricisgood.cpp.i
-
-.PHONY : test_metricisgood.i
-
-# target to preprocess a source file
-test_metricisgood.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_metricisgood.cpp.i
-.PHONY : test_metricisgood.cpp.i
-
-test_metricisgood.s: test_metricisgood.cpp.s
-
-.PHONY : test_metricisgood.s
-
-# target to generate assembly for a file
-test_metricisgood.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_metricisgood.cpp.s
-.PHONY : test_metricisgood.cpp.s
-
-test_multipleoptimalsolutions.o: test_multipleoptimalsolutions.cpp.o
-
-.PHONY : test_multipleoptimalsolutions.o
-
-# target to build an object file
-test_multipleoptimalsolutions.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_multipleoptimalsolutions.cpp.o
-.PHONY : test_multipleoptimalsolutions.cpp.o
-
-test_multipleoptimalsolutions.i: test_multipleoptimalsolutions.cpp.i
-
-.PHONY : test_multipleoptimalsolutions.i
-
-# target to preprocess a source file
-test_multipleoptimalsolutions.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_multipleoptimalsolutions.cpp.i
-.PHONY : test_multipleoptimalsolutions.cpp.i
-
-test_multipleoptimalsolutions.s: test_multipleoptimalsolutions.cpp.s
-
-.PHONY : test_multipleoptimalsolutions.s
-
-# target to generate assembly for a file
-test_multipleoptimalsolutions.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_multipleoptimalsolutions.cpp.s
-.PHONY : test_multipleoptimalsolutions.cpp.s
-
-test_twonodes.o: test_twonodes.cpp.o
-
-.PHONY : test_twonodes.o
-
-# target to build an object file
-test_twonodes.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_twonodes.cpp.o
-.PHONY : test_twonodes.cpp.o
-
-test_twonodes.i: test_twonodes.cpp.i
-
-.PHONY : test_twonodes.i
-
-# target to preprocess a source file
-test_twonodes.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_twonodes.cpp.i
-.PHONY : test_twonodes.cpp.i
-
-test_twonodes.s: test_twonodes.cpp.s
-
-.PHONY : test_twonodes.s
-
-# target to generate assembly for a file
-test_twonodes.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_twonodes.cpp.s
-.PHONY : test_twonodes.cpp.s
 
 test_with_pointclouds.o: test_with_pointclouds.cpp.o
 
@@ -615,7 +480,7 @@ test_with_pointclouds.o: test_with_pointclouds.cpp.o
 
 # target to build an object file
 test_with_pointclouds.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_with_pointclouds.cpp.o
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.o
 .PHONY : test_with_pointclouds.cpp.o
 
 test_with_pointclouds.i: test_with_pointclouds.cpp.i
@@ -624,7 +489,7 @@ test_with_pointclouds.i: test_with_pointclouds.cpp.i
 
 # target to preprocess a source file
 test_with_pointclouds.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_with_pointclouds.cpp.i
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.i
 .PHONY : test_with_pointclouds.cpp.i
 
 test_with_pointclouds.s: test_with_pointclouds.cpp.s
@@ -633,7 +498,7 @@ test_with_pointclouds.s: test_with_pointclouds.cpp.s
 
 # target to generate assembly for a file
 test_with_pointclouds.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/test_with_pointclouds.cpp.s
+	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.s
 .PHONY : test_with_pointclouds.cpp.s
 
 # Help Target
@@ -643,7 +508,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... test_frankwolfe"
+	@echo "... run_tests"
 	@echo "... edit_cache"
 	@echo "... home/stephan/huang_registration/src/cpr_clustering.o"
 	@echo "... home/stephan/huang_registration/src/cpr_clustering.i"
@@ -684,21 +549,6 @@ help:
 	@echo "... printandcomparesolution.o"
 	@echo "... printandcomparesolution.i"
 	@echo "... printandcomparesolution.s"
-	@echo "... test_differentnumbernodes.o"
-	@echo "... test_differentnumbernodes.i"
-	@echo "... test_differentnumbernodes.s"
-	@echo "... test_house.o"
-	@echo "... test_house.i"
-	@echo "... test_house.s"
-	@echo "... test_metricisgood.o"
-	@echo "... test_metricisgood.i"
-	@echo "... test_metricisgood.s"
-	@echo "... test_multipleoptimalsolutions.o"
-	@echo "... test_multipleoptimalsolutions.i"
-	@echo "... test_multipleoptimalsolutions.s"
-	@echo "... test_twonodes.o"
-	@echo "... test_twonodes.i"
-	@echo "... test_twonodes.s"
 	@echo "... test_with_pointclouds.o"
 	@echo "... test_with_pointclouds.i"
 	@echo "... test_with_pointclouds.s"
