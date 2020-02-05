@@ -28,6 +28,7 @@ $(RUNTESTS):
 	$(ROTATE) $< $@
 
 $(NAME): $(RUNTESTS) $(POINTCLOUDS)
+	mkdir -p registered_pointclouds
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
 
 clean:
