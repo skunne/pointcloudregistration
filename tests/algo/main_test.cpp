@@ -21,7 +21,7 @@ int main(int argc, char ** argv)
   //test_metricisgood(argv[1]);
 
   std::vector<char const *> names;// = { "two nodes", "houses", "5 vs 6", "multiple optimal", "pointclouds" };
-  std::vector<double> diff_with_human;//(5);
+  std::vector<double> results;//(5);
   //
   // names.push_back("two nodes");
   // diff_with_human.push_back(test_two_twonodes_graphs());
@@ -49,6 +49,8 @@ int main(int argc, char ** argv)
     EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
     GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+
+    
 
     names.push_back(argv[i]);
     results.push_back()
