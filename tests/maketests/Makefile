@@ -32,3 +32,10 @@ $(NAME): $(RUNTESTS) $(POINTCLOUDS)
 
 clean:
 	rm -f *_shuffled.pcd *_cropped.pcd *_thinned.pcd *_rotated.pcd
+
+fclean: clean
+	rm -f $(RUNTESTS)
+
+re: fclean all
+
+.PHONY: all clean fclean re

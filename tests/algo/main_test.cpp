@@ -18,24 +18,18 @@ int test_printUsage(char const *cmd)
   return 1;
 }
 
+void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixDouble const &permutation_matrix)
+{
+
+}
+
 int main(int argc, char ** argv)
 {
   if (argc <= 3)
     return test_printUsage(argv[0]);
 
-  //test_metricisgood(argv[1]);
-
-  std::vector<char const *> names;// = { "two nodes", "houses", "5 vs 6", "multiple optimal", "pointclouds" };
-  std::vector<double> results;//(5);
-  //
-  // names.push_back("two nodes");
-  // diff_with_human.push_back(test_two_twonodes_graphs());
-
-  // int ac = 3;
-  // char const *av[3] = {"./tests/frankwolfe/test_frankwolfe", "metadata/big1.meta", "metadata/big3.meta"};
-  // names.push_back("pointclouds");
-  // diff_with_human.push_back(test_with_pointclouds(ac,av));
-//  diff_with_human.push_back(test_with_pointclouds(argc, argv));
+//  std::vector<char const *> names;
+//  std::vector<double> results;
 
   Params params_source(argv[1]);
   params_source.filename = argv[2];
@@ -59,9 +53,15 @@ int main(int argc, char ** argv)
     VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
     EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
-    GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    int const n_source = ppc_source.getNbVertices();
+    int const n_dest = ppc_dest.getNbVertices();
 
-    names.push_back(argv[i]);
+    MatrixDouble permutation_matrix(n_source, n_dest);
+    permutation_matrix.fill(1.0 / (n_source < n_dest ? n_dest : n_source));
+    GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
+
+    test_writeresult(ppc_source, ppc_dest, permutation_matrix);
     //results.push_back(???);
   }
 
