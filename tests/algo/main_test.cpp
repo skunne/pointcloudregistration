@@ -2,12 +2,17 @@
 #include <iostream> // std::cout
 #include <vector>
 
+#include "cpr_params.h"
+#include "cpr_processedpointcloud.h"
+#include "cpr_matrices.h"
+#include "cpr_graphmatching_path.h"
+
 #include "test_frankwolfe.h"
 
 int test_printUsage(char const *cmd)
 {
   std::cout << "SYNOPSIS" << std::endl << std::endl;
-  std::cout << cmd << "<meta> <pc0> <pc1> [<pc2> ... <pcn>]"
+  std::cout << cmd << "<meta> <pc0> <pc1> [<pc2> ... <pcn>]" << std::endl;
   std::cout << "    Use the algorithm to register <pc0> against <pc1>, <pc2>, ..., <pcn>" << std::endl;
   std::cout << "    <meta> must be the name of a metadata file. The point cloud filename given inside <meta> is ignored; only the parameters are used." << std::endl;
   return 1;
@@ -34,31 +39,34 @@ int main(int argc, char ** argv)
 
   Params params_source(argv[1]);
   params_source.filename = argv[2];
-  ProcessedPointCloud ppc_source(params_source);
+  assert(params_source.error == 0);
 
-  ppc_source.build();
+  ProcessedPointCloud ppc_source(params_source);
+  assert(ppc_source.error() == 0);
+  int source_build_error = ppc_source.build();
+  assert(source_build_error == 0);
 
   Params params_dest = params_source;
   for (int i = 3; i < argc; ++i)
   {
     params_dest.filename = argv[i];
     ProcessedPointCloud ppc_dest(params_dest);
-    ppc_dest.build();
+    assert(ppc_dest.error() == 0);
+    int dest_build_error = ppc_dest.build();
+    assert(dest_build_error == 0);
 
     VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
     EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
     GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
-    
-
     names.push_back(argv[i]);
-    results.push_back()
+    //results.push_back(???);
   }
 
   std::cout << std::endl << std::endl << "Tests passed:" << std::endl;
-  for (std::size_t i = 0; i < diff_with_human.size(); ++i)
-    std::cout << std::left << std::setw(16) << names[i] << "  " << diff_with_human[i] << std::endl;
+  //for (std::size_t i = 0; i < diff_with_human.size(); ++i)
+  //  std::cout << std::left << std::setw(16) << names[i] << "  " << diff_with_human[i] << std::endl;
 
   return (0);
 }
