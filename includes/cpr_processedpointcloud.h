@@ -40,6 +40,7 @@ public:
   void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes);
 
   int getNbVertices() const;
+  std::vector<std::tuple<double,double,double>> exportPointCloud(void);
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */

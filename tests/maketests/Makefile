@@ -5,7 +5,7 @@ THINCLOUD=$(PYTHON) $(SCRIPTS)/thincloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
 RUNTESTS=../algo/run_tests
-NAME=nuclei
+NAME=pointclouds/nuclei
 PC1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC2=$(PC1) $(NAME)_rotated.pcd $(PC1:.pcd=_rotated.pcd)
 POINTCLOUDS=$(NAME)_shuffled.pcd $(PC2)
@@ -31,7 +31,7 @@ $(NAME): $(RUNTESTS) $(POINTCLOUDS)
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
 
 clean:
-	rm -f *_shuffled.pcd *_cropped.pcd *_thinned.pcd *_rotated.pcd
+	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
 
 fclean: clean
 	rm -f $(RUNTESTS)

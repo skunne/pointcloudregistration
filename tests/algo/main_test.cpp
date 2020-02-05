@@ -20,7 +20,9 @@ int test_printUsage(char const *cmd)
 
 void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixDouble const &permutation_matrix)
 {
-
+  std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
+  std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
+  
 }
 
 int main(int argc, char ** argv)
