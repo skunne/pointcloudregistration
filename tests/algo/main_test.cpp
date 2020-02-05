@@ -102,9 +102,9 @@ int main(int argc, char ** argv)
     gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
 
     std::stringstream srcoutfilename;
-    srcoutfilename << "registered_" << argv[i] << "_src.csv";
+    srcoutfilename << "matched_" << argv[i] << "_src.csv";
     std::stringstream dstoutfilename;
-    dstoutfilename << "registered_" << argv[i] << "_dst.csv";
+    dstoutfilename << "matched_" << argv[i] << "_dst.csv";
     test_writeresult(ppc_source, ppc_dest, permutation_matrix, srcoutfilename.str().c_str(), dstoutfilename.str().c_str());
     //results.push_back(???);
   }
