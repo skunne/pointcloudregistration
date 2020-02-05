@@ -47,6 +47,7 @@ int main(int argc, char ** argv)
   assert(source_build_error == 0);
 
   Params params_dest = params_source;
+  params_dest.adjacency_filename = "dest.adj";
   for (int i = 3; i < argc; ++i)
   {
     params_dest.filename = argv[i];

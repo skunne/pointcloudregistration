@@ -5,7 +5,7 @@ THINCLOUD=$(PYTHON) $(SCRIPTS)/thincloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
 RUNTESTS=../algo/run_tests
-NAME=allo
+NAME=nuclei
 PC1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC2=$(PC1) $(NAME)_rotated.pcd $(PC1:.pcd=_rotated.pcd)
 POINTCLOUDS=$(NAME)_shuffled.pcd $(PC2)
