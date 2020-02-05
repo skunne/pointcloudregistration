@@ -54,15 +54,15 @@ double test_with_pointclouds (int argc, char const *const *argv)
   ProcessedPointCloud ppc_dest(argv[2]);
 
   if (ppc_source.error() || ppc_dest.error())
-    return 1;
+    return -999.0;
 
   int build_error = ppc_source.build();
   if (build_error)
-    return build_error;
+    return -999.0;
 
   build_error = ppc_dest.build();
   if (build_error)
-    return build_error;
+    return -999.0;
 
   //////////////
   // Build similarity matrices from features
