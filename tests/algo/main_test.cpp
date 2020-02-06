@@ -56,9 +56,9 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
       src_out << i << ',' << std::get<0>(pc_source[i])
                    << ',' << std::get<1>(pc_source[i])
                    << ',' << std::get<2>(pc_source[i]) << std::endl;
-      dst_out << i << ',' << std::get<0>(pc_source[j])
-                   << ',' << std::get<1>(pc_source[j])
-                   << ',' << std::get<2>(pc_source[j]) << std::endl;
+      dst_out << i << ',' << std::get<0>(pc_dest[j])
+                   << ',' << std::get<1>(pc_dest[j])
+                   << ',' << std::get<2>(pc_dest[j]) << std::endl;
     }
   }
 }

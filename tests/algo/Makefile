@@ -447,60 +447,6 @@ main_test.cpp.s:
 	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/main_test.cpp.s
 .PHONY : main_test.cpp.s
 
-printandcomparesolution.o: printandcomparesolution.cpp.o
-
-.PHONY : printandcomparesolution.o
-
-# target to build an object file
-printandcomparesolution.cpp.o:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.o
-.PHONY : printandcomparesolution.cpp.o
-
-printandcomparesolution.i: printandcomparesolution.cpp.i
-
-.PHONY : printandcomparesolution.i
-
-# target to preprocess a source file
-printandcomparesolution.cpp.i:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.i
-.PHONY : printandcomparesolution.cpp.i
-
-printandcomparesolution.s: printandcomparesolution.cpp.s
-
-.PHONY : printandcomparesolution.s
-
-# target to generate assembly for a file
-printandcomparesolution.cpp.s:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/printandcomparesolution.cpp.s
-.PHONY : printandcomparesolution.cpp.s
-
-test_with_pointclouds.o: test_with_pointclouds.cpp.o
-
-.PHONY : test_with_pointclouds.o
-
-# target to build an object file
-test_with_pointclouds.cpp.o:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.o
-.PHONY : test_with_pointclouds.cpp.o
-
-test_with_pointclouds.i: test_with_pointclouds.cpp.i
-
-.PHONY : test_with_pointclouds.i
-
-# target to preprocess a source file
-test_with_pointclouds.cpp.i:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.i
-.PHONY : test_with_pointclouds.cpp.i
-
-test_with_pointclouds.s: test_with_pointclouds.cpp.s
-
-.PHONY : test_with_pointclouds.s
-
-# target to generate assembly for a file
-test_with_pointclouds.cpp.s:
-	$(MAKE) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/test_with_pointclouds.cpp.s
-.PHONY : test_with_pointclouds.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -546,12 +492,6 @@ help:
 	@echo "... main_test.o"
 	@echo "... main_test.i"
 	@echo "... main_test.s"
-	@echo "... printandcomparesolution.o"
-	@echo "... printandcomparesolution.i"
-	@echo "... printandcomparesolution.s"
-	@echo "... test_with_pointclouds.o"
-	@echo "... test_with_pointclouds.i"
-	@echo "... test_with_pointclouds.s"
 .PHONY : help
 
 
