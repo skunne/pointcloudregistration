@@ -1,19 +1,19 @@
 
 matched_pointclouds/nuclei_cropped.pcd_src.csv matched_pointclouds/nuclei_cropped.pcd_dst.csv
-5.9513386687939995
+6.987068441574514
 matched_pointclouds/nuclei_cropped_rotated.pcd_src.csv matched_pointclouds/nuclei_cropped_rotated.pcd_dst.csv
-13.518567755969283
+13.537259702671092
 matched_pointclouds/nuclei_cropped_thinned.pcd_src.csv matched_pointclouds/nuclei_cropped_thinned.pcd_dst.csv
-11.702120990283573
+11.713458824743729
 matched_pointclouds/nuclei_cropped_thinned_rotated.pcd_src.csv matched_pointclouds/nuclei_cropped_thinned_rotated.pcd_dst.csv
 13.877582579987672
 matched_pointclouds/nuclei.pcd_src.csv matched_pointclouds/nuclei.pcd_dst.csv
 0.0
 matched_pointclouds/nuclei_rotated.pcd_src.csv matched_pointclouds/nuclei_rotated.pcd_dst.csv
-11.824467077048752
+12.036922102215051
 matched_pointclouds/nuclei_shuffled.pcd_src.csv matched_pointclouds/nuclei_shuffled.pcd_dst.csv
 0.0008842528456230015
 matched_pointclouds/nuclei_thinned.pcd_src.csv matched_pointclouds/nuclei_thinned.pcd_dst.csv
-6.932708009277365
+7.023527348467873
 matched_pointclouds/nuclei_thinned_rotated.pcd_src.csv matched_pointclouds/nuclei_thinned_rotated.pcd_dst.csv
-11.693840221054028
+11.908432790043321

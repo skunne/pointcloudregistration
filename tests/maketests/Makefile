@@ -4,6 +4,17 @@ DIGHOLE=$(PYTHON) $(SCRIPTS)/dig_hole.py
 THINCLOUD=$(PYTHON) $(SCRIPTS)/thin_cloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
+
+DISTANCES=$(PYTHON) ../../scripts_python/other/distance_matched_pointclouds.py
+AVG_DIST_FILE=average_distances.txt
+define COMPUTE_AVG_DISTANCES
+echo '' > $(AVG_DIST_FILE)
+for pc in matched_pointclouds/*_src.csv ; do \
+	echo $$pc $${pc//_src.csv/_dst.csv} >> $(AVG_DIST_FILE) ; \
+	$(DISTANCES) $$pc $${pc//_src.csv/_dst.csv} >> $(AVG_DIST_FILE) ; \
+done
+endef
+
 RUNTESTS=../algo/run_tests
 NAME=pointclouds/nuclei
 PC1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
@@ -30,11 +41,7 @@ $(RUNTESTS):
 $(NAME): $(RUNTESTS) $(POINTCLOUDS)
 	mkdir -p matched_pointclouds
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
-	echo '' > average_distances.txt
-	for pc in matched_pointclouds/*_src.csv ; do \
-			echo $$pc $${pc//_src.csv/_dst.csv} >> average_distances.txt ; \
-      python3 ../../scripts_python/other/distance_matched_pointclouds.py $$pc $${pc//_src.csv/_dst.csv} >> average_distances.txt ; \
-  done
+	$(COMPUTE_AVG_DISTANCES)
 
 
 
