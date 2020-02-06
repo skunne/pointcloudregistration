@@ -32,7 +32,6 @@ def get_args():
     elif (len(sys.argv) == 9):
         infilename = sys.argv[1]
         outfilename = sys.argv[2]
-        xmin,ymin,zmin = 0,0,0
         try:
             xmin = float(sys.argv[3])
             ymin = float(sys.argv[4])

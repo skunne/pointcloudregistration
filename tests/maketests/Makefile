@@ -19,7 +19,7 @@ $(RUNTESTS):
 	$(SHUFFLE) $< $@
 
 %_cropped.pcd: %.pcd
-	$(DIGHOLE) $< $@ 5 5 5 10 10 10
+	$(DIGHOLE) $< $@ 0 0 5 10 10 10
 
 %_thinned.pcd: %.pcd
 	$(THINCLOUD) $< $@
