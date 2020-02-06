@@ -1,7 +1,7 @@
 PYTHON=/usr/bin/python3
 SCRIPTS=../../scripts_python/makepointcloud
 DIGHOLE=$(PYTHON) $(SCRIPTS)/dig_hole.py
-THINCLOUD=$(PYTHON) $(SCRIPTS)/thincloud.py
+THINCLOUD=$(PYTHON) $(SCRIPTS)/thin_cloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
 RUNTESTS=../algo/run_tests

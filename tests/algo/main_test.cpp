@@ -48,6 +48,8 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
   if (!dst_out)
     errorLoadingFile("output", filenamedst);
 
+  assert(pc_dest.size() == permutation_matrix.cols());
+
   for (std::size_t i = 0; i < pc_source.size(); ++i)
   {
     std::size_t j = test_getmatch(i, permutation_matrix);
@@ -109,7 +111,7 @@ int main(int argc, char ** argv)
     //results.push_back(???);
   }
 
-  std::cout << std::endl << std::endl << "Tests passed:" << std::endl;
+  //std::cout << std::endl << std::endl << "Tests passed:" << std::endl;
   //for (std::size_t i = 0; i < diff_with_human.size(); ++i)
   //  std::cout << std::left << std::setw(16) << names[i] << "  " << diff_with_human[i] << std::endl;
 

@@ -21,14 +21,22 @@ python3 makepointcloud/dig_hole.py ../pointclouds/nuclei.pcd ../pointclouds/nucl
 ~~~~
 
 ### makepointcloud/apply_transform.py
-Read a pcf file and write a new pcd file with the same cloud, after applying a rotation or a transformation matrix.
+Read a pcd file and write a new pcd file with the same cloud, after applying a rotation or a transformation matrix.
 
 Example: read `nuclei.pcd`, apply the rotation of angle pi in the plane xy, and write result to `nuclei_rotated.pcd`
 ~~~~
-python3 makepointcloud/apply_transform ../pointclouds/nuclei.pcd ../pointclouds/nuclei_rotated.pcd 3.1416
+python3 makepointcloud/apply_transform.py ../pointclouds/nuclei.pcd ../pointclouds/nuclei_rotated.pcd 3.1416
 ~~~~
 
-### makepointcloud/show_pcd_file.py
+### makepointcloud/thin_cloud.py
+Read a pcd file and write a new pcd file with the same cloud, after removing every 2 out of 3 points.
+
+### makepointcloud/shuffle.py
+Read a pcd file and write a new pcd file with the same cloud, but with the points listed in a random order.
+
+The registration algorithm should not be sensible to this shuffling.
+
+### other/show_pcd_file.py
 Visualize a 3d point cloud from a pcd file.
 
 ### other/comparecsv.py
