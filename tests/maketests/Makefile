@@ -30,6 +30,14 @@ $(RUNTESTS):
 $(NAME): $(RUNTESTS) $(POINTCLOUDS)
 	mkdir -p matched_pointclouds
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
+	echo '' > average_distances.txt
+	for pc in matched_pointclouds/*_src.csv ; do \
+			echo $$pc $${pc//_src.csv/_dst.csv} >> average_distances.txt ; \
+      python3 ../../scripts_python/other/distance_matched_pointclouds.py $$pc $${pc//_src.csv/_dst.csv} >> average_distances.txt ; \
+  done
+
+
+
 
 clean:
 	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
