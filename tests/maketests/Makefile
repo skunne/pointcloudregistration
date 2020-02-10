@@ -24,6 +24,7 @@ endef
 
 RUNTESTS=../algo/run_tests
 NAME=pointclouds/nuclei
+MATCHED=matched_$(NAME)_dst.csv
 PC1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC2=$(PC1) $(NAME)_rotated.pcd $(PC1:.pcd=_rotated.pcd)
 POINTCLOUDS=$(NAME)_shuffled.pcd $(PC2)
@@ -34,7 +35,7 @@ COMPUTETRANSFORMDIR=cli_tools/compute_transformation/
 COMPUTETRANSFORMJAR=$(COMPUTETRANSFORMDIR)/target/compute_transformation-0.1.0-SNAPSHOT.jar
 COMPUTETRANSFORM=java -jar $(COMPUTETRANSFORMJAR) --source-dataset $(1) --target-dataset $(2) --transformation-model RIGID
 
-REVERSE=$(2) $(1)
+
 
 all: $(NAME)
 
@@ -63,19 +64,26 @@ $(CLITOOLSDIR):
 $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
 	mvn -f $(COMPUTETRANSFORMDIR) clean install
 
-$(NAME): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
+$(MATCHED): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
 	mkdir -p matched_pointclouds
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
 	$(COMPUTE_AVG_DISTANCES)
-	$(foreach pc,$(POINTCLOUDS),$(call COMPUTETRANSFORM,matched_$(pc)_src.csv,matched_$(pc)_dst.csv))
-	
+
+$(NAME): $(MATCHED)
+	$(foreach pc,$(POINTCLOUDS), $(call COMPUTETRANSFORM,matched_$(pc)_src.csv,matched_$(pc)_dst.csv);)
+
 
 clean:
 	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
 
 fclean: clean
+	rm -f matched_pointclouds/*.csv
+
+ffclean: fclean
 	rm -f $(RUNTESTS)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+rere: ffclean all
+
+.PHONY: all $(NAME) clean fclean ffclean re rere
