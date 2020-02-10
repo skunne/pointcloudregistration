@@ -234,8 +234,8 @@ double GraphMatchingPath::simplex(void)
   //std::cout << "\x1B[2J\x1B[H";   // non-portable hack to clear console
   //std::cout << "\x1B[H";           // non-portable hack to clear console
   pcl::console::print_highlight("simplex call %u\n\n", nb_calls);
-  if (nb_calls > 20)
-    exit(3);    // for debug
+  // if (nb_calls > 20)
+  //   exit(3);    // for debug
   ++nb_calls;
 
   // reset objective function

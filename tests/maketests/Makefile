@@ -1,11 +1,12 @@
 PYTHON=/usr/bin/python3
-SCRIPTS=../../scripts_python/makepointcloud
+
+SCRIPTS=../../scripts_python/
 DIGHOLE=$(PYTHON) $(SCRIPTS)/dig_hole.py
 THINCLOUD=$(PYTHON) $(SCRIPTS)/thin_cloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
-
-DISTANCES=$(PYTHON) ../../scripts_python/other/distance_matched_pointclouds.py
+COMPAREMATRICES=$(PYTHON) $(SCRIPTS)/normofdifference_44matrix.py
+DISTANCES=$(PYTHON) $(SCRIPTS)/distance_matched_pointclouds.py
 AVG_DIST_FILE=average_distances.txt
 # define COMPUTE_AVG_DISTANCES
 # echo '' > $(AVG_DIST_FILE)
@@ -34,7 +35,7 @@ CLITOOLSDIR=cli_tools
 COMPUTETRANSFORMDIR=cli_tools/compute_transformation/
 COMPUTETRANSFORMJAR=$(COMPUTETRANSFORMDIR)/target/compute_transformation-0.1.0-SNAPSHOT.jar
 COMPUTETRANSFORM=java -jar $(COMPUTETRANSFORMJAR) --source-dataset $(1) --target-dataset $(2) --transformation-model RIGID
-
+TRANSFORMDIR=transforms/
 
 
 all: $(NAME)
@@ -44,15 +45,23 @@ $(RUNTESTS):
 
 %_shuffled.pcd: %.pcd
 	$(SHUFFLE) $< $@
+	mkdir -p $(TRANSFORMDIR)
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_cropped.pcd: %.pcd
 	$(DIGHOLE) $< $@ 0 0 5 10 10 10
+	mkdir -p $(TRANSFORMDIR)
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_thinned.pcd: %.pcd
 	$(THINCLOUD) $< $@
+	mkdir -p $(TRANSFORMDIR)
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_rotated.pcd: %.pcd
 	$(ROTATE) $< $@
+	mkdir -p $(TRANSFORMDIR)
+	printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 $(ECCLEMJAR):
 	git clone https://github.com/anrcrocoval/ec-clem.git
@@ -69,15 +78,22 @@ $(MATCHED): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
 	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
 	$(COMPUTE_AVG_DISTANCES)
 
-$(NAME): $(MATCHED)
-	$(foreach pc,$(POINTCLOUDS), $(call COMPUTETRANSFORM,matched_$(pc)_src.csv,matched_$(pc)_dst.csv);)
+$(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv): SOURCE_POINTCLOUD=$(subst $(TRANSFORMDIR),matched_pointclouds/,$(subst _computed.csv,_src.csv,$@))
+$(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv): DESTIN_POINTCLOUD=$(subst _src.csv,_dst.csv,$(SOURCE_POINTCLOUD))
+$(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv): $(MATCHED)
+	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
 
+$(NAME): $(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv)
+	$(foreach matrix,$^,$(COMPAREMATRICES) $(matrix) $(subst _computed.csv,_true.csv,$(matrix)); \
+	)
 
 clean:
 	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
+	rm -f $(TRANSFORMDIR)/*_true.csv
 
 fclean: clean
 	rm -f matched_pointclouds/*.csv
+	rm -f $(TRANSFORMDIR)/*_computed.csv
 
 ffclean: fclean
 	rm -f $(RUNTESTS)

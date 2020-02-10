@@ -13,3 +13,5 @@ tests/qp/test_qp
 tests/smalltests/
 tests/maketests/matched_pointclouds/
 tests/maketests/average_distances.txt
+tests/maketests/cli_tools/
+tests/maketests/transforms/
