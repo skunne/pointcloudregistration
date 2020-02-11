@@ -41,7 +41,7 @@ main(int argc, char** argv)
   pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
 
   double pi = 3.141592653589793;
-  double threshold = 0.1;
+  double threshold = 0.01;
 
   // populate our PointClouds with points
   cloud_model->width    = 250;
@@ -62,7 +62,7 @@ main(int argc, char** argv)
     cloud_model->points[i].y = sin(phi) * sin(theta);
     cloud_model->points[i].z = cos(phi);
   }
-  for (std::size_t i = 0; i < cloud_data->points.size(); i += 1)
+  for (std::size_t i = 0; i < cloud_data->points.size(); i += 2)
   {
     // inliers:                                     ==> hemisphere y < 0
     // double theta = pi * (1.0 + static_cast<float>(rand()) / RAND_MAX);
@@ -71,14 +71,14 @@ main(int argc, char** argv)
     // cloud_data->points[i].x = sin(phi) * cos(theta);
     // cloud_data->points[i].y = sin(phi) * sin(theta);
     // cloud_data->points[i].z = cos(phi);
-    cloud_data->points[i].x = cloud_model->points[i].x;// + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
-    cloud_data->points[i].y = cloud_model->points[i].y;// + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
-    cloud_data->points[i].z = cloud_model->points[i].z;// + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
+    cloud_data->points[i].x = cloud_model->points[i].x + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
+    cloud_data->points[i].y = -cloud_model->points[i].y + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
+    cloud_data->points[i].z = -cloud_model->points[i].z + (static_cast<float>(rand()) / RAND_MAX - 0.5) * threshold;
 
     // outliers: x in [-1,1], y in [-1,0], z in [-1,1]
-    // cloud_data->points[i+1].x = -1 + 2 * (static_cast<float>(rand()) / RAND_MAX);
-    // cloud_data->points[i+1].y = -1 + (static_cast<float>(rand()) / RAND_MAX);
-    // cloud_data->points[i+1].z = -1 + 2 * (static_cast<float>(rand()) / RAND_MAX);
+    cloud_data->points[i+1].x = -1 + 2 * (static_cast<float>(rand()) / RAND_MAX);
+    cloud_data->points[i+1].y = -1 + (static_cast<float>(rand()) / RAND_MAX);
+    cloud_data->points[i+1].z = -1 + 2 * (static_cast<float>(rand()) / RAND_MAX);
   }
 
   std::vector<int> inliers;
