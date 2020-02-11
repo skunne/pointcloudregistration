@@ -21,3 +21,7 @@ tests/maketests/matched_pointclouds/
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
 tests/maketests/transforms/
+
+
+tests/ransac/a.out
+tests/ransac/cpr_randomsampleconsensus.o
