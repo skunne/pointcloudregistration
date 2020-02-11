@@ -447,6 +447,33 @@ src/cpr_processedpointcloud.cpp.s:
 	$(MAKE) -f CMakeFiles/register_pointclouds.dir/build.make CMakeFiles/register_pointclouds.dir/src/cpr_processedpointcloud.cpp.s
 .PHONY : src/cpr_processedpointcloud.cpp.s
 
+src/cpr_ransac.o: src/cpr_ransac.cpp.o
+
+.PHONY : src/cpr_ransac.o
+
+# target to build an object file
+src/cpr_ransac.cpp.o:
+	$(MAKE) -f CMakeFiles/register_pointclouds.dir/build.make CMakeFiles/register_pointclouds.dir/src/cpr_ransac.cpp.o
+.PHONY : src/cpr_ransac.cpp.o
+
+src/cpr_ransac.i: src/cpr_ransac.cpp.i
+
+.PHONY : src/cpr_ransac.i
+
+# target to preprocess a source file
+src/cpr_ransac.cpp.i:
+	$(MAKE) -f CMakeFiles/register_pointclouds.dir/build.make CMakeFiles/register_pointclouds.dir/src/cpr_ransac.cpp.i
+.PHONY : src/cpr_ransac.cpp.i
+
+src/cpr_ransac.s: src/cpr_ransac.cpp.s
+
+.PHONY : src/cpr_ransac.s
+
+# target to generate assembly for a file
+src/cpr_ransac.cpp.s:
+	$(MAKE) -f CMakeFiles/register_pointclouds.dir/build.make CMakeFiles/register_pointclouds.dir/src/cpr_ransac.cpp.s
+.PHONY : src/cpr_ransac.cpp.s
+
 src/cpr_visualisation.o: src/cpr_visualisation.cpp.o
 
 .PHONY : src/cpr_visualisation.o
@@ -519,6 +546,9 @@ help:
 	@echo "... src/cpr_processedpointcloud.o"
 	@echo "... src/cpr_processedpointcloud.i"
 	@echo "... src/cpr_processedpointcloud.s"
+	@echo "... src/cpr_ransac.o"
+	@echo "... src/cpr_ransac.i"
+	@echo "... src/cpr_ransac.s"
 	@echo "... src/cpr_visualisation.o"
 	@echo "... src/cpr_visualisation.i"
 	@echo "... src/cpr_visualisation.s"
