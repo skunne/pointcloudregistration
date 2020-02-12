@@ -6,6 +6,10 @@ pointclouds/Armadillo.ply
 pointclouds/dragon_vrip_res2.ply
 pointclouds/untracked/
 
+Makefile
+!tests/ransac/Makefile
+
+
 output/
 
 register_pointclouds
