@@ -140,6 +140,34 @@ void updateFlags(bool &flagSphere, bool &flagCompute, bool &flagShowmodel, int a
     printUsageAndExit(argv[0]);
 }
 
+// void test_writeCSVPointcloud(char const *filename, pcl::PointCloud<pcl::PointXYZ>::Ptr const cloud)
+// {
+//   std::ofstream file(filename, std::ofstream::trunc);
+//   file << "id,dimension_1,dimension_2,dimension_3" << '\n';
+//   std::size_t i = 0;
+//   for (auto p : cloud->points)
+//   {
+//     file << i << ',' << p.x << ',' << p.y << ',' << p.z << '\n';
+//     ++i;
+//     //note that it is a bit stupid to discard the indices that were read in the input csv file
+//     //we might want to keep the same indices, so it is apparent which points were outliers
+//   }
+// }
+
+void test_writeCSVPointcloud(char const *filename,
+  pcl::PointCloud<pcl::PointXYZ>::Ptr const cloud,
+  std::vector<int> indices)
+{
+  std::ofstream file(filename, std::ofstream::trunc);
+  file << "id,dimension_1,dimension_2,dimension_3" << '\n';
+  for (int i : indices)
+  {
+    file << i << ',' << cloud->points[i].x
+              << ',' << cloud->points[i].y
+              << ',' << cloud->points[i].z << '\n';
+  }
+}
+
 int
 main(int argc, char** argv)
 {
@@ -149,7 +177,8 @@ main(int argc, char** argv)
   // initialize PointClouds
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model (new pcl::PointCloud<pcl::PointXYZ>);
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr final_model (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr final_data (new pcl::PointCloud<pcl::PointXYZ>);
 
   if (flagSphere)
     populateWithHemispheres(cloud_model, cloud_data, threshold);
@@ -163,8 +192,6 @@ main(int argc, char** argv)
   std::vector<int> inliers;
 
   // created RandomSampleConsensus object and compute the appropriated model
-  pcl::SampleConsensusModelSphere<pcl::PointXYZ>::Ptr
-    model_s(new pcl::SampleConsensusModelSphere<pcl::PointXYZ> (cloud_data));
   pcl::SampleConsensusModelRegistration<pcl::PointXYZ>::Ptr
     model_r(new pcl::SampleConsensusModelRegistration<pcl::PointXYZ>(cloud_data));
   model_r->setInputTarget(cloud_model);
@@ -176,14 +203,18 @@ main(int argc, char** argv)
     ransac.getInliers(inliers);
   }
 
-  // copies all inliers of the model computed to another PointCloud
-  pcl::copyPointCloud (*cloud_data, inliers, *final);
+  // copy all inliers of the model computed to another PointCloud
+  pcl::copyPointCloud (*cloud_model, inliers, *final_model);
+  pcl::copyPointCloud (*cloud_data, inliers, *final_data);
+  std::cout << "Writing resulting point cloud to file final_data.csv and final_model..." << std::endl;
+  test_writeCSVPointcloud("final_data.csv", cloud_data, inliers);
+  test_writeCSVPointcloud("final_model.csv", cloud_model, inliers);
 
   // creates the visualization object and adds either our original cloud or all of the inliers
   // depending on the command line arguments specified.
   pcl::visualization::PCLVisualizer::Ptr viewer;
   if (flagCompute)
-    viewer = simpleVis(final);
+    viewer = simpleVis(final_data);
   else if (flagShowmodel)
     viewer = simpleVis(cloud_model);
   else

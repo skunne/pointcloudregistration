@@ -42,17 +42,17 @@ int test_readCSVPointcloud(char const *filename, pcl::PointCloud<pcl::PointXYZ>:
   return 0;
 }
 
-void test_writeCSVPointcloud(char const *filename, pcl::PointCloud<pcl::PointXYZ>::Ptr const cloud)
+void test_writeCSVPointcloud(char const *filename,
+  pcl::PointCloud<pcl::PointXYZ>::Ptr const cloud,
+  std::vector<int> indices)
 {
-  std::ofstream file(filename);
+  std::ofstream file(filename, std::ofstream::trunc);
   file << "id,dimension_1,dimension_2,dimension_3" << '\n';
-  std::size_t i = 0;
-  for (auto p : cloud->points)
+  for (int i : indices)
   {
-    file << i << ',' << p.x << ',' << p.y << ',' << p.z << '\n';
-    ++i;
-    //note that it is a bit stupid to discard the indices that were read in the input csv file
-    //we might want to keep the same indices, so it is apparent which points were outliers
+    file << i << ',' << cloud->points[i].x
+              << ',' << cloud->points[i].y
+              << ',' << cloud->points[i].z << '\n';
   }
 }
 
@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
   if (argc < 5)
     return test_printUsage(argv[0]);
 
-  double threshold = 0.01;
+  double threshold = 0.6;
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data(new pcl::PointCloud<pcl::PointXYZ>);
@@ -88,14 +88,14 @@ int main(int argc, char ** argv)
   std::vector<int> inliers;
   ransac.getInliers(inliers);
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model_inliers(new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data_inliers(new pcl::PointCloud<pcl::PointXYZ>);
+  // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model_inliers(new pcl::PointCloud<pcl::PointXYZ>);
+  // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data_inliers(new pcl::PointCloud<pcl::PointXYZ>);
+  //
+  // pcl::copyPointCloud (*cloud_data, inliers, *cloud_data_inliers);
+  // pcl::copyPointCloud (*cloud_model, inliers, *cloud_model_inliers);
 
-  pcl::copyPointCloud (*cloud_data, inliers, *cloud_data_inliers);
-  pcl::copyPointCloud (*cloud_model, inliers, *cloud_model_inliers);
-
-  test_writeCSVPointcloud(argv[3], cloud_model_inliers);
-  test_writeCSVPointcloud(argv[4], cloud_data_inliers);
+  test_writeCSVPointcloud(argv[3], cloud_model, inliers);
+  test_writeCSVPointcloud(argv[4], cloud_data, inliers);
 
   return (0);
 }
