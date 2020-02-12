@@ -6,6 +6,7 @@
 #include <thread>
 
 #include <fstream>  // opening and reading files
+#include <vector>   // vector of indices of inlier points in the cloud
 
 #include <pcl/console/parse.h>
 #include <pcl/filters/extract_indices.h>
@@ -106,26 +107,44 @@ int test_loadCSVPointcloud(char const *filename, pcl::PointCloud<pcl::PointXYZ>:
   return 0;
 }
 
-void updateFlags(bool *sphere, bool *compute, int argc, char **argv)
+void printUsageAndExit(char const *cmd)
 {
-  *sphere = false;
-  *compute = false;
+  std::cout << "SYNOPSIS" << std::endl << std::endl;
+  std::cout << cmd << " -h" << std::endl;
+  std::cout << "    Print this help message and exit." << std::endl << std::endl;
+  std::cout << cmd << " -s [-f]" << std::endl;
+  std::cout << "    Use a hemisphere as model, and a hemisphere + 100% noise as data." << std::endl << std::endl;
+  std::cout << cmd << " [-f] <pc0> <pc1>" << std::endl;
+  std::cout << "    Use csv file <pc0> as model, and <pc1> as data." << std::endl << std::endl;
+  std::cout << "If option -f is specified, apply RanSaC to remove outliers from the data." << std::endl << std::endl;
+  exit(1);
+}
+
+void updateFlags(bool &flagSphere, bool &flagCompute, bool &flagShowmodel, int argc, char **argv)
+{
+  flagSphere    = false;
+  flagCompute   = false;
+  flagShowmodel = false;
   if (pcl::console::find_argument (argc, argv, "-f") >= 0 )
-    *compute = true;
+    flagCompute = true;
   if (pcl::console::find_argument (argc, argv, "-s") >= 0 )
-    *sphere = true;
-  if (pcl::console::find_argument (argc, argv, "-sf") >= 0 || pcl::console::find_argument (argc, argv, "-fs") >= 0 )
+    flagSphere = true;
+  if (pcl::console::find_argument(argc, argv, "-m") >= 0)
+    flagShowmodel = true;
+  if ((pcl::console::find_argument (argc, argv, "-sf") >= 0) || (pcl::console::find_argument (argc, argv, "-fs") >= 0) )
   {
-    *compute = true;
-    *sphere = true;
+    flagCompute = true;
+    flagSphere  = true;
   }
+  if ((!flagSphere && argc != 3 && argc != 4) || pcl::console::find_argument (argc, argv, "-h") >= 0)
+    printUsageAndExit(argv[0]);
 }
 
 int
 main(int argc, char** argv)
 {
-  bool flagSphere, flagCompute;
-  updateFlags(&flagSphere, &flagCompute, argc, argv);
+  bool flagSphere, flagCompute, flagShowmodel;
+  updateFlags(flagSphere, flagCompute, argc, argv);
   double threshold = 0.01;
   // initialize PointClouds
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model (new pcl::PointCloud<pcl::PointXYZ>);
@@ -163,9 +182,9 @@ main(int argc, char** argv)
   // creates the visualization object and adds either our original cloud or all of the inliers
   // depending on the command line arguments specified.
   pcl::visualization::PCLVisualizer::Ptr viewer;
-  if (pcl::console::find_argument (argc, argv, "-f") >= 0)
+  if (flagCompute)
     viewer = simpleVis(final);
-  else if (pcl::console::find_argument (argc, argv, "-m") >= 0)
+  else if (flagShowmodel)
     viewer = simpleVis(cloud_model);
   else
     viewer = simpleVis(cloud_data);
