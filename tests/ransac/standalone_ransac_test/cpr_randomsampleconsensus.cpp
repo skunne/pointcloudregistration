@@ -5,6 +5,8 @@
 #include <iostream>
 #include <thread>
 
+#include <fstream>  // opening and reading files
+
 #include <pcl/console/parse.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/io/pcd_io.h>
@@ -32,16 +34,11 @@ simpleVis (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
   return (viewer);
 }
 
-int
-main(int argc, char** argv)
+void populateWithHemispheres(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model,
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data,
+  double threshold)
 {
-  // initialize PointClouds
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
-
   double pi = 3.141592653589793;
-  double threshold = 0.01;
 
   // populate our PointClouds with points
   cloud_model->width    = 250;
@@ -80,6 +77,69 @@ main(int argc, char** argv)
     cloud_data->points[i+1].y = -1 + (static_cast<float>(rand()) / RAND_MAX);
     cloud_data->points[i+1].z = -1 + 2 * (static_cast<float>(rand()) / RAND_MAX);
   }
+}
+
+
+int test_loadCSVPointcloud(char const *filename, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
+{
+  std::cout << "Loading point cloud from csv file " << filename << std::endl;
+  std::ifstream file(filename);
+  std::string line;
+  std::getline(file, line);   // header: "id,dimension_1,dimension_2,dimension_3"
+  while (std::getline(file, line))
+  {
+    std::istringstream iss(line);
+    int id;
+    float x,y,z;
+    char separator;
+    if (!(iss >> id >> separator >> x >> separator >> y >> separator >> z))
+    {
+      std::cout << "Wrong line when reading .csv point cloud:" << std::endl;
+      std::cout << "    " << line << std::endl;
+      return 1;
+    }
+    cloud->push_back(pcl::PointXYZ(x,y,z));
+  }
+  cloud->width = cloud->points.size();
+  cloud->height = 1;
+  cloud->is_dense = false;
+  return 0;
+}
+
+void updateFlags(bool *sphere, bool *compute, int argc, char **argv)
+{
+  *sphere = false;
+  *compute = false;
+  if (pcl::console::find_argument (argc, argv, "-f") >= 0 )
+    *compute = true;
+  if (pcl::console::find_argument (argc, argv, "-s") >= 0 )
+    *sphere = true;
+  if (pcl::console::find_argument (argc, argv, "-sf") >= 0 || pcl::console::find_argument (argc, argv, "-fs") >= 0 )
+  {
+    *compute = true;
+    *sphere = true;
+  }
+}
+
+int
+main(int argc, char** argv)
+{
+  bool flagSphere, flagCompute;
+  updateFlags(&flagSphere, &flagCompute, argc, argv);
+  double threshold = 0.01;
+  // initialize PointClouds
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_data (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
+
+  if (flagSphere)
+    populateWithHemispheres(cloud_model, cloud_data, threshold);
+  else
+  {
+    assert(argc == 3 || argc == 4);
+    test_loadCSVPointcloud(argv[argc - 2], cloud_model);
+    test_loadCSVPointcloud(argv[argc - 1], cloud_data);
+  }
 
   std::vector<int> inliers;
 
@@ -89,7 +149,7 @@ main(int argc, char** argv)
   pcl::SampleConsensusModelRegistration<pcl::PointXYZ>::Ptr
     model_r(new pcl::SampleConsensusModelRegistration<pcl::PointXYZ>(cloud_data));
   model_r->setInputTarget(cloud_model);
-  if (pcl::console::find_argument (argc, argv, "-f") >= 0 )
+  if (flagCompute)
   {
     pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model_r);
     ransac.setDistanceThreshold (threshold);
