@@ -1,4 +1,4 @@
-
+#include <vector>   // vector to store inlier point indices
 #include <fstream>  // std::ifstream for opening and reading files
 #include <sstream>  // std::istringstream for parsing lines
 #include <pcl/filters/extract_indices.h>

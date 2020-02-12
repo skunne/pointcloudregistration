@@ -7,6 +7,7 @@ pointclouds/dragon_vrip_res2.ply
 pointclouds/untracked/
 
 Makefile
+!tests/ransac/Makefile
 !tests/ransac/standalone_ransac_test/Makefile
 
 output/
@@ -17,7 +18,8 @@ tests/algo/run_tests
 tests/esf/test_esf
 tests/test_frankwolfe
 tests/qp/test_qp
-tests/ransac/test_ransac
+tests/ransac/apply_ransac
+tests/ransac/standalone_ransac_test/a.out
 
 tests/smalltests/
 
@@ -26,5 +28,5 @@ tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
 tests/maketests/transforms/
 
-tests/ransac/standalone_ransac_test/a.out
 tests/ransac/standalone_ransac_test/cpr_randomsampleconsensus.o
+tests/ransac/main_test.o
