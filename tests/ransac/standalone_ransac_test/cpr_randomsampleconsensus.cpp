@@ -144,7 +144,7 @@ int
 main(int argc, char** argv)
 {
   bool flagSphere, flagCompute, flagShowmodel;
-  updateFlags(flagSphere, flagCompute, argc, argv);
+  updateFlags(flagSphere, flagCompute, flagShowmodel, argc, argv);
   double threshold = 0.01;
   // initialize PointClouds
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_model (new pcl::PointCloud<pcl::PointXYZ>);

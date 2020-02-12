@@ -12,7 +12,7 @@ all: $(NAME)
 	$(CC) -c -o $@ $(CFLAGS) $(SRC) $(INCLUDES)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) $(LIBS)
+	$(CC) -o $(NAME) $(OBJ) $(LIBS)
 
 clean:
 	rm -f $(OBJ)
@@ -23,4 +23,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
-
