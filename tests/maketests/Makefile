@@ -93,14 +93,12 @@ $(MATCHED_WITNESS): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
 $(COMPUTED_TRANSFORMS): DESTIN_POINTCLOUD=$(subst $(TRANSFORMDIR),matched_pointclouds/,$(subst _computed.csv,_dst.csv,$@))
 $(COMPUTED_TRANSFORMS): SOURCE_POINTCLOUD=$(subst _dst.csv,_src.csv,$(DESTIN_POINTCLOUD))
 transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
-	echo 'we chose the correct rule!!'
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
 %_computed.csv: $(MATCHED_WITNESS)
-	echo 'if the world _inliers_ is here, this is the wrong rule'
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
 
-$(NAME): $(COMPUTED_TRANSFORMS) $(MATCHED_WITNESS)
-	$(foreach matrix,$^,$(COMPAREMATRICES) $(matrix) $(subst _computed.csv,_true.csv,$(matrix)); \
+$(NAME): $(COMPUTED_TRANSFORMS)
+	$(foreach matrix,$^,$(COMPAREMATRICES) $(subst _inliers,,$(matrix)) $(subst _computed.csv,_true.csv,$(subst _inliers,,$(matrix))); \
 	)
 
 clean:
