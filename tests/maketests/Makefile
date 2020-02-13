@@ -34,6 +34,8 @@ MATCHED=$(foreach pc,$(POINTCLOUDS),matched_$(pc)_dst.csv)
 INLIERS=$(subst _dst.csv,_inliers_dst.csv,$(MATCHED))
 CT_AUX=$(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv)
 COMPUTED_TRANSFORMS=$(CT_AUX) $(subst _computed.csv,_inliers_computed.csv,$(CT_AUX))
+MATRIX_DIFFERENCES=$(subst _computed.csv,_diff,$(COMPUTED_TRANSFORMS))
+
 
 ECCLEMJAR=~/.m2/repository/fr/univ-nantes/ec_clem/2.0.0-SNAPSHOT/ec_clem-2.0.0-SNAPSHOT.jar
 CLITOOLSDIR=cli_tools
@@ -43,7 +45,7 @@ COMPUTETRANSFORM=java -jar $(COMPUTETRANSFORMJAR) --source-dataset $(1) --target
 TRANSFORMDIR=transforms/
 
 
-all: $(NAME)
+all: $(MATRIX_DIFFERENCES)
 
 $(RUNTESTS):
 	make -C ../algo
@@ -97,9 +99,10 @@ transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
 %_computed.csv: $(MATCHED_WITNESS)
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
 
-$(NAME): $(COMPUTED_TRANSFORMS)
-	$(foreach matrix,$^,$(COMPAREMATRICES) $(subst _inliers,,$(matrix)) $(subst _computed.csv,_true.csv,$(subst _inliers,,$(matrix))); \
-	)
+%_diff: %_computed.csv
+	$(COMPAREMATRICES) $(subst _inliers,,$(subst _diff,_computed.csv,$@)) $(subst _inliers,,$(subst _diff,_true.csv,$@)) | tee $@
+
+
 
 clean:
 	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
@@ -108,6 +111,7 @@ clean:
 fclean: clean
 	rm -f matched_pointclouds/*.csv
 	rm -f $(TRANSFORMDIR)/*_computed.csv
+	rm -f $(TRANSFORMDIR)/*_diff
 
 ffclean: fclean
 	rm -f $(RUNTESTS)
