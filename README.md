@@ -21,6 +21,7 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
  * Point Cloud Library <http://pointclouds.org/>
  * Eigen <http://eigen.tuxfamily.org/>
  * GLPK <https://en.wikibooks.org/wiki/GLPK/>
+ * ec-CLEM <https://github.com/anrcrocoval/ec-clem.git> and <https://github.com/anrcrocoval/cli_tools.git>
 
 ### Install
 
