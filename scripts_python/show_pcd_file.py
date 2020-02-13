@@ -11,7 +11,7 @@ def read_file(filename):
       Z = []
       for line in f:
         row = line.split()
-        if row[0][0] in '0123456789':
+        if row[0][0] in '0123456789-':
           X.append(float(row[0]))
           Y.append(float(row[1]))
           Z.append(float(row[2]))
