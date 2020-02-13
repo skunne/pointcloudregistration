@@ -14,7 +14,7 @@
 int test_printUsage(char const *cmd)
 {
   std::cout << "SYNOPSIS" << std::endl << std::endl;
-  std::cout << cmd << "<meta> <pc0> <pc1> [<pc2> ... <pcn>]" << std::endl;
+  std::cout << cmd << " <meta> <pc0> <pc1> [<pc2> ... <pcn>]" << std::endl;
   std::cout << "    Use the algorithm to register <pc0> against <pc1>, <pc2>, ..., <pcn>" << std::endl;
   std::cout << "    <meta> must be the name of a metadata file. The point cloud filename given inside <meta> is ignored; only the parameters are used." << std::endl;
   return 1;

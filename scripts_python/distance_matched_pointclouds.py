@@ -14,7 +14,10 @@ def compute_average_distance(filename1, filename2):
             for p1, p2 in zip(r1,r2):
                 d += math.sqrt(sum((float(x1) - float(x2))**2 for (x1,x2) in zip(p1[1:], p2[1:])))
                 nbpoints += 1
-    return d / nbpoints
+    if nbpoints > 0:
+        return d / nbpoints
+    else:
+        return 0
 
 def print_usage():
     print('SYNOPSIS')

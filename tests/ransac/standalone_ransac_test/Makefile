@@ -1,6 +1,6 @@
 CC=g++
-NAME=apply_ransac
-SRC=main_test.cpp
+NAME=a.out
+SRC=cpr_randomsampleconsensus.cpp
 OBJ=$(SRC:.cpp=.o)
 CFLAGS=-Wall -Wextra -Werror
 INCLUDES=-I /usr/include/pcl-1.9/ -I /usr/include/eigen3/ -I /usr/include/vtk/
