@@ -31,6 +31,7 @@ tests/maketests/cli_tools/
 tests/maketests/transforms/
 tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
+ipopt.out
 
 # ignore all executables
 
@@ -41,6 +42,7 @@ tests/test_frankwolfe
 tests/qp/test_qp
 tests/ransac/apply_ransac
 tests/ransac/standalone_ransac_test/a.out
+tests/test_ipopt/test_ipopt
 
 # ignore small learning experiments
 
