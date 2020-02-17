@@ -1,11 +1,17 @@
-#include <iostream>     /* output for NonLinProgram::finalize_solution() */
+#include <iostream>     /* output for GraphMatching::finalize_solution() */
 #include <cassert>      /* assert(problem constants are what they should) */
 
 #include <IpTNLP.hpp>
 
 #include "nonlinprogram.hpp"
 
-bool NonLinProgram::get_nlp_info(
+GraphMatching::GraphMatching(VertexSimilarityMatrix const *v_sim, EdgeSimilarityMatrix const *e_sim)
+  : nbnodes_src(v_sim->m.rows()), nbnodes_dst(v_sim->m.cols()),
+    vertex_similarity(v_sim), edge_similarity(e_sim)
+{
+}
+
+bool GraphMatching::get_nlp_info(
   Ipopt::Index&          n,
   Ipopt::Index&          m,
   Ipopt::Index&          nnz_jac_g,
@@ -22,7 +28,7 @@ bool NonLinProgram::get_nlp_info(
   return true;
 }
 
-bool NonLinProgram::get_bounds_info(
+bool GraphMatching::get_bounds_info(
   Ipopt::Index   n,
   Ipopt::Number* x_l,
   Ipopt::Number* x_u,
@@ -47,7 +53,7 @@ bool NonLinProgram::get_bounds_info(
   return true;
 }
 
-bool NonLinProgram::get_starting_point(
+bool GraphMatching::get_starting_point(
   Ipopt::Index   n,
   bool    init_x,
   Ipopt::Number* x,
@@ -77,7 +83,7 @@ bool NonLinProgram::get_starting_point(
   return true;
 }
 
-bool NonLinProgram::eval_f(
+bool GraphMatching::eval_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,
@@ -90,7 +96,7 @@ bool NonLinProgram::eval_f(
   return (true);
 }
 
-bool NonLinProgram::eval_grad_f(
+bool GraphMatching::eval_grad_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,
@@ -106,7 +112,7 @@ bool NonLinProgram::eval_grad_f(
   return true;
 }
 
-bool NonLinProgram::eval_g(
+bool GraphMatching::eval_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,      // unused parameter
@@ -122,7 +128,7 @@ bool NonLinProgram::eval_g(
   return true;
 }
 
-bool NonLinProgram::eval_jac_g(
+bool GraphMatching::eval_jac_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,     // unused parameter
@@ -180,7 +186,7 @@ bool NonLinProgram::eval_jac_g(
   return (true);
 }
 
-bool NonLinProgram::eval_h(
+bool GraphMatching::eval_h(
    Ipopt::Index         n,
    const Ipopt::Number* x,
    bool                 new_x,      // unused parameter
@@ -262,7 +268,7 @@ bool NonLinProgram::eval_h(
   return true;
 }
 
-void NonLinProgram::finalize_solution(
+void GraphMatching::finalize_solution(
     Ipopt::SolverReturn               status,
     Ipopt::Index                      n,
     const Ipopt::Number*              x,

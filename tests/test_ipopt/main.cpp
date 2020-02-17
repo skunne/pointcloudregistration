@@ -8,7 +8,7 @@
 
 int main(void)
 {
-  Ipopt::SmartPtr<Ipopt::TNLP> problem = new NonLinProgram();
+  Ipopt::SmartPtr<Ipopt::TNLP> problem = new GraphMatching();
 
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
   app->Options()->SetNumericValue("tol", 1e-7);

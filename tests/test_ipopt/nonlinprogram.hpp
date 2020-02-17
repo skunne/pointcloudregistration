@@ -1,11 +1,23 @@
 #ifndef __DEF_MAIN_HPP__
 # define __DEF_MAIN_HPP__
 
-class NonLinProgram : public Ipopt::TNLP
+#include "cpr_typedef.h"
+#include "cpr_matrices.h"
+
+class GraphMatching : public Ipopt::TNLP
 {
 private:
-  
+  std::size_t nbnodes_src;
+  std::size_t nbnodes_dst;
+  //MatrixInt adjacency_matrix_src;
+  //MatrixInt adjacency_matrix_dst;
+  VertexSimilarityMatrix const *vertex_similarity;
+  EdgeSimilarityMatrix const *edge_similarity;
+  //MatrixDouble quadratic_objective_matrix;
+
 public:
+  GraphMatching(VertexSimilarityMatrix const *v_sim, EdgeSimilarityMatrix const *e_sim);
+
   virtual bool get_nlp_info(
     Ipopt::Index&          n,
     Ipopt::Index&          m,
