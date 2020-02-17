@@ -1,22 +1,26 @@
 #ifndef __DEF_MAIN_HPP__
 # define __DEF_MAIN_HPP__
 
-#include "cpr_typedef.h"
-#include "cpr_matrices.h"
+#include <map>
+#include <Eigen/Core>
 
 class GraphMatching : public Ipopt::TNLP
 {
 private:
   std::size_t nbnodes_src;
   std::size_t nbnodes_dst;
-  //MatrixInt adjacency_matrix_src;
-  //MatrixInt adjacency_matrix_dst;
-  VertexSimilarityMatrix const *vertex_similarity;
-  EdgeSimilarityMatrix const *edge_similarity;
-  //MatrixDouble quadratic_objective_matrix;
+  Eigen::MatrixXd const *vertex_similarity;
+  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *sourceEdgeIndex;
+  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *destEdgeIndex;
+  Eigen::MatrixXd const *edge_similarity;
 
 public:
-  GraphMatching(VertexSimilarityMatrix const *v_sim, EdgeSimilarityMatrix const *e_sim);
+  GraphMatching(
+    Eigen::MatrixXd const *v_sim,
+    Eigen::MatrixXd const *e_sim,
+    std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *srcEdgeIndex,
+    std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *dstEdgeIndex
+  );
 
   virtual bool get_nlp_info(
     Ipopt::Index&          n,

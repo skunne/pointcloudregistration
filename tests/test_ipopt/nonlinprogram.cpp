@@ -1,13 +1,22 @@
 #include <iostream>     /* output for GraphMatching::finalize_solution() */
 #include <cassert>      /* assert(problem constants are what they should) */
+#include <map>
+
+#include <Eigen/Core>
 
 #include <IpTNLP.hpp>
 
 #include "nonlinprogram.hpp"
 
-GraphMatching::GraphMatching(VertexSimilarityMatrix const *v_sim, EdgeSimilarityMatrix const *e_sim)
-  : nbnodes_src(v_sim->m.rows()), nbnodes_dst(v_sim->m.cols()),
-    vertex_similarity(v_sim), edge_similarity(e_sim)
+GraphMatching::GraphMatching(
+  Eigen::MatrixXd const *v_sim,
+  Eigen::MatrixXd const *e_sim,
+  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *srcEdgeIndex,
+  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *dstEdgeIndex)
+  : nbnodes_src(v_sim->rows()), nbnodes_dst(v_sim->cols()),
+    vertex_similarity(v_sim),
+    sourceEdgeIndex(srcEdgeIndex), destEdgeIndex(dstEdgeIndex),
+    edge_similarity(e_sim)
 {
 }
 
