@@ -184,31 +184,35 @@ bool GraphMatching::eval_jac_g(
 )
 {
   (void) new_x;   // don't use this parameter
-  assert(n==4);
-  assert(m==2);
-  assert(nele_jac==8);
+  assert(n==nbnodes_src * nbnodes_dst);
+  assert(m==nbnodes_src + nbnodes_dst);
+  assert(nele_jac==2*n);
+  (void) x;       // linear constraints => constant jacobian => x useless
+
   if (values != NULL)
   {
-    values[0] = x[1] * x[2] * x[3];
-    values[1] = x[0] * x[2] * x[3];
-    values[2] = x[0] * x[1] * x[3];
-    values[3] = x[0] * x[1] * x[2];
-
-    values[4] = x[0] + x[0];
-    values[5] = x[1] + x[1];
-    values[6] = x[2] + x[2];
-    values[7] = x[3] + x[3];
+    for (Ipopt::Index j = 0; j < nele_jac; ++j)
+      values[j] = 1.0;
   }
   else
   {
-    Ipopt::Index k = 0;
-    for (Ipopt::Index i = 0; i < m; ++i)
+    Ipopt::Index j = 0;
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
     {
-      for (Ipopt::Index j = 0; j < n; ++j)
+      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
       {
-        iRow[k] = i;
-        jCol[k] = j;
-        ++k;
+        iRow[j] = i_src;
+        jCol[j] = i_src * nbnodes_dst + i_dst;
+        ++j;
+      }
+    }
+    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+    {
+      for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+      {
+        iRow[j] = nbnodes_src + i_dst;
+        jCol[j] = i_src * nbnodes_dst + i_dst;
+        ++j;
       }
     }
   }
