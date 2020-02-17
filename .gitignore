@@ -1,19 +1,40 @@
+
+# ignore cmake generated files
+
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
+
+# ignore Makefiles only if they are generated with cmake
+
+Makefile
+!tests/maketests/Makefile
+!tests/ransac/Makefile
+!tests/ransac/standalone_ransac_test/Makefile
+
+# ignore all c/cpp compilation objects
+
+*.o
+
+# ignore some pointclouds
 
 pointclouds/Armadillo.ply
 pointclouds/dragon_vrip_res2.ply
 pointclouds/untracked/
 
-Makefile
-!tests/ransac/Makefile
-!tests/ransac/standalone_ransac_test/Makefile
+# ignore all output files: matrices, ESF descriptors, etc
 
 output/
+tests/maketests/matched_pointclouds/*.csv
+tests/maketests/average_distances.txt
+tests/maketests/cli_tools/
+tests/maketests/transforms/
+tests/ransac/out*
+tests/ransac/standalone_ransac_test/*.csv
+
+# ignore all executables
 
 register_pointclouds
-
 tests/algo/run_tests
 tests/esf/test_esf
 tests/test_frankwolfe
@@ -21,12 +42,6 @@ tests/qp/test_qp
 tests/ransac/apply_ransac
 tests/ransac/standalone_ransac_test/a.out
 
+# ignore small learning experiments
+
 tests/smalltests/
-
-tests/maketests/matched_pointclouds/*.csv
-tests/maketests/average_distances.txt
-tests/maketests/cli_tools/
-tests/maketests/transforms/
-
-tests/ransac/standalone_ransac_test/cpr_randomsampleconsensus.o
-tests/ransac/main_test.o

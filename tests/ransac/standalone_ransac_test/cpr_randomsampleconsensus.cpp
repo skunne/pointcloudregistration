@@ -206,7 +206,7 @@ main(int argc, char** argv)
   // copy all inliers of the model computed to another PointCloud
   pcl::copyPointCloud (*cloud_model, inliers, *final_model);
   pcl::copyPointCloud (*cloud_data, inliers, *final_data);
-  std::cout << "Writing resulting point cloud to file final_data.csv and final_model..." << std::endl;
+  std::cout << "Writing resulting point cloud to file final_data.csv and final_model." << std::endl;
   test_writeCSVPointcloud("final_data.csv", cloud_data, inliers);
   test_writeCSVPointcloud("final_model.csv", cloud_model, inliers);
 
