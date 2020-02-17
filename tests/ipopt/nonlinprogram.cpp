@@ -11,8 +11,8 @@
 GraphMatching::GraphMatching(
   Eigen::MatrixXd const *v_sim,
   Eigen::MatrixXd const *e_sim,
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *srcEdgeIndex,
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *dstEdgeIndex)
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *srcEdgeIndex,
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *dstEdgeIndex)
   : nbnodes_src(v_sim->rows()), nbnodes_dst(v_sim->cols()),
     vertex_similarity(v_sim),
     sourceEdgeIndex(srcEdgeIndex), destEdgeIndex(dstEdgeIndex),
@@ -28,9 +28,9 @@ bool GraphMatching::get_nlp_info(
   Ipopt::TNLP::IndexStyleEnum& index_style
 )
 {
-  n = 4;
-  m = 2;
-  nnz_jac_g = 8;
+  n = nbnodes_src * nbnodes_dst;  // assignment: each pair (i_src, i_dst) should get 0 or 1
+  m = nbnodes_src + nbnodes_dst;  // stochasticity: each row and each col sums to at most 1
+  nnz_jac_g = 2 * n;
   nnz_h_lag = 10;
   index_style = Ipopt::TNLP::C_STYLE;
 
@@ -46,19 +46,19 @@ bool GraphMatching::get_bounds_info(
   Ipopt::Number* g_u
 )
 {
-  assert(n==4);
-  assert(m==2);
-  // forall xi, 1 <= xi <= 5
+  assert(n==nbnodes_src * nbnodes_dst);
+  assert(m==nbnodes_src + nbnodes_dst);
+  /* forall xi, 0 <= xi <= 1 */
   for (Ipopt::Index i = 0; i < n; ++i)
-    x_l[i] = 1.0;
+    x_l[i] = 0.0;
   for (Ipopt::Index i = 0; i < n; ++i)
-    x_u[i] = 5.0;
-  // g0(x) >= 25
-  g_l[0] = 25.0;
-  g_u[0] = 2e19;  // +infinity (Ipopt::nlp_upperbound_inf ? Ipopt::ipopt_inf ?)
-  // g1(x) == 40
-  g_l[1] = g_u[1] = 40.0;
-
+    x_u[i] = 1.0;
+  /* 0 <= sum on each row and each line <= 1 */
+  for (Ipopt::Index j = 0; j < m; ++j)
+  {
+    g_l[j] = 0.0;
+    g_u[j] = 1.0;
+  }
   return true;
 }
 
@@ -74,17 +74,17 @@ bool GraphMatching::get_starting_point(
   Ipopt::Number* lambda
 )
 {
-  assert(n==4);
+  assert(n==nbnodes_src * nbnodes_dst);
   (void) m;
   assert(init_x == true);
   assert(init_z == false);
   assert(init_lambda == false);
   if (init_x)
   {
-    x[0] = 1.0;
-    x[1] = 5.0;
-    x[2] = 5.0;
-    x[3] = 1.0;
+    int min_dim = nbnodes_src < nbnodes_dst ? nbnodes_src : nbnodes_dst;
+    x[0] = 1.0 / (Ipopt::Number) min_dim;
+    for (Ipopt::Index i = 1; i < n; ++i)
+      x[i] = x[0];
   }
   (void) z_L;   // ignore initial values for bound multipliers for absent bounds (xLi=−inf)
   (void) z_U;   // ignore initial values for bound multipliers for absent bounds (xUi=+inf)
@@ -92,6 +92,7 @@ bool GraphMatching::get_starting_point(
   return true;
 }
 
+/* compute xDx */
 bool GraphMatching::eval_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
@@ -100,8 +101,21 @@ bool GraphMatching::eval_f(
 )
 {
   (void) new_x;
-  assert(n==4);
-  obj_value = x[0] * x[3] * (x[0] + x[1] + x[2]) + x[2];
+  assert(n==nbnodes_src * nbnodes_dst);
+
+  obj_value = 0;
+  for (auto const &edge_src : *sourceEdgeIndex)
+  {
+    for (auto const &edge_dst : *destEdgeIndex)
+    {
+      Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
+      Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
+      obj_value += x[kx] * x[ky] * (*edge_similarity)(edge_src.second, edge_dst.second);
+    }
+  }
+  for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      obj_value += x[i_src * nbnodes_dst + i_dst] * x[i_src * nbnodes_dst + i_dst] * (*vertex_similarity)(i_src, i_dst);
   return (true);
 }
 
@@ -113,11 +127,22 @@ bool GraphMatching::eval_grad_f(
 )
 {
   (void)  new_x;
-  assert(n==4);
-  grad_f[0] = x[3] * ((x[0] + x[1] + x[2]) + x[0]);
-  grad_f[1] = x[0] * x[3];
-  grad_f[2] = grad_f[1] + 1.0;
-  grad_f[3] = x[0] * (x[0] + x[1] + x[2]);
+  assert(n==nbnodes_src * nbnodes_dst);
+
+  for (Ipopt::Index k = 0; k < n; ++k)
+    grad_f[k] = 0;
+  for (auto const &edge_src : *sourceEdgeIndex)
+  {
+    for (auto const &edge_dst : *destEdgeIndex)
+    {
+      Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
+      Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
+      grad_f[ky] += 2.0 * x[kx] * (*edge_similarity)(edge_src.second, edge_dst.second);
+    }
+  }
+  for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      grad_f[i_src * nbnodes_dst + i_dst] += x[i_src * nbnodes_dst + i_dst] * (*vertex_similarity)(i_src, i_dst);
   return true;
 }
 
@@ -130,10 +155,20 @@ bool GraphMatching::eval_g(
 )
 {
   (void) new_x;   // don't use this parameter
-  assert(n==4);
-  assert(m==2);
-  g[0] = x[0] * x[1] * x[2] * x[3];
-  g[1] = x[0] * x[0] + x[1] * x[1] + x[2] * x[2] + x[3] * x[3];
+  assert(n==nbnodes_src * nbnodes_dst);
+  assert(m==nbnodes_src + nbnodes_dst);
+  for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+  {
+    g[i_src] = 0;
+    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      g[i_src] += x[i_src * nbnodes_dst + i_dst];
+  }
+  for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+  {
+    g[nbnodes_src + i_dst] = 0;
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+      g[nbnodes_src + i_dst] += x[i_src * nbnodes_dst + i_dst];
+  }
   return true;
 }
 

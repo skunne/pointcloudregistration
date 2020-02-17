@@ -1,0 +1,4 @@
+1. Test ipopt with loops for eval_f() and eval_grad_f()
+2. Cache the pair (x,xD) tu reuse xD in eval_f() and eval_grad_f()
+3. Remove the loops for the calculation of xD and replace with an implementation of D as a sparse matrix
+

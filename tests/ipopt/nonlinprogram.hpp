@@ -7,19 +7,19 @@
 class GraphMatching : public Ipopt::TNLP
 {
 private:
-  std::size_t nbnodes_src;
-  std::size_t nbnodes_dst;
+  Ipopt::Index nbnodes_src;
+  Ipopt::Index nbnodes_dst;
   Eigen::MatrixXd const *vertex_similarity;
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *sourceEdgeIndex;
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *destEdgeIndex;
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *sourceEdgeIndex;
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *destEdgeIndex;
   Eigen::MatrixXd const *edge_similarity;
 
 public:
   GraphMatching(
     Eigen::MatrixXd const *v_sim,
     Eigen::MatrixXd const *e_sim,
-    std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *srcEdgeIndex,
-    std::map<std::pair<std::size_t, std::size_t>, unsigned int> const *dstEdgeIndex
+    std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *srcEdgeIndex,
+    std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *dstEdgeIndex
   );
 
   virtual bool get_nlp_info(

@@ -9,11 +9,11 @@
 class TwoGraphs
 {
 public:
-  std::size_t nbnodes_src;
-  std::size_t nbnodes_dst;
+  Ipopt::Index nbnodes_src;
+  Ipopt::Index nbnodes_dst;
   Eigen::MatrixXd vertex_similarity;
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> sourceEdgeIndex;
-  std::map<std::pair<std::size_t, std::size_t>, unsigned int> destEdgeIndex;
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> sourceEdgeIndex;
+  std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> destEdgeIndex;
   Eigen::MatrixXd edge_similarity;
 
 public:
@@ -85,7 +85,12 @@ TwoGraphs::TwoGraphs()
 int main(void)
 {
   TwoGraphs two_graphs;
-  Ipopt::SmartPtr<Ipopt::TNLP> problem = new GraphMatching(&two_graphs.vertex_similarity, &two_graphs.edge_similarity, &two_graphs.sourceEdgeIndex, &two_graphs.destEdgeIndex);
+  Ipopt::SmartPtr<Ipopt::TNLP> problem = new GraphMatching(
+    &two_graphs.vertex_similarity,
+    &two_graphs.edge_similarity,
+    &two_graphs.sourceEdgeIndex,
+    &two_graphs.destEdgeIndex
+  );
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
   app->Options()->SetNumericValue("tol", 1e-7);
   app->Options()->SetStringValue("mu_strategy", "adaptive");
