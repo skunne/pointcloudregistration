@@ -95,7 +95,7 @@ int main(void)
   app->Options()->SetNumericValue("tol", 1e-7);
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   app->Options()->SetStringValue("output_file", "ipopt.out");
-  app->Options()->SetIntegerValue("print_level", 0);    // verbosity
+  app->Options()->SetIntegerValue("print_level", 9);    // verbosity
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();

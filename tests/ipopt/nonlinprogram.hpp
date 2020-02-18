@@ -13,7 +13,15 @@ private:
   std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *sourceEdgeIndex;
   std::map<std::pair<Ipopt::Index, Ipopt::Index>, Ipopt::Index> const *destEdgeIndex;
   Eigen::MatrixXd const *edge_similarity;
+  std::vector<Ipopt::Number> x_cached;
+  std::vector<Ipopt::Number> xD_cached;
+  std::vector<Ipopt::Number> hessian_values;
+  std::vector<Ipopt::Index> hessian_iRow;
+  std::vector<Ipopt::Index> hessian_jCol;
 
+protected:
+  void buildHessian(void);
+  
 public:
   GraphMatching(
     Eigen::MatrixXd const *v_sim,

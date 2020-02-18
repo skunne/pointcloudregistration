@@ -18,6 +18,12 @@ GraphMatching::GraphMatching(
     sourceEdgeIndex(srcEdgeIndex), destEdgeIndex(dstEdgeIndex),
     edge_similarity(e_sim)
 {
+  buildHessian();
+}
+
+GraphMatching::buildHessian(void)
+{
+  
 }
 
 bool GraphMatching::get_nlp_info(
@@ -31,7 +37,9 @@ bool GraphMatching::get_nlp_info(
   n = nbnodes_src * nbnodes_dst;  // assignment: each pair (i_src, i_dst) should get 0 or 1
   m = nbnodes_src + nbnodes_dst;  // stochasticity: each row and each col sums to at most 1
   nnz_jac_g = 2 * n;
-  nnz_h_lag = 10;
+  nnz_h_lag =
+    nbnodes_src * nbnodes_dst +
+    sourceEdgeIndex->size() * destEdgeIndex->size() / 2;    // TODO is this correct?
   index_style = Ipopt::TNLP::C_STYLE;
 
   return true;
@@ -119,6 +127,7 @@ bool GraphMatching::eval_f(
   return (true);
 }
 
+/* compute jac(xDx) = 2xD */
 bool GraphMatching::eval_grad_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
@@ -146,6 +155,7 @@ bool GraphMatching::eval_grad_f(
   return true;
 }
 
+/* compute sum(each row of x) and sum(each col of x) */
 bool GraphMatching::eval_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
@@ -172,6 +182,7 @@ bool GraphMatching::eval_g(
   return true;
 }
 
+/* linear constraints => constant jacobian */
 bool GraphMatching::eval_jac_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
@@ -216,32 +227,18 @@ bool GraphMatching::eval_jac_g(
       }
     }
   }
-  // if (iRow != NULL)
-  // {
-  //   for (Ipopt::Index i = 0; i < n; ++i)
-  //     iRow[i] = 0;
-  //   for (Ipopt::Index i = n; i < 2 * n; ++i)
-  //     iRow[i] = 1;
-  // }
-  // if (jCol != NULL)
-  // {
-  //   for (Ipopt::Index i = 0; i < n; ++i)
-  //   {
-  //     jCol[i] = i;
-  //     jCol[i+n] = i;
-  //   }
-  // }
   return (true);
 }
 
+/* compute sigma hessian(objective) + sum_(constraint j) lambda_j hessian(constraint j) = 2 sigma D + 0 */
 bool GraphMatching::eval_h(
    Ipopt::Index         n,
    const Ipopt::Number* x,
    bool                 new_x,      // unused parameter
    Ipopt::Number        obj_factor,
    Ipopt::Index         m,
-   const Ipopt::Number* lambda,     // unused parameter
-   bool          new_lambda,
+   const Ipopt::Number* lambda,
+   bool          new_lambda,     // unused parameter
    Ipopt::Index         nele_hess,
    Ipopt::Index*        iRow,
    Ipopt::Index*        jCol,
@@ -250,69 +247,73 @@ bool GraphMatching::eval_h(
 {
   (void) new_x;        // don't use this parameter
   (void) new_lambda;   // don't use this parameter
-  assert(n==4);
-  assert(m==2);
+  assert(n==nbnodes_src * nbnodes_dst);
+  assert(m==nbnodes_src + nbnodes_dst);
+  (void) x;  // quadratic obj + linear constraints => constant hessian => x useless
+  (void) lambda; // linear constraints => constraint terms zero in hessian => lambda useless
+  Ipopt::Index j;
   if (values != NULL)
   {
-    // objective terms
-    values[0] = 0;
-
-    values[1] = obj_factor * x[2] * x[3];
-    values[2] = 0;
-
-    values[3] = obj_factor * x[1] * x[3];
-    values[4] = obj_factor * x[0] * x[3];
-    values[5] = 0;
-
-    values[6] = obj_factor * x[1] * x[2];
-    values[7] = obj_factor * x[0] * x[2];
-    values[8] = obj_factor * x[0] * x[1];
-    values[9] = 0;
-
-    // constraint g0 terms
-    values[0] += 0;
-
-    values[1] += lambda[0] * x[2] * x[3];
-    values[2] += 0;
-
-    values[3] += lambda[0] * x[1] * x[3];
-    values[4] += lambda[0] * x[0] * x[3];
-    values[5] += 0;
-
-    values[6] += lambda[0] * x[1] * x[2];
-    values[7] += lambda[0] * x[0] * x[2];
-    values[8] += lambda[0] * x[0] * x[1];
-    values[9] += 0;
-
-    // constraint g1 terms
-    values[0] += lambda[1] * 2.0;
-
-    values[1] += 0;
-    values[2] += lambda[1] * 2.0;
-
-    values[3] += 0;
-    values[4] += 0;
-    values[5] += lambda[1] * 2.0;
-
-    values[6] += 0;
-    values[7] += 0;
-    values[8] += 0;
-    values[9] += lambda[1] * 2.0;
+    /* give only lower triangular entries of 2D, which is symmetric */
+    j = 0;
+    /* strictly under diagonal */
+    for (auto const &edge_src : *sourceEdgeIndex)
+    {
+      for (auto const &edge_dst : *destEdgeIndex)
+      {
+        Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
+        Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
+        if (kx > ky) // TODO find smarter way to test (kx > ky)
+        {
+          values[j] = 2.0 * obj_factor * (*edge_similarity)(edge_src.second, edge_dst.second);
+          ++j;
+        }
+      }
+    }
+    /* diagonal */
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+    {
+      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      {
+        values[j] = 2.0 * obj_factor * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst);
+        ++j;
+      }
+    }
   }
   else
   {
-    Ipopt::Index k = 0;
-    for (Ipopt::Index i = 0; i < 4; ++i)
+    /* give only lower triangular entries of 2D, which is symmetric */
+    j = 0;
+    /* strictly under diagonal */
+    for (auto const &edge_src : *sourceEdgeIndex)
     {
-      for (Ipopt::Index j = 0; j <= i; ++j)
+      for (auto const &edge_dst : *destEdgeIndex)
       {
-        iRow[k] = i;
-        jCol[k] = j;
-        ++k;
+        Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
+        Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
+        if (kx > ky)  // TODO find smarter way to test kx > ky
+        {
+          iRow[j] = kx;
+          jCol[j] = ky;
+          //values[j] = 2.0 * obj_factor * (*edge_similarity)(edge_src.second, edge_dst.second);
+          ++j;
+        }
       }
     }
-    assert(k==nele_hess);
+    /* diagonal */
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+    {
+      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      {
+        iRow[j] = i_src * nbnodes_dst + i_dst;
+        jCol[j] = iRow[j];
+        //values[j] = 2.0 * obj_factor * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst);
+        ++j;
+      }
+    }
   }
+  std::cout << "HESSIAN: j=" << j << "    nele_hess=" << nele_hess << std::endl;
+  assert(j==nele_hess);
   return true;
 }
 
