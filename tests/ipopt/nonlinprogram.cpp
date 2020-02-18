@@ -18,11 +18,14 @@ GraphMatching::GraphMatching(
     sourceEdgeIndex(srcEdgeIndex), destEdgeIndex(dstEdgeIndex),
     edge_similarity(e_sim)
 {
+  //std::cout << "    METHOD GRAPHMATCHING::GRAPHMATCHING()" << std::endl;
   buildHessian();
 }
 
 void GraphMatching::buildHessian(void)
 {
+  //std::cout << "    METHOD GRAPHMATCHING::BUILDHESSIAN()" << std::endl;
+  std::cout << "      dim of e_sim: (" << edge_similarity->rows()<<','<<edge_similarity->cols() << ")" << std::endl;
   /* give only lower triangular entries of 2D, which is symmetric */
 
   /* strictly lower triangular */
@@ -36,11 +39,13 @@ void GraphMatching::buildHessian(void)
       {
         hessian_iRow.push_back(kx);
         hessian_jCol.push_back(ky);
+        std::cout << "        ("<< edge_src.second << ',' << edge_dst.second <<")" << std::endl;
         hessian_values.push_back(2.0 * (*edge_similarity)(edge_src.second, edge_dst.second));
       }
     }
   }
 
+  std::cout << "      dim of v_sim: (" << vertex_similarity->rows()<<','<<vertex_similarity->cols() << ")" << std::endl;
   /* diagonal */
   for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
   {
@@ -48,7 +53,8 @@ void GraphMatching::buildHessian(void)
     {
       hessian_iRow.push_back(i_src * nbnodes_dst + i_dst);
       hessian_jCol.push_back(hessian_iRow.back());
-      hessian_values.push_back(2.0 * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst));
+      std::cout << "        ("<< i_src << ',' << i_dst <<")" << std::endl;
+      hessian_values.push_back(2.0 * (*vertex_similarity)(i_src,i_dst));
     }
   }
 }
@@ -61,6 +67,7 @@ bool GraphMatching::get_nlp_info(
   Ipopt::TNLP::IndexStyleEnum& index_style
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::GET_NLP_INFO()" << std::endl;
   n = nbnodes_src * nbnodes_dst;  // assignment: each pair (i_src, i_dst) should get 0 or 1
   m = nbnodes_src + nbnodes_dst;  // stochasticity: each row and each col sums to at most 1
   nnz_jac_g = 2 * n;
@@ -80,6 +87,7 @@ bool GraphMatching::get_bounds_info(
   Ipopt::Number* g_u
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::GET_BOUNDS_INFO()" << std::endl;
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
   /* forall xi, 0 <= xi <= 1 */
@@ -108,6 +116,7 @@ bool GraphMatching::get_starting_point(
   Ipopt::Number* lambda
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::GET_STARTING_POINT()" << std::endl;
   assert(n==nbnodes_src * nbnodes_dst);
   (void) m;
   assert(init_x == true);
@@ -134,6 +143,7 @@ bool GraphMatching::eval_f(
   Ipopt::Number&       obj_value
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::EVAL_F()" << std::endl;
   (void) new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
@@ -161,6 +171,7 @@ bool GraphMatching::eval_grad_f(
   Ipopt::Number*       grad_f
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::EVAL_GRAD_F()" << std::endl;
   (void)  new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
@@ -190,6 +201,7 @@ bool GraphMatching::eval_g(
   Ipopt::Number*       g
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::EVAL_G()" << std::endl;
   (void) new_x;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
@@ -220,6 +232,7 @@ bool GraphMatching::eval_jac_g(
   Ipopt::Number*       values
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::EVAL_JAC_G()" << std::endl;
   (void) new_x;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
@@ -271,6 +284,7 @@ bool GraphMatching::eval_h(
    Ipopt::Number*       values
 )
 {
+  //std::cout << "    METHOD GRAPHMATCHING::EVAL_H()" << std::endl;
   (void) new_x;        // don't use this parameter
   (void) new_lambda;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
@@ -308,6 +322,7 @@ void GraphMatching::finalize_solution(
     Ipopt::IpoptCalculatedQuantities* ip_cq
   )
   {
+    //std::cout << "    METHOD GRAPHMATCHING::FINALIZE_SOLUTION()" << std::endl;
     (void) status;
     (void) lambda;
     (void) ip_data;

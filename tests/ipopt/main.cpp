@@ -84,18 +84,24 @@ TwoGraphs::TwoGraphs()
 
 int main(void)
 {
+  //std::cout << "    FUNCTION MAIN()............0" << std::endl;
   TwoGraphs two_graphs;
+  //std::cout << "    FUNCTION MAIN()...........10" << std::endl;
   Ipopt::SmartPtr<Ipopt::TNLP> problem = new GraphMatching(
     &two_graphs.vertex_similarity,
     &two_graphs.edge_similarity,
     &two_graphs.sourceEdgeIndex,
     &two_graphs.destEdgeIndex
   );
+  //std::cout << "    FUNCTION MAIN()...........20" << std::endl;
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
-  app->Options()->SetNumericValue("tol", 1e-7);
+  app->Options()->SetNumericValue("tol", 1e-15);
+  app->Options()->SetNumericValue("obj_scaling_factor", -1.0); // MAXIMIZE
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   app->Options()->SetStringValue("output_file", "ipopt.out");
-  app->Options()->SetIntegerValue("print_level", 9);    // verbosity
+  app->Options()->SetIntegerValue("print_level", 3);    // verbosity
+
+  //std::cout << "    FUNCTION MAIN()...........30" << std::endl;
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();
@@ -117,5 +123,8 @@ int main(void)
   // As the Ipopt::SmartPtrs go out of scope, the reference count
   // will be decremented and the objects will automatically
   // be deleted.
+
+  //std::cout << "    FUNCTION MAIN().........1000" << std::endl;
+
   return (int) status;
 }
