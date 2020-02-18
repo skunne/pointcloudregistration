@@ -21,9 +21,36 @@ GraphMatching::GraphMatching(
   buildHessian();
 }
 
-GraphMatching::buildHessian(void)
+void GraphMatching::buildHessian(void)
 {
-  
+  /* give only lower triangular entries of 2D, which is symmetric */
+
+  /* strictly lower triangular */
+  for (auto const &edge_src : *sourceEdgeIndex)
+  {
+    for (auto const &edge_dst : *destEdgeIndex)
+    {
+      Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
+      Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
+      if (kx > ky)  // TODO find smarter way to test kx > ky
+      {
+        hessian_iRow.push_back(kx);
+        hessian_jCol.push_back(ky);
+        hessian_values.push_back(2.0 * (*edge_similarity)(edge_src.second, edge_dst.second));
+      }
+    }
+  }
+
+  /* diagonal */
+  for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+  {
+    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+    {
+      hessian_iRow.push_back(i_src * nbnodes_dst + i_dst);
+      hessian_jCol.push_back(hessian_iRow.back());
+      hessian_values.push_back(2.0 * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst));
+    }
+  }
 }
 
 bool GraphMatching::get_nlp_info(
@@ -37,9 +64,8 @@ bool GraphMatching::get_nlp_info(
   n = nbnodes_src * nbnodes_dst;  // assignment: each pair (i_src, i_dst) should get 0 or 1
   m = nbnodes_src + nbnodes_dst;  // stochasticity: each row and each col sums to at most 1
   nnz_jac_g = 2 * n;
-  nnz_h_lag =
-    nbnodes_src * nbnodes_dst +
-    sourceEdgeIndex->size() * destEdgeIndex->size() / 2;    // TODO is this correct?
+  assert(hessian_values.size() == hessian_iRow.size() && hessian_values.size() == hessian_jCol.size());
+  nnz_h_lag = hessian_values.size();
   index_style = Ipopt::TNLP::C_STYLE;
 
   return true;
@@ -251,69 +277,20 @@ bool GraphMatching::eval_h(
   assert(m==nbnodes_src + nbnodes_dst);
   (void) x;  // quadratic obj + linear constraints => constant hessian => x useless
   (void) lambda; // linear constraints => constraint terms zero in hessian => lambda useless
-  Ipopt::Index j;
+  assert(nele_hess == hessian_values.size());
   if (values != NULL)
   {
-    /* give only lower triangular entries of 2D, which is symmetric */
-    j = 0;
-    /* strictly under diagonal */
-    for (auto const &edge_src : *sourceEdgeIndex)
-    {
-      for (auto const &edge_dst : *destEdgeIndex)
-      {
-        Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
-        Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
-        if (kx > ky) // TODO find smarter way to test (kx > ky)
-        {
-          values[j] = 2.0 * obj_factor * (*edge_similarity)(edge_src.second, edge_dst.second);
-          ++j;
-        }
-      }
-    }
-    /* diagonal */
-    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
-    {
-      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
-      {
-        values[j] = 2.0 * obj_factor * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst);
-        ++j;
-      }
-    }
+    for (std::size_t j = 0; j < hessian_values.size(); ++j)
+      values[j] = obj_factor * hessian_values[j];
   }
   else
   {
-    /* give only lower triangular entries of 2D, which is symmetric */
-    j = 0;
-    /* strictly under diagonal */
-    for (auto const &edge_src : *sourceEdgeIndex)
+    for (std::size_t j = 0; j < hessian_iRow.size(); ++j)
     {
-      for (auto const &edge_dst : *destEdgeIndex)
-      {
-        Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
-        Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
-        if (kx > ky)  // TODO find smarter way to test kx > ky
-        {
-          iRow[j] = kx;
-          jCol[j] = ky;
-          //values[j] = 2.0 * obj_factor * (*edge_similarity)(edge_src.second, edge_dst.second);
-          ++j;
-        }
-      }
-    }
-    /* diagonal */
-    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
-    {
-      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
-      {
-        iRow[j] = i_src * nbnodes_dst + i_dst;
-        jCol[j] = iRow[j];
-        //values[j] = 2.0 * obj_factor * (*vertex_similarity)(i_src * nbnodes_dst + i_dst,i_src * nbnodes_dst + i_dst);
-        ++j;
-      }
+      iRow[j] = hessian_iRow[j];
+      jCol[j] = hessian_jCol[j];
     }
   }
-  std::cout << "HESSIAN: j=" << j << "    nele_hess=" << nele_hess << std::endl;
-  assert(j==nele_hess);
   return true;
 }
 

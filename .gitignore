@@ -11,6 +11,7 @@ Makefile
 !tests/maketests/Makefile
 !tests/ransac/Makefile
 !tests/ransac/standalone_ransac_test/Makefile
+!tests/ipopt/Makefile
 
 # ignore all c/cpp compilation objects
 
