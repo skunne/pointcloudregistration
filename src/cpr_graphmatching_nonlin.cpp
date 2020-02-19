@@ -371,7 +371,7 @@ void GMNonlinProblem::finalize_solution(
 
 void GraphMatchingNonlin::run(void)
 {
-  Ipopt::SmartPtr<Ipopt::TNLP> problemPtr = problem;
+  Ipopt::SmartPtr<Ipopt::TNLP> problemSmartPtr = problem;
 
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
   app->Options()->SetNumericValue("tol", 1e-08);
@@ -388,7 +388,8 @@ void GraphMatchingNonlin::run(void)
      //return (int) status;
   }
   // Ask Ipopt to solve the problem
-  status = app->OptimizeTNLP(problemPtr);
+  status = app->OptimizeTNLP(problemSmartPtr);
+  matching = problem->matching;
   //status = app->OptimizeTNLP(this);
   if( status == Ipopt::Solve_Succeeded )
   {
@@ -399,5 +400,5 @@ void GraphMatchingNonlin::run(void)
      std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
   }
   // clone member problem if you want to save it
-  // Ipopt::SmartPtr<Ipopt::TNLP> will destroy problem here
+  // problemSmartPtr will destroy problem here
 }
