@@ -107,6 +107,7 @@ transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
 clean:
 	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
 	rm -f $(TRANSFORMDIR)/*_true.csv
+	rm -f source.adj dest.adj
 
 fclean: clean
 	rm -f matched_pointclouds/*.csv

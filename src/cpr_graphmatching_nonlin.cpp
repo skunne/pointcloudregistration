@@ -341,8 +341,7 @@ void GraphMatchingNonlin::finalize_solution(
   // here is where we would store the solution to variables, or write to a file, etc
   // so we could use the solution.
   // For this example, we write the solution to the console
-  std::cout << std::endl << std::endl << "Solution of the primal variables, x" << std::endl;
-  GraphMatching::matching.resize(nbnodes_src, nbnodes_dst);
+  matching.resize(nbnodes_src, nbnodes_dst);
   for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
   {
     for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
@@ -366,7 +365,7 @@ void GraphMatchingNonlin::run(void)
   Ipopt::SmartPtr<Ipopt::TNLP> problem = this;
 
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
-  app->Options()->SetNumericValue("tol", 1e-15);
+  app->Options()->SetNumericValue("tol", 1e-08);
   app->Options()->SetNumericValue("obj_scaling_factor", -1.0); // MAXIMIZE
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   app->Options()->SetStringValue("output_file", "ipopt.out");
@@ -389,6 +388,6 @@ void GraphMatchingNonlin::run(void)
   {
      std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
   }
-
+  problem = NULL;   // Ipopt::SmartPtr will attempt to free memory if nonnull
   //return (int) status;
 }

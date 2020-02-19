@@ -7,7 +7,8 @@
 #include "cpr_params.h"
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
-#include "cpr_graphmatching_frankwolfe.h"
+#include "cpr_graphmatching_frankwolfe.h" // if using FrankWolfe quadratic programming algorithm
+#include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
 
 #include "test_frankwolfe.h"
 
@@ -20,7 +21,7 @@ int test_printUsage(char const *cmd)
   return 1;
 }
 
-std::size_t test_getmatch(std::size_t i, MatrixDouble const &permutation_matrix)
+std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
 {
   int j;
   for (
@@ -32,7 +33,7 @@ std::size_t test_getmatch(std::size_t i, MatrixDouble const &permutation_matrix)
   return (j);
 }
 
-void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixDouble const &permutation_matrix, char const *filenamesrc, char const *filenamedst)
+void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, char const *filenamesrc, char const *filenamedst)
 {
   std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
   std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
@@ -95,19 +96,21 @@ int main(int argc, char ** argv)
     VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
     EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
-    int const n_source = ppc_source.getNbVertices();
-    int const n_dest = ppc_dest.getNbVertices();
+    //int const n_source = ppc_source.getNbVertices();
+    //int const n_dest = ppc_dest.getNbVertices();
 
-    MatrixDouble permutation_matrix(n_source, n_dest);
-    permutation_matrix.fill(1.0 / (n_source < n_dest ? n_dest : n_source));
-    GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
-    gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
+    //MatrixDouble permutation_matrix(n_source, n_dest);
+    //permutation_matrix.fill(1.0 / (n_source < n_dest ? n_dest : n_source));
+    //GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    //gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
+    GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    gm.run();
 
     std::stringstream srcoutfilename;
     srcoutfilename << "matched_" << argv[i] << "_src.csv";
     std::stringstream dstoutfilename;
     dstoutfilename << "matched_" << argv[i] << "_dst.csv";
-    test_writeresult(ppc_source, ppc_dest, permutation_matrix, srcoutfilename.str().c_str(), dstoutfilename.str().c_str());
+    test_writeresult(ppc_source, ppc_dest, gm.matching, srcoutfilename.str().c_str(), dstoutfilename.str().c_str());
     //results.push_back(???);
   }
 
