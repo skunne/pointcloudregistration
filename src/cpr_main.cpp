@@ -3,7 +3,8 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
-#include "cpr_graphmatching_frankwolfe.h"
+#include "cpr_graphmatching_frankwolfe.h" // if using Frank-Wolfe quadratic programming algorithm
+#include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -153,7 +154,8 @@ main (int argc, char ** argv)
   //while (!(viewer_source->wasStopped() && viewer_dest->wasStopped()))
   //  ;   // wait for user to close window before halting
 
-  GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+  //GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+  GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   int const ng = ppc_source.getNbVertices();
   int const nh = ppc_dest.getNbVertices();
@@ -166,7 +168,8 @@ main (int argc, char ** argv)
   //std::cout << "Initial graph-matching solution:" << std::endl;
   //std::cout << x << std::endl;
 
-  gm.frankWolfe(0.0, &x, &x);
+  //gm.frankWolfe(0.0, &x, &x);
+  gm.run();
 
   std::cout << "Final graph-matching solution:" << std::endl;
   std::cout << x << std::endl;
