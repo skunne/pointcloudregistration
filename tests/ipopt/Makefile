@@ -3,9 +3,9 @@ NAME=test_ipopt
 SRC=main.cpp nonlinprogram.cpp
 OBJ=$(SRC:.cpp=.o)
 CFLAGS=-Wall -Wextra
-INCLUDES=-isystem /usr/include/pcl-1.9/ -isystem /usr/include/eigen3/ -isystem /usr/include/vtk/ -isystem ~/ipopt/include/coin/
-LIBPATHS=-L/home/stephan/ipopt/lib
-LIBS=-lvtkCommonDataModel -lvtkCommonMath -lvtkCommonCore -lvtkRenderingCore -lpcl_common -lpcl_filters -lpcl_io -lpcl_search -lpcl_sample_consensus -lpcl_visualization -lipopt
+INCLUDES=-isystem /usr/include/eigen3/ -isystem ~/ipopt/include/coin/
+LIBPATHS=-L ~/ipopt/lib
+LIBS=-lipopt
 
 all: $(NAME)
 
