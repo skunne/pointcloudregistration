@@ -258,32 +258,32 @@ home/stephan/huang_registration/src/cpr_graphmatching.cpp.s:
 	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
 .PHONY : home/stephan/huang_registration/src/cpr_graphmatching.cpp.s
 
-home/stephan/huang_registration/src/cpr_graphmatching_path.o: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.o: home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.o
 
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.o
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.o
 
 # target to build an object file
-home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.o
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.o:
+	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.o
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.o
 
-home/stephan/huang_registration/src/cpr_graphmatching_path.i: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.i: home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.i
 
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.i
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.i
 
 # target to preprocess a source file
-home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.i
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.i:
+	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.i
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.i
 
-home/stephan/huang_registration/src/cpr_graphmatching_path.s: home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.s: home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.s
 
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.s
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.s
 
 # target to generate assembly for a file
-home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s:
-	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
-.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_path.cpp.s
+home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.s:
+	$(MAKE) -f CMakeFiles/test_frankwolfe.dir/build.make CMakeFiles/test_frankwolfe.dir/home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.s
+.PHONY : home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.cpp.s
 
 home/stephan/huang_registration/src/cpr_loadfiles.o: home/stephan/huang_registration/src/cpr_loadfiles.cpp.o
 
@@ -660,9 +660,9 @@ help:
 	@echo "... home/stephan/huang_registration/src/cpr_graphmatching.o"
 	@echo "... home/stephan/huang_registration/src/cpr_graphmatching.i"
 	@echo "... home/stephan/huang_registration/src/cpr_graphmatching.s"
-	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_path.o"
-	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_path.i"
-	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_path.s"
+	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.o"
+	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.i"
+	@echo "... home/stephan/huang_registration/src/cpr_graphmatching_frankwolfe.s"
 	@echo "... home/stephan/huang_registration/src/cpr_loadfiles.o"
 	@echo "... home/stephan/huang_registration/src/cpr_loadfiles.i"
 	@echo "... home/stephan/huang_registration/src/cpr_loadfiles.s"

@@ -2,7 +2,7 @@
 #include <random>     // geenrate random transpositions
 
 #include "cpr_processedpointcloud.h"
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 #include "cpr_loadfiles.h"  // print error message on open file
 
 #include "test_frankwolfe.h"
@@ -74,7 +74,7 @@ double testmetric_testonagraph(MatrixInt const &adj_m, VertexSimilarityMatrix co
   std::vector<double> x; // graph-matching permutation matrix
   Eigen::RowVectorXd tmp_row(width);     // helper row vector for swapping rows in x
 
-  GraphMatchingPath gm(&vsim.m, &esim, &adj_m, &adj_m);  // object that contains the metric
+  GraphMatchingFrankwolfe gm(&vsim.m, &esim, &adj_m, &adj_m);  // object that contains the metric
 
   identity_matrix.setIdentity();
   x.assign(identity_matrix.data(), identity_matrix.data() + width * width);

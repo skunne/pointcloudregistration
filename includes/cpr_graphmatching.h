@@ -39,7 +39,7 @@ protected:
 
 public:
   GraphMatching(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
-  virtual void run();
+  virtual void run(void);
   //unsigned int mappedVertex(unsigned int) const;
 };
 

@@ -24,7 +24,7 @@ public:
   std::map<std::pair<KeyT, KeyT>, unsigned int> sourceEdgeIndex;
   std::map<std::pair<KeyT, KeyT>, unsigned int> destEdgeIndex;
 
-  // matrix
+  // actual edge similarity matrix
   MatrixDouble m;
 
 public:

@@ -1,6 +1,6 @@
 
-#ifndef __DEF_GRAPHMATCHINGPATH_H__
-# define __DEF_GRAPHMATCHINGPATH_H__
+#ifndef __DEF_GRAPHMATCHING_FRANKWOLFE_H__
+# define __DEF_GRAPHMATCHING_FRANKWOLFE_H__
 
 //#include <sstream>
 #include <vector>
@@ -17,7 +17,7 @@ A graph matching algorithm based on Frank-Wolfe, inspired by Zaslavskiy and Huan
 /*
 ** cpr_graphmatching.cpp
 */
-class GraphMatchingPath : GraphMatching
+class GraphMatchingFrankwolfe : GraphMatching
 {
 private:
   //MatrixDouble const *vsim;    // vertex similarity matrix
@@ -62,8 +62,8 @@ protected:
 public:
   void frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start);
   double bilinear(std::vector<double> const &x, std::vector<double> const &y) const; // recompute xDy
-  GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
-  ~GraphMatchingPath();
+  GraphMatchingFrankwolfe(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj);
+  ~GraphMatchingFrankwolfe();
   virtual void run();
   //unsigned int mappedVertex(unsigned int) const;
 };
@@ -73,4 +73,4 @@ namespace frankWolfe
   double computeMu(double xDx, double xDy, double yDy);
 }
 
-#endif /* __DEF_GRAPHMATCHINGPATH_H__ */
+#endif /* __DEF_GRAPHMATCHING_FRANKWOLFE_H__ */

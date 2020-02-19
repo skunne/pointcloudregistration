@@ -11,6 +11,7 @@ Makefile
 !tests/maketests/Makefile
 !tests/ransac/Makefile
 !tests/ransac/standalone_ransac_test/Makefile
+!tests/ipopt/Makefile
 
 # ignore all c/cpp compilation objects
 
@@ -29,8 +30,12 @@ tests/maketests/matched_pointclouds/*.csv
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
 tests/maketests/transforms/
+tests/maketests/pointclouds/*.pcd
+!tests/maketests/pointclouds/nuclei.pcd
+tests/maketests/*.adj
 tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
+ipopt.out
 
 # ignore all executables
 
@@ -41,6 +46,7 @@ tests/test_frankwolfe
 tests/qp/test_qp
 tests/ransac/apply_ransac
 tests/ransac/standalone_ransac_test/a.out
+tests/ipopt/test_ipopt
 
 # ignore small learning experiments
 

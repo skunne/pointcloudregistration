@@ -3,7 +3,7 @@
 
 #include "cpr_main.h"               // EdgeSimilarityMatrix, MatrixDouble, MatrixInt
 #include "cpr_matrices.h"           // printVectorAsMatrix<T>
-#include "cpr_graphmatching_path.h" // GraphMatchingPath
+#include "cpr_graphmatching_frankwolfe.h" // GraphMatchingFrankwolfe
 //#include "cpr_matrices.h"           // EdgeSimilarityMatrix
 
 #include "test_frankwolfe.h"
@@ -17,7 +17,7 @@ double run_print_compare(std::size_t ng, std::size_t nh,
   MatrixDouble *return_solution)
 {
   // declare graph matching algorithm
-  GraphMatchingPath gm(vsim, esim, g_adj, h_adj);
+  GraphMatchingFrankwolfe gm(vsim, esim, g_adj, h_adj);
 
   // declare stochastic matrix which will hold the solution graph matching
   MatrixDouble x(ng,nh);
