@@ -172,7 +172,7 @@ main (int argc, char ** argv)
   gm.run();
 
   std::cout << "Final graph-matching solution:" << std::endl;
-  std::cout << x << std::endl;
+  std::cout << gm.matching << std::endl;
 
   // TODO find geometric transform corresponding to the matching
 

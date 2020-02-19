@@ -4,7 +4,8 @@
 
 #include <Eigen/Core>
 
-#include <IpTNLP.hpp>
+#include <IpIpoptApplication.hpp>   // IpoptApplication in GraphMatchingNonlin::run()
+#include <IpTNLP.hpp>               // parent class of GraphMatchingNonlin
 
 #include "cpr_graphmatching_nonlin.h"
 
@@ -362,5 +363,32 @@ void GraphMatchingNonlin::finalize_solution(
 
 void GraphMatchingNonlin::run(void)
 {
+  Ipopt::SmartPtr<Ipopt::TNLP> problem = this;
 
+  Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
+  app->Options()->SetNumericValue("tol", 1e-15);
+  app->Options()->SetNumericValue("obj_scaling_factor", -1.0); // MAXIMIZE
+  app->Options()->SetStringValue("mu_strategy", "adaptive");
+  app->Options()->SetStringValue("output_file", "ipopt.out");
+  app->Options()->SetIntegerValue("print_level", 3);    // verbosity
+
+  Ipopt::ApplicationReturnStatus status;
+  status = app->Initialize();
+  if( status != Ipopt::Solve_Succeeded )
+  {
+     std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
+     //return (int) status;
+  }
+  // Ask Ipopt to solve the problem
+  status = app->OptimizeTNLP(problem);
+  if( status == Ipopt::Solve_Succeeded )
+  {
+     std::cout << std::endl << std::endl << "*** The problem solved!" << std::endl;
+  }
+  else
+  {
+     std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
+  }
+
+  //return (int) status;
 }
