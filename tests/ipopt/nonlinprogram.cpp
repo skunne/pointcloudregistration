@@ -25,7 +25,7 @@ GraphMatching::GraphMatching(
 void GraphMatching::buildHessian(void)
 {
   //std::cout << "    METHOD GRAPHMATCHING::BUILDHESSIAN()" << std::endl;
-  std::cout << "      dim of e_sim: (" << edge_similarity->rows()<<','<<edge_similarity->cols() << ")" << std::endl;
+  //std::cout << "      dim of e_sim: (" << edge_similarity->rows()<<','<<edge_similarity->cols() << ")" << std::endl;
   /* give only lower triangular entries of 2D, which is symmetric */
 
   /* strictly lower triangular */
@@ -39,13 +39,13 @@ void GraphMatching::buildHessian(void)
       {
         hessian_iRow.push_back(kx);
         hessian_jCol.push_back(ky);
-        std::cout << "        ("<< edge_src.second << ',' << edge_dst.second <<")" << std::endl;
+        //std::cout << "        ("<< edge_src.second << ',' << edge_dst.second <<")" << std::endl;
         hessian_values.push_back(2.0 * (*edge_similarity)(edge_src.second, edge_dst.second));
       }
     }
   }
 
-  std::cout << "      dim of v_sim: (" << vertex_similarity->rows()<<','<<vertex_similarity->cols() << ")" << std::endl;
+  //std::cout << "      dim of v_sim: (" << vertex_similarity->rows()<<','<<vertex_similarity->cols() << ")" << std::endl;
   /* diagonal */
   for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
   {
@@ -53,7 +53,7 @@ void GraphMatching::buildHessian(void)
     {
       hessian_iRow.push_back(i_src * nbnodes_dst + i_dst);
       hessian_jCol.push_back(hessian_iRow.back());
-      std::cout << "        ("<< i_src << ',' << i_dst <<")" << std::endl;
+      //std::cout << "        ("<< i_src << ',' << i_dst <<")" << std::endl;
       hessian_values.push_back(2.0 * (*vertex_similarity)(i_src,i_dst));
     }
   }
@@ -331,9 +331,16 @@ void GraphMatching::finalize_solution(
     // so we could use the solution.
     // For this example, we write the solution to the console
     std::cout << std::endl << std::endl << "Solution of the primal variables, x" << std::endl;
-    for( Ipopt::Index i = 0; i < n; i++ )
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
     {
-       std::cout << "x[" << i << "] = " << x[i] << std::endl;
+      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+      {
+        Ipopt::Number xi = x[i_src * nbnodes_dst + i_dst];
+        xi = (xi < 0.00001 ? 0 : xi);
+        //xi = (xi > 1 - 0.00001 ? 1 : xi);
+        std::cout << xi << ' ';
+      }
+      std::cout << std::endl;
     }
     std::cout << std::endl << std::endl << "Solution of the bound multipliers, z_L and z_U" << std::endl;
     for( Ipopt::Index i = 0; i < n; i++ )
