@@ -10,7 +10,7 @@
 
 #include "cpr_graphmatching.h"
 
-class GraphMatchingNonlin : public GraphMatching, public Ipopt::TNLP
+class GMNonlinProblem : public Ipopt::TNLP, public GraphMatching
 {
 private:
   Ipopt::Index nbnodes_src;
@@ -25,7 +25,7 @@ protected:
   void buildHessian(void);
 
 public:
-  GraphMatchingNonlin(
+  GMNonlinProblem(
     MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
     MatrixInt const *g_adj, MatrixInt const *h_adj
   );
@@ -123,6 +123,18 @@ public:
     Ipopt::Number                     obj_value,
     const Ipopt::IpoptData*           ip_data,
     Ipopt::IpoptCalculatedQuantities* ip_cq
+  );
+};
+
+class GraphMatchingNonlin : public GraphMatching
+{
+private:
+  GMNonlinProblem *problem;
+
+public:
+  GraphMatchingNonlin(
+    MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
+    MatrixInt const *g_adj, MatrixInt const *h_adj
   );
 
   void run(void);

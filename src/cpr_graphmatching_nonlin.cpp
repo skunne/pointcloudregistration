@@ -1,28 +1,37 @@
-#include <iostream>     /* output for GraphMatchingNonlin::finalize_solution() */
+#include <iostream>     /* output for GMNonlinProblem::finalize_solution() */
 #include <cassert>      /* assert(problem constants are what they should) */
 #include <map>
 
 #include <Eigen/Core>
 
-#include <IpIpoptApplication.hpp>   // IpoptApplication in GraphMatchingNonlin::run()
-#include <IpTNLP.hpp>               // parent class of GraphMatchingNonlin
+#include <IpIpoptApplication.hpp>   // IpoptApplication in GMNonlinProblem::run()
+#include <IpTNLP.hpp>               // parent class of GMNonlinProblem
 
 #include "cpr_graphmatching_nonlin.h"
 
-GraphMatchingNonlin::GraphMatchingNonlin(
-  MatrixDouble const *_vsim, EdgeSimilarityMatrix const *_esim,
+GMNonlinProblem::GMNonlinProblem(
+  MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim,
   MatrixInt const *g_adj, MatrixInt const *h_adj
 )
-  : GraphMatching(_vsim, _esim, g_adj, h_adj),
+  : GraphMatching(vsim, esim, g_adj, h_adj),
     nbnodes_src(vsim->rows()), nbnodes_dst(vsim->cols())
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::GraphMatchingNonlin()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::GMNonlinProblem()" << std::endl;
   buildHessian();
 }
 
-void GraphMatchingNonlin::buildHessian(void)
+GraphMatchingNonlin::GraphMatchingNonlin(
+  MatrixDouble const *_vsim, EdgeSimilarityMatrix const *_esim,
+  MatrixInt const *_g_adj, MatrixInt const *_h_adj
+)
+  : GraphMatching(_vsim, _esim, _g_adj, _h_adj),
+    problem(new GMNonlinProblem(_vsim, _esim, _g_adj, _h_adj))
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::BUILDHESSIAN()" << std::endl;
+}
+
+void GMNonlinProblem::buildHessian(void)
+{
+  //std::cout << "    METHOD GMNonlinProblem::BUILDHESSIAN()" << std::endl;
   //std::cout << "      dim of e_sim: (" << edge_similarity->rows()<<','<<edge_similarity->cols() << ")" << std::endl;
   /* give only lower triangular entries of 2D, which is symmetric */
 
@@ -57,7 +66,7 @@ void GraphMatchingNonlin::buildHessian(void)
   }
 }
 
-bool GraphMatchingNonlin::get_nlp_info(
+bool GMNonlinProblem::get_nlp_info(
   Ipopt::Index&          n,
   Ipopt::Index&          m,
   Ipopt::Index&          nnz_jac_g,
@@ -65,7 +74,7 @@ bool GraphMatchingNonlin::get_nlp_info(
   Ipopt::TNLP::IndexStyleEnum& index_style
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::GET_NLP_INFO()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::GET_NLP_INFO()" << std::endl;
   n = nbnodes_src * nbnodes_dst;  // assignment: each pair (i_src, i_dst) should get 0 or 1
   m = nbnodes_src + nbnodes_dst;  // stochasticity: each row and each col sums to at most 1
   nnz_jac_g = 2 * n;
@@ -76,7 +85,7 @@ bool GraphMatchingNonlin::get_nlp_info(
   return true;
 }
 
-bool GraphMatchingNonlin::get_bounds_info(
+bool GMNonlinProblem::get_bounds_info(
   Ipopt::Index   n,
   Ipopt::Number* x_l,
   Ipopt::Number* x_u,
@@ -85,7 +94,7 @@ bool GraphMatchingNonlin::get_bounds_info(
   Ipopt::Number* g_u
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::GET_BOUNDS_INFO()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::GET_BOUNDS_INFO()" << std::endl;
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
   /* forall xi, 0 <= xi <= 1 */
@@ -102,7 +111,7 @@ bool GraphMatchingNonlin::get_bounds_info(
   return true;
 }
 
-bool GraphMatchingNonlin::get_starting_point(
+bool GMNonlinProblem::get_starting_point(
   Ipopt::Index   n,
   bool    init_x,
   Ipopt::Number* x,
@@ -114,7 +123,7 @@ bool GraphMatchingNonlin::get_starting_point(
   Ipopt::Number* lambda
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::GET_STARTING_POINT()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::GET_STARTING_POINT()" << std::endl;
   assert(n==nbnodes_src * nbnodes_dst);
   (void) m;
   assert(init_x == true);
@@ -134,14 +143,14 @@ bool GraphMatchingNonlin::get_starting_point(
 }
 
 /* compute xDx */
-bool GraphMatchingNonlin::eval_f(
+bool GMNonlinProblem::eval_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,
   Ipopt::Number&       obj_value
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::EVAL_F()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::EVAL_F()" << std::endl;
   (void) new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
@@ -162,14 +171,14 @@ bool GraphMatchingNonlin::eval_f(
 }
 
 /* compute jac(xDx) = 2xD */
-bool GraphMatchingNonlin::eval_grad_f(
+bool GMNonlinProblem::eval_grad_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,
   Ipopt::Number*       grad_f
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::EVAL_GRAD_F()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::EVAL_GRAD_F()" << std::endl;
   (void)  new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
@@ -191,7 +200,7 @@ bool GraphMatchingNonlin::eval_grad_f(
 }
 
 /* compute sum(each row of x) and sum(each col of x) */
-bool GraphMatchingNonlin::eval_g(
+bool GMNonlinProblem::eval_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,      // unused parameter
@@ -199,7 +208,7 @@ bool GraphMatchingNonlin::eval_g(
   Ipopt::Number*       g
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::EVAL_G()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::EVAL_G()" << std::endl;
   (void) new_x;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
@@ -219,7 +228,7 @@ bool GraphMatchingNonlin::eval_g(
 }
 
 /* linear constraints => constant jacobian */
-bool GraphMatchingNonlin::eval_jac_g(
+bool GMNonlinProblem::eval_jac_g(
   Ipopt::Index         n,
   const Ipopt::Number* x,
   bool                 new_x,     // unused parameter
@@ -230,7 +239,7 @@ bool GraphMatchingNonlin::eval_jac_g(
   Ipopt::Number*       values
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::EVAL_JAC_G()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::EVAL_JAC_G()" << std::endl;
   (void) new_x;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
   assert(m==nbnodes_src + nbnodes_dst);
@@ -268,7 +277,7 @@ bool GraphMatchingNonlin::eval_jac_g(
 }
 
 /* compute sigma hessian(objective) + sum_(constraint j) lambda_j hessian(constraint j) = 2 sigma D + 0 */
-bool GraphMatchingNonlin::eval_h(
+bool GMNonlinProblem::eval_h(
    Ipopt::Index         n,
    const Ipopt::Number* x,
    bool                 new_x,      // unused parameter
@@ -282,7 +291,7 @@ bool GraphMatchingNonlin::eval_h(
    Ipopt::Number*       values
 )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::EVAL_H()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::EVAL_H()" << std::endl;
   (void) new_x;        // don't use this parameter
   (void) new_lambda;   // don't use this parameter
   assert(n==nbnodes_src * nbnodes_dst);
@@ -306,7 +315,7 @@ bool GraphMatchingNonlin::eval_h(
   return true;
 }
 
-bool GraphMatchingNonlin::get_constraints_linearity(
+bool GMNonlinProblem::get_constraints_linearity(
    Ipopt::Index          m,
    Ipopt::TNLP::LinearityType* const_types
 )
@@ -317,7 +326,7 @@ bool GraphMatchingNonlin::get_constraints_linearity(
   return true;
 }
 
-void GraphMatchingNonlin::finalize_solution(
+void GMNonlinProblem::finalize_solution(
     Ipopt::SolverReturn               status,
     Ipopt::Index                      n,
     const Ipopt::Number*              x,
@@ -331,7 +340,7 @@ void GraphMatchingNonlin::finalize_solution(
     Ipopt::IpoptCalculatedQuantities* ip_cq
   )
 {
-  //std::cout << "    METHOD GraphMatchingNonlin::FINALIZE_SOLUTION()" << std::endl;
+  //std::cout << "    METHOD GMNonlinProblem::FINALIZE_SOLUTION()" << std::endl;
   assert(n == nbnodes_src * nbnodes_dst);
   (void) status;
   (void) z_U; (void) z_L;
@@ -353,7 +362,7 @@ void GraphMatchingNonlin::finalize_solution(
         matching(i_src, i_dst) = 1;
       else
       {
-        std::cout << "GraphMatchingNonlin: non-integer value in solution! x["<<i_src<<','<<i_dst<<"] = " << xi << std::endl;
+        std::cout << "GMNonlinProblem: non-integer value in solution! x["<<i_src<<','<<i_dst<<"] = " << xi << std::endl;
         matching(i_src, i_dst) = static_cast<int> (xi + 0.5); // rounding
       }
     }
@@ -362,7 +371,7 @@ void GraphMatchingNonlin::finalize_solution(
 
 void GraphMatchingNonlin::run(void)
 {
-  Ipopt::SmartPtr<Ipopt::TNLP> problem = this;
+  Ipopt::SmartPtr<Ipopt::TNLP> problemPtr = problem;
 
   Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
   app->Options()->SetNumericValue("tol", 1e-08);
@@ -379,7 +388,8 @@ void GraphMatchingNonlin::run(void)
      //return (int) status;
   }
   // Ask Ipopt to solve the problem
-  status = app->OptimizeTNLP(problem);
+  status = app->OptimizeTNLP(problemPtr);
+  //status = app->OptimizeTNLP(this);
   if( status == Ipopt::Solve_Succeeded )
   {
      std::cout << std::endl << std::endl << "*** The problem solved!" << std::endl;
@@ -388,6 +398,6 @@ void GraphMatchingNonlin::run(void)
   {
      std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
   }
-  problem = NULL;   // Ipopt::SmartPtr will attempt to free memory if nonnull
-  //return (int) status;
+  // clone member problem if you want to save it
+  // Ipopt::SmartPtr<Ipopt::TNLP> will destroy problem here
 }
