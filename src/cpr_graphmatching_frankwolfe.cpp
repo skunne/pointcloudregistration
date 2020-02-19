@@ -12,11 +12,11 @@
 #include <vector>   // paranoia
 
 #include "cpr_graphmatching.h"
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 
 #include "cpr_debug_frankwolfe.h"
 
-GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
+GraphMatchingFrankwolfe::GraphMatchingFrankwolfe(MatrixDouble const *vsim, EdgeSimilarityMatrix const *esim, MatrixInt const *g_adj, MatrixInt const *h_adj)
   : GraphMatching(vsim, esim, g_adj, h_adj),
   ng(g_adj->rows()), nh(h_adj->rows()), x_len(ng * nh), nb_constraints(ng + nh),
   x(x_len), y(x_len), xD(x_len)
@@ -47,11 +47,11 @@ GraphMatchingPath::GraphMatchingPath(MatrixDouble const *vsim, EdgeSimilarityMat
   initSimplex(cons_coeff_rowindex, cons_coeff_colindex, cons_coeff_value);
 }
 
-GraphMatchingPath::~GraphMatchingPath()
+GraphMatchingFrankwolfe::~GraphMatchingFrankwolfe()
 {
 }
 
-void GraphMatchingPath::run()
+void GraphMatchingFrankwolfe::run()
 {
   // Initialisation
   double lambda;
@@ -86,7 +86,7 @@ void GraphMatchingPath::run()
 
 // input p = graph-matching matrix
 // this one is probably the wrong version. see below
-double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
+double GraphMatchingFrankwolfe::f_smooth(MatrixDouble const *p) const
 {
   // result = - sum_{edge e in G} esim(e, matched(e)) / (nG * nH)
     // article is unclear
@@ -124,7 +124,7 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 }
 
 // // this one is probably the correct version?
-// double GraphMatchingPath::f_smooth(MatrixDouble const *p, EdgeDescriptors const &g_edge_descriptors, EdgeDescriptors const &h_edge_descriptors) const
+// double GraphMatchingFrankwolfe::f_smooth(MatrixDouble const *p, EdgeDescriptors const &g_edge_descriptors, EdgeDescriptors const &h_edge_descriptors) const
 // {
 //   double result = 0;
 //   // result = - sum_{edge e in G}
@@ -147,14 +147,14 @@ double GraphMatchingPath::f_smooth(MatrixDouble const *p) const
 //   return result;
 // }
 
-double GraphMatchingPath::f(double lambda, MatrixDouble const *p) const
+double GraphMatchingFrankwolfe::f(double lambda, MatrixDouble const *p) const
 {
   (void) lambda;
   (void) p;
   return 0;   // TODO probably an accessor to an attribute that was updated by frankWolfe()
 }
 
-void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start)
+void GraphMatchingFrankwolfe::frankWolfe(double lambda, MatrixDouble *x_return, MatrixDouble const *x_start)
 {
   // assert x basic feasible
   //memcpy(x, x_start->data(), x_len * sizeof(*x));
@@ -195,7 +195,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
   //x_return = y;
 }     // in their paper, frank-wolfe returns y instead of x, which seems consistent with their stop criterion.
 
-// void GraphMatchingPath::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
+// void GraphMatchingFrankwolfe::setXTo1minusMuXPlusMuY(double mu)  // x = (1 - mu) * x + mu * y;
 // {
 //   for (std::size_t i = 0; i < x_len; ++i)
 //     x[i] = (1.0 - mu) * x[i] + mu * y[i];
@@ -203,7 +203,7 @@ void GraphMatchingPath::frankWolfe(double lambda, MatrixDouble *x_return, Matrix
 
 #include <glpk.h>
 
-void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av)
+void GraphMatchingFrankwolfe::initSimplex(std::vector<int> const &iv, std::vector<int> const &jv, std::vector<double> const &av)
 {
   // declare linear problem object
   lp = glp_create_prob();
@@ -228,7 +228,7 @@ void GraphMatchingPath::initSimplex(std::vector<int> const &iv, std::vector<int>
 }
 
 // update z to minimise W~ * Z
-double GraphMatchingPath::simplex(void)
+double GraphMatchingFrankwolfe::simplex(void)
 {
   static std::size_t nb_calls = 0;
   //std::cout << "\x1B[2J\x1B[H";   // non-portable hack to clear console
@@ -255,7 +255,7 @@ double GraphMatchingPath::simplex(void)
 }
 
 
-void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
+void GraphMatchingFrankwolfe::compute_lp_obj_coeffs(glp_prob *lp)
 {
   // start from 0
   //memset(xD, 0, x_len * sizeof(*xD));
@@ -286,7 +286,7 @@ void GraphMatchingPath::compute_lp_obj_coeffs(glp_prob *lp)
   cprdbg::frankWolfe::print_x("objective coeffs", xD, nh, ng, cprdbg::frankWolfe::verbosity);
 }
 
-double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
+double GraphMatchingFrankwolfe::mult_xD(std::vector<double> const &z) const
 {
   double result = 0;
   for (std::size_t k = 0; k < x_len; ++k)
@@ -298,7 +298,7 @@ double GraphMatchingPath::mult_xD(std::vector<double> const &z) const
 }
 
 // compute x D y
-double GraphMatchingPath::bilinear(std::vector<double> const &x, std::vector<double> const &y) const
+double GraphMatchingFrankwolfe::bilinear(std::vector<double> const &x, std::vector<double> const &y) const
 {
   double result = 0;
   for (auto const &edge_g : esim->sourceEdgeIndex)
@@ -320,7 +320,7 @@ double GraphMatchingPath::bilinear(std::vector<double> const &x, std::vector<dou
 }
 
 // set y to solution of solved lp
-void GraphMatchingPath::setYToSolutionOfLP(glp_prob *lp)  // should be glp_prob const *lp but library wants it non-const for no reason
+void GraphMatchingFrankwolfe::setYToSolutionOfLP(glp_prob *lp)  // should be glp_prob const *lp but library wants it non-const for no reason
 {
   for (std::size_t j = 0; j < x_len; ++j)
     y[j] = glp_get_col_prim(lp, static_cast<int>(j + 1));  // library wants int, 1-indexed

@@ -8,7 +8,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 
 KeyT testwpc_find_one_matched_point(KeyT point_g, MatrixDouble const &m)
 {
@@ -75,7 +75,7 @@ double test_with_pointclouds (int argc, char const *const *argv)
   // Perform graph matching
   //////////////
 
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+  GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   int const ng = ppc_source.getNbVertices();
   int const nh = ppc_dest.getNbVertices();

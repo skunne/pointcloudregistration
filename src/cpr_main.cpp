@@ -3,7 +3,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 /*
 #include "cpr_params.h"
 #include "cpr_loadfiles.h"
@@ -153,7 +153,7 @@ main (int argc, char ** argv)
   //while (!(viewer_source->wasStopped() && viewer_dest->wasStopped()))
   //  ;   // wait for user to close window before halting
 
-  GraphMatchingPath gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+  GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
   int const ng = ppc_source.getNbVertices();
   int const nh = ppc_dest.getNbVertices();

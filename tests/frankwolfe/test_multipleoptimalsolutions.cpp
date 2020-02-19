@@ -2,7 +2,7 @@
 
 #include "test_frankwolfe.h"
 
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 #include "cpr_matrices.h"
 #include "cpr_main.h"
 

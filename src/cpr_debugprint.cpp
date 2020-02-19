@@ -1,7 +1,7 @@
 #include <iostream>   // std::cout
 #include <vector>
 
-#include "cpr_graphmatching_path.h"
+#include "cpr_graphmatching_frankwolfe.h"
 
 namespace cprdbg
 {
