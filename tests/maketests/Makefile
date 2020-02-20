@@ -66,17 +66,17 @@ $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
 %_shuffled.pcd: %.pcd
 	$(SHUFFLE) $< $@
 	mkdir -p $(TRANSFORMDIR)
-	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_cropped.pcd: %.pcd
 	$(DIGHOLE) $< $@ 0 0 5 10 10 10
 	mkdir -p $(TRANSFORMDIR)
-	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_thinned.pcd: %.pcd
 	$(THINCLOUD) $< $@
 	mkdir -p $(TRANSFORMDIR)
-	printf '1,0,0,0\n0,1,0,0\n0,0,1,0,\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 %_rotated.pcd: %.pcd
 	$(ROTATE) $< $@
