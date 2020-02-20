@@ -105,19 +105,19 @@ transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
 
 
 clean:
-	rm -f $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
-	rm -f $(TRANSFORMDIR)/*_true.csv
-	rm -f source.adj dest.adj
+	rm -f -- $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
+	rm -f -- $(TRANSFORMDIR)/*_true.csv
+	rm -f -- source.adj dest.adj
 
 fclean: clean
-	rm -f matched_pointclouds/*.csv
-	rm -f $(TRANSFORMDIR)/*_computed.csv
-	rm -f $(TRANSFORMDIR)/*_diff
+	rm -f -- matched_pointclouds/*.csv
+	rm -f -- $(TRANSFORMDIR)/*_computed.csv
+	rm -f -- $(TRANSFORMDIR)/*_diff
 
 ffclean: fclean
-	rm -f $(RUNTESTS)
-	rm -f $(RANSAC)
-
+	rm -f -- $(RUNTESTS)
+	rm -f -- $(RANSAC)
+	
 re: fclean all
 
 rere: ffclean all
