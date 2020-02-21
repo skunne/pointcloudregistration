@@ -11,8 +11,8 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
  * Build vertex similarity matrix using distance between ESF descriptors
  * Build edge similarity matrix using distance between 4-descriptors
  * Match the two resulting graphs using Frank-Wolfe algorithm for quadratic programming (5)
- * Apply RANSAC algorithm (6) to the graph vertices to remove outliers [DONE but currently in the tests/maketests/ subfolder only]
- * Find a rigid geometric transform to map the first set of graph vertices to the second set [DONE but currently in the tests/maketests/ subfolder only]
+ * Apply RANSAC algorithm (6) to the graph vertices to remove outliers [currently in <https://github.com/skunne/pointcloudregistration/tree/develop/tests/maketests>]
+ * Find a rigid geometric transform to map the first set of graph vertices to the second set [currently in <https://github.com/skunne/pointcloudregistration/tree/develop/tests/maketests>]
  * TODO Apply ICP algorithm (7, 8) to the graph vertices as a final refinement
 
 
@@ -20,8 +20,9 @@ Based on _Huang et al, 2017_ (1). Using the Point Cloud Library, and in particul
 
  * Point Cloud Library <http://pointclouds.org/>
  * Eigen <http://eigen.tuxfamily.org/>
- * GLPK <https://en.wikibooks.org/wiki/GLPK/>
- * ec-CLEM <https://github.com/anrcrocoval/ec-clem.git> and <https://github.com/anrcrocoval/cli_tools.git>
+ * (Ipopt <https://coin-or.github.io/Ipopt/>)
+ * (GLPK <https://en.wikibooks.org/wiki/GLPK/>)
+ * (ec-CLEM <https://github.com/anrcrocoval/ec-clem.git> and <https://github.com/anrcrocoval/cli_tools.git>)
 
 ### Install
 
