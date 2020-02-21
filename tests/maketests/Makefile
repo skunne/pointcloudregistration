@@ -95,9 +95,9 @@ $(MATCHED_WITNESS): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
 $(COMPUTED_TRANSFORMS): DESTIN_POINTCLOUD=$(subst $(TRANSFORMDIR),matched_pointclouds/,$(subst _computed.csv,_dst.csv,$@))
 $(COMPUTED_TRANSFORMS): SOURCE_POINTCLOUD=$(subst _dst.csv,_src.csv,$(DESTIN_POINTCLOUD))
 transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
-	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
+	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@; true
 %_computed.csv: $(MATCHED_WITNESS)
-	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@
+	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@; true
 
 %_diff: %_computed.csv
 	$(COMPAREMATRICES) $(subst _inliers,,$(subst _diff,_computed.csv,$@)) $(subst _inliers,,$(subst _diff,_true.csv,$@)) | tee $@
@@ -117,7 +117,7 @@ fclean: clean
 ffclean: fclean
 	rm -f -- $(RUNTESTS)
 	rm -f -- $(RANSAC)
-	
+
 re: fclean all
 
 rere: ffclean all
