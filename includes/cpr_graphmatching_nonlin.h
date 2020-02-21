@@ -23,6 +23,8 @@ private:
 
 protected:
   void buildHessian(void);
+  bool isCached(Ipopt::Index n, Ipopt::Number const *x) const;
+  void updateCache(Ipopt::Index n, Ipopt::Number const *x);
 
 public:
   GMNonlinProblem(

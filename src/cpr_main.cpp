@@ -157,12 +157,12 @@ main (int argc, char ** argv)
   //GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
   GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
-  int const ng = ppc_source.getNbVertices();
-  int const nh = ppc_dest.getNbVertices();
+  // int const ng = ppc_source.getNbVertices();
+  // int const nh = ppc_dest.getNbVertices();
 
-  MatrixDouble x(ng, nh);   // matrix to store the graph matching permutation
-  x.fill(1.0 / (ng < nh ? ng : nh));  // trivial initial feasible solution
-  //x.Constant(ng, nh, 1.0 / static_cast<double>(ng < nh ? ng : nh));
+  //MatrixDouble x(ng, nh);   // matrix to store the graph matching permutation
+  //x.fill(1.0 / (ng < nh ? ng : nh));  // trivial initial feasible solution
+  //x.SetConstant(ng, nh, 1.0 / static_cast<double>(ng < nh ? ng : nh));
   //x << 0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2, 0.2;
 
   //std::cout << "Initial graph-matching solution:" << std::endl;
