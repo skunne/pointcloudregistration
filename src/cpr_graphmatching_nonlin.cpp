@@ -399,6 +399,7 @@ void GraphMatchingNonlin::run(void)
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetIntegerValue("print_level", 3);    // verbosity
+  app->Options()->SetStringValue("derivative_test", "only-second-order");
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();
