@@ -14,7 +14,9 @@ GMNonlinProblem::GMNonlinProblem(
   MatrixInt const *g_adj, MatrixInt const *h_adj
 )
   : GraphMatching(vsim, esim, g_adj, h_adj),
-    nbnodes_src(vsim->rows()), nbnodes_dst(vsim->cols())
+    nbnodes_src(vsim->rows()), nbnodes_dst(vsim->cols()),
+    x_cached(nbnodes_src * nbnodes_dst, 0.0),
+    xD_cached(nbnodes_src * nbnodes_dst, 0.0)
 {
   //std::cout << "    METHOD GMNonlinProblem::GMNonlinProblem()" << std::endl;
   buildHessian();
@@ -142,7 +144,7 @@ bool GMNonlinProblem::get_starting_point(
   return true;
 }
 
-/* compute xDx */
+/* compute objective = xDx */
 bool GMNonlinProblem::eval_f(
   Ipopt::Index         n,
   const Ipopt::Number* x,
@@ -154,19 +156,13 @@ bool GMNonlinProblem::eval_f(
   (void) new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
+  if (! isCached(n, x))
+    updateCache(n, x);
+
   obj_value = 0;
-  for (auto const &edge_src : esim->sourceEdgeIndex)
-  {
-    for (auto const &edge_dst : esim->destEdgeIndex)
-    {
-      Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
-      Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
-      obj_value += x[kx] * x[ky] * (esim->m)(edge_src.second, edge_dst.second);
-    }
-  }
-  for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
-    for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
-      obj_value += x[i_src * nbnodes_dst + i_dst] * x[i_src * nbnodes_dst + i_dst] * (*vsim)(i_src, i_dst);
+  for (Ipopt::Index k = 0; k < n; ++k)
+    obj_value += x[k] * xD_cached[k];
+
   return (true);
 }
 
@@ -182,21 +178,45 @@ bool GMNonlinProblem::eval_grad_f(
   (void)  new_x;
   assert(n==nbnodes_src * nbnodes_dst);
 
+  if (! isCached(n, x))
+    updateCache(n, x);
+
   for (Ipopt::Index k = 0; k < n; ++k)
-    grad_f[k] = 0;
+    grad_f[k] = 2.0 * xD_cached[k];
+
+  return true;
+}
+
+bool GMNonlinProblem::isCached(Ipopt::Index n, Ipopt::Number const *x) const
+{
+  bool x_Equal_xcached = (x_cached.size() == n);
+
+  for (Ipopt::Index k = 0; x_Equal_xcached && k < n; ++k)
+    x_Equal_xcached = (x_cached[k] == x[k]);
+
+  return x_Equal_xcached;
+}
+
+/* compute product xD and update members x_cached and xD_cached */
+void GMNonlinProblem::updateCache(Ipopt::Index n, Ipopt::Number const *x)
+{
+  for (Ipopt::Index k = 0; k < n; ++k)
+  {
+    x_cached[k] = x[k];
+    xD_cached[k] = 0;
+  }
   for (auto const &edge_src : esim->sourceEdgeIndex)
   {
     for (auto const &edge_dst : esim->destEdgeIndex)
     {
       Ipopt::Index kx = edge_src.first.first * nbnodes_dst + edge_dst.first.first;
       Ipopt::Index ky = edge_src.first.second * nbnodes_dst + edge_dst.first.second;
-      grad_f[ky] += 2.0 * x[kx] * (esim->m)(edge_src.second, edge_dst.second);
+      xD_cached[ky] += x[kx] * (esim->m)(edge_src.second, edge_dst.second);
     }
   }
   for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
     for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
-      grad_f[i_src * nbnodes_dst + i_dst] += x[i_src * nbnodes_dst + i_dst] * (*vsim)(i_src, i_dst);
-  return true;
+      xD_cached[i_src * nbnodes_dst + i_dst] += x[i_src * nbnodes_dst + i_dst] * (*vsim)(i_src, i_dst);
 }
 
 /* compute sum(each row of x) and sum(each col of x) */
