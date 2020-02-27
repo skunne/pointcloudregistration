@@ -5,7 +5,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_visualisation.h"
-#include "cpr_graphmatching_frankwolfe.h" // if using Frank-Wolfe quadratic programming algorithm
+//#include "cpr_graphmatching_frankwolfe.h" // if using Frank-Wolfe quadratic programming algorithm
 #include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
 
 #include "test_icpransac.h"
@@ -75,7 +75,12 @@ int
   std::cout << "ICP/Ransac score: " << icp_score << std::endl;
   std::cout << "ICP/Ransac transform:" << std::endl << icp_transform << std::endl;
 
+  GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
 
+  gm.run();
+
+  std::cout << "Final graph-matching solution:" << std::endl;
+  std::cout << gm.matching << std::endl;
 
  return (0);
 }
