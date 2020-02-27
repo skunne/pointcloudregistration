@@ -35,6 +35,7 @@ tests/maketests/pointclouds/*.pcd
 tests/maketests/*.adj
 tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
+tests/icpransac/*.adj
 ipopt.out
 
 # ignore all executables
