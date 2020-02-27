@@ -5,9 +5,9 @@
 
 #include "test_icpransac.h"
 
-double icpransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_source, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_dest, Eigen::Matrix4f &transform)
+double icpransac(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_source, pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_dest, Eigen::Matrix4f &transform)
 {
-  pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+  pcl::IterativeClosestPoint<pcl::PointXYZRGBA, pcl::PointXYZRGBA> icp;
   icp.setInputSource(cloud_source);
   icp.setInputTarget(cloud_dest);
 
@@ -20,7 +20,7 @@ double icpransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_source, pcl::PointClo
   //icp.setMaxCorrespondenceDistance (distance);
   //icp.setRANSACOutlierRejectionThreshold (distance);
 
-  pcl::PointCloud<pcl::PointXYZ> Final;
+  pcl::PointCloud<pcl::PointXYZRGBA> Final;
   icp.align(Final);
   transform = icp.getFinalTransformation();
   return (icp.getFitnessScore());
