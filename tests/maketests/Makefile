@@ -25,6 +25,7 @@ endef
 
 RUNTESTS=../algo/run_tests
 RANSAC=../ransac/apply_ransac
+ICPRANSAC=../icpransac/icpransac_gettransform
 NAME=pointclouds/nuclei
 PC_AUX1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)
@@ -33,7 +34,9 @@ MATCHED_WITNESS=matched_$(NAME)_dst.csv
 MATCHED=$(foreach pc,$(POINTCLOUDS),matched_$(pc)_dst.csv)
 INLIERS=$(subst _dst.csv,_inliers_dst.csv,$(MATCHED))
 CT_AUX=$(foreach pc,$(POINTCLOUDS),$(subst pointclouds/,$(TRANSFORMDIR),$(pc))_computed.csv)
-COMPUTED_TRANSFORMS=$(CT_AUX) $(subst _computed.csv,_inliers_computed.csv,$(CT_AUX))
+CT_AUX_INLIERS=$(subst _computed.csv,_inliers_computed.csv,$(CT_AUX))
+COMPUTED_TRANSFORMS=$(CT_AUX) $(CT_AUX_INLIERS)
+COMPUTED_TRANSFORMS_ICPRANSAC=$(subst _computed.csv,_icpransac.csv,$(CT_AUX))
 MATRIX_DIFFERENCES=$(subst _computed.csv,_diff,$(COMPUTED_TRANSFORMS))
 
 
@@ -45,7 +48,9 @@ COMPUTETRANSFORM=java -jar $(COMPUTETRANSFORMJAR) --source-dataset $(1) --target
 TRANSFORMDIR=transforms/
 
 
-all: $(MATRIX_DIFFERENCES)
+all: $(MATRIX_DIFFERENCES) $(COMPUTED_TRANSFORMS_ICPRANSAC)
+
+compute_all_icpransac: $(COMPUTED_TRANSFORMS_ICPRANSAC)
 
 $(RUNTESTS):
 	make -C ../algo
@@ -98,6 +103,9 @@ transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@; true
 %_computed.csv: $(MATCHED_WITNESS)
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@; true
+
+transforms/%_icpransac.csv: $(SOURCE_POINTCLOUD) $(DESTIN_POINTCLOUD)
+	$(ICPRANSAC) pointclouds/nuclei.pcd $(subst transforms/,pointclouds/,$(subst _icpransac.csv,,$@)) $@
 
 %_diff: %_computed.csv
 	$(COMPAREMATRICES) $(subst _inliers,,$(subst _diff,_computed.csv,$@)) $(subst _inliers,,$(subst _diff,_true.csv,$@)) | tee $@
