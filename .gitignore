@@ -48,7 +48,7 @@ tests/qp/test_qp
 tests/ransac/apply_ransac
 tests/ransac/standalone_ransac_test/a.out
 tests/ipopt/test_ipopt
-tests/icpransac/compare_with_icp
+tests/icpransac/icpransac_gettransform
 
 # ignore small learning experiments
 
