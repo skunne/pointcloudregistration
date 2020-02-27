@@ -7,6 +7,7 @@ def write_csv(pcd_in, csv_out):
         row = line.split()
         if row[0] not in ['VERSION', 'FIELDS', 'SIZE', 'TYPE', 'COUNT', 'WIDTH', 'HEIGHT', 'VIEWPOINT', 'POINTS', 'DATA']:
             csv_out.write("{},{},{},{}\n".format(i, float(row[0]), float(row[1]), float(row[2])))
+            i += 1
 
 def main():
     if len(sys.argv) == 3:
