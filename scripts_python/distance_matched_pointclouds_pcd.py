@@ -22,8 +22,8 @@ def compute_average_distance(filename1, filename2, transform=identity_matrix):
             for line1, line2 in zip(f1,f2):
                 row1, row2 = line1.split(), line2.split()
                 if row1[0] not in headerfields and row2[0] not in headerfields:
-                    p1 = [float(xj) for xj in row1] + [1]
-                    p2 = [float(xj) for xj in row2] + [1]
+                    p1 = [float(xj) for xj in row1][:-1] + [1]
+                    p2 = [float(xj) for xj in row2][:-1] + [1]
                     q1 = matrix_times_vector(transform, p1)
                     d += math.sqrt(sum((x1-x2)**2 for (x1,x2) in zip(q1[:-1], p2[:-1])))
                     nbpoints += 1
