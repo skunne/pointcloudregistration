@@ -6,7 +6,7 @@ THINCLOUD=$(PYTHON) $(SCRIPTS)/thin_cloud.py
 ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
 COMPAREMATRICES=$(PYTHON) $(SCRIPTS)/normofdifference_44matrix.py
-DISTANCES=$(PYTHON) $(SCRIPTS)/distance_matched_pointclouds.py
+DISTANCES=$(PYTHON) $(SCRIPTS)/distance_matched_pointclouds_csv.py
 AVG_DIST_FILE=average_distances.txt
 # define COMPUTE_AVG_DISTANCES
 # echo '' > $(AVG_DIST_FILE)
