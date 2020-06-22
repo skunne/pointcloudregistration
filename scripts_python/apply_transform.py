@@ -70,25 +70,37 @@ def print_usage_and_exit():
     print()
     sys.exit()
 
+def write_matrix(matrix, filename):
+    with open(filename, 'w') as f:
+        for row in matrix:
+            for x in row[:-1]:
+                f.write("{},".format(x))
+            print("{}\n".format(row[-1])
+
 def get_args():
     infile = 'in.pcd'
     outfile = 'out.pcd'
     theta = rotation_angle
+    matrixfile = None
     if (len(sys.argv) <= 1 or len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
         print_usage_and_exit()
     if (len(sys.argv) > 2):
         (infile, outfile) = (sys.argv[1], sys.argv[2])
     if (len(sys.argv) > 3):
         theta = float(sys.argv[3])
-    return (infile, outfile, theta)
+    if (len(sys.argv) > 4):
+        matrixfile = sys.argv[4]
+    return (infile, outfile, theta, matrixfile)
 
 def main():
-    (infilename, outfilename, rotation_angle) = get_args()
+    (infilename, outfilename, rotation_angle, matrixoutfilename) = get_args()
     header, pointcloud = read_file(infilename)
     rotation_matrix = make_rotation_matrix(rotation_angle)
     rotated_pointcloud = apply_linear(rotation_matrix, pointcloud)
     #header = fix_header(header, len(filtered_pointcloud))
     write_file(header, rotated_pointcloud, outfilename)
+    if matrixoutfilename:
+        write_matrix(rotation_matrix, outfilename)
 
 if __name__=='__main__':
     main()

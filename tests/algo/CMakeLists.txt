@@ -9,7 +9,6 @@ set(IPOPT_INCLUDE_DIR ~/ipopt/include/coin/)
 set(IPOPT_LIBRARY_DIR ~/ipopt/lib)
 
 find_package(PCL 1.8 REQUIRED)
-find_package(CGAL COMPONENTS Core)
 
 include_directories(SYSTEM ${PCL_INCLUDE_DIRS} ${IPOPT_INCLUDE_DIR})
 link_directories(${PCL_LIBRARY_DIRS} ${IPOPT_LIBRARY_DIR})
