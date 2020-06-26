@@ -49,10 +49,13 @@ def read_file(infilename):
 #     return new_header
 
 def write_file(header, pointcloud, outfilename):
+    print("Writing {} header lines and {} points to {}".format(len(header), len(pointcloud), outfilename))
     with open(outfilename, 'w') as f:
         for line in header:
+            #print(line, end='')
             f.write(line)
         for (x,y,z,rgba) in pointcloud:
+            #print("{} {} {} {}".format(x, y, z, rgba))
             f.write("{} {} {} {}\n".format(x, y, z, rgba))
 
 def print_usage_and_exit():
@@ -71,39 +74,42 @@ def print_usage_and_exit():
     sys.exit()
 
 def write_matrix(matrix, filename):
+    # print('matrix:')
+    # print(matrix)
     with open(filename, 'w') as f:
         for row in matrix:
             for x in row[:-1]:
                 f.write("{},".format(x))
-            print("{}\n".format(row[-1])
+            f.write("{}\n".format(row[-1]))
 
-def get_args():
+def get_args(argv):
     infile = 'in.pcd'
     outfile = 'out.pcd'
     theta = rotation_angle
     matrixfile = None
-    if (len(sys.argv) <= 1 or len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
+    nb_args = len(argv) - 1
+    if (nb_args == 0 or sys.argv[1] in ['-h', '--help']):
         print_usage_and_exit()
-    if (len(sys.argv) > 2):
+    if (nb_args > 1):
         (infile, outfile) = (sys.argv[1], sys.argv[2])
-    if (len(sys.argv) > 3):
-        theta = float(sys.argv[3])
-    if (len(sys.argv) > 4):
-        matrixfile = sys.argv[4]
+        if (nb_args > 2):
+            theta = float(sys.argv[3])
+            if (nb_args > 3):
+                matrixfile = sys.argv[4]
     return (infile, outfile, theta, matrixfile)
 
-def main():
-    (infilename, outfilename, rotation_angle, matrixoutfilename) = get_args()
+def main(argv):
+    (infilename, outfilename, rotation_angle, matrixoutfilename) = get_args(argv)
     header, pointcloud = read_file(infilename)
     rotation_matrix = make_rotation_matrix(rotation_angle)
     rotated_pointcloud = apply_linear(rotation_matrix, pointcloud)
     #header = fix_header(header, len(filtered_pointcloud))
     write_file(header, rotated_pointcloud, outfilename)
     if matrixoutfilename:
-        write_matrix(rotation_matrix, outfilename)
+        write_matrix(rotation_matrix, matrixoutfilename)
 
 if __name__=='__main__':
-    main()
+    main(sys.argv)
 
 
 
