@@ -16,7 +16,7 @@ clouds_dist_notransform = []
 for i, angle in enumerate(theta_str):
     list_of_d = distances_list_matched_pointclouds_csv.main(['./distances_list_matched_pointclouds_csv.py', 'matched_pointclouds/nuclei_r{}.pcd_src.csv'.format(angle), 'matched_pointclouds/nuclei_r{}.pcd_dst.csv'.format(angle)])
     clouds_dist_notransform.append(list_of_d)
-    plt.scatter([theta[i]-0.0025] * len(list_of_d), list_of_d, s=0.7, c='red')
+    #plt.scatter([theta[i]-0.0025] * len(list_of_d), list_of_d, s=0.7, c='red')
 dist_notransform = [sum(c)/len(c) for c in clouds_dist_notransform]
 
 clouds_dist = []
@@ -37,17 +37,18 @@ clouds_dist_icpransac_notransform = []
 for i, angle in enumerate(theta_str):
     list_of_d = distances_list_matched_pointclouds_csv.main(['./distances_list_matched_pointclouds_csv.py', 'matched_pointclouds/nuclei_r{}.pcd_inliers_src.csv'.format(angle), 'matched_pointclouds/nuclei_r{}.pcd_inliers_dst.csv'.format(angle)])
     clouds_dist_icpransac_notransform.append(list_of_d)
-    plt.scatter([theta[i]+0.0075] * len(list_of_d), list_of_d, s=0.7, c='blue')
+    #plt.scatter([theta[i]+0.0075] * len(list_of_d), list_of_d, s=0.7, c='blue')
 clouds_dist_icpransac_notransform = [sum(c)/len(c) for c in clouds_dist_icpransac_notransform]
 
 import matplotlib.pyplot as plt
 
 plt.plot(theta, dist, label='matched,registered', c='orange')
-plt.plot(theta, dist_notransform, label='matched', c='red')
+#plt.plot(theta, dist_notransform, label='matched', c='red')
 plt.plot(theta, dist_icpransac, label='matched,icpransac,registered', c='purple')
-plt.plot(theta, clouds_dist_icpransac_notransform, label='matched,icpransac', c='blue')
+#plt.plot(theta, clouds_dist_icpransac_notransform, label='matched,icpransac', c='blue')
 plt.legend(loc='best')
 plt.xlabel('rotation angle')
 plt.ylabel('average distance')
+plt.yaxis()
 plt.savefig('average_distances.png')
 plt.show()
