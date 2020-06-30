@@ -8,21 +8,31 @@ xmin = -10
 xmax = 10
 ymin = -10
 ymax = 10
-rotation_angle = 1.1 * pi / 2.0
+default_rotation_angle = 1.1 * pi / 2.0
 
 nb_points = 6
 
-def apply_linear(M, pointcloud):
-    ((a, c), (b, d)) = M
-    return [(a*x+c*y, b*x+d*y, z, rgba) for (x,y,z,rgba) in pointcloud]
+# def apply_linear_horizontal(M, pointcloud):
+#     ((a, c), (b, d)) = M
+#     return [(a*x+c*y, b*x+d*y, z, rgba) for (x,y,z,rgba) in pointcloud]
 
-def apply_translat(a,b, X,Y):
-    return [x+a for x in X], [y+b for y in Y]
+# def apply_translat(a,b, X,Y):
+#     return [x+a for x in X], [y+b for y in Y]
+
+def apply_affine(M, pointcloud):
+    ((a, d, g, tx), (b, e, h, ty), (c, f, i, tz), p) = M
+    assert (p == (0,0,0,1))
+    return [(a*x+d*y+g*z+tx, b*x+e*y+h*z+ty, c*x+f*y+i*z+tz, rgba) for (x,y,z,rgba) in pointcloud]
 
 def make_rotation_matrix(theta):
     costheta = cos(theta)
     sintheta = sin(theta)
-    return ((costheta,-sintheta), (sintheta, costheta))
+    return (
+        (costheta,-sintheta,0,0),
+        (sintheta, costheta,0,0),
+        (0,0,1,0),
+        (0,0,0,1)
+    )
 
 def read_file(infilename):
     header = []
@@ -64,10 +74,11 @@ def print_usage_and_exit():
     print('{} [-h | --help]'.format(sys.argv[0]))
     print('    print this help message and exit')
     print()
-    print('{} ifile ofile [theta]'.format(sys.argv[0]))
+    print('{} ifile ofile [theta [mfile]]'.format(sys.argv[0]))
     print('    Read a point cloud from pcd file <ifile>')
     print('    Apply a rotation of angle theta in the plane xy to every point')
     print('    Write result in pcd format to <ofile>')
+    print('    If specified, write transfo matrix to file <mfile>')
     print('    Default values:')
     print('        theta = 1.73')
     print()
@@ -85,7 +96,7 @@ def write_matrix(matrix, filename):
 def get_args(argv):
     infile = 'in.pcd'
     outfile = 'out.pcd'
-    theta = rotation_angle
+    theta = default_rotation_angle
     matrixfile = None
     nb_args = len(argv) - 1
     if (nb_args == 0 or sys.argv[1] in ['-h', '--help']):
@@ -102,7 +113,7 @@ def main(argv):
     (infilename, outfilename, rotation_angle, matrixoutfilename) = get_args(argv)
     header, pointcloud = read_file(infilename)
     rotation_matrix = make_rotation_matrix(rotation_angle)
-    rotated_pointcloud = apply_linear(rotation_matrix, pointcloud)
+    rotated_pointcloud = apply_affine(rotation_matrix, pointcloud)
     #header = fix_header(header, len(filtered_pointcloud))
     write_file(header, rotated_pointcloud, outfilename)
     if matrixoutfilename:
