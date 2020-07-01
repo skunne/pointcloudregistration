@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys      # sys.argv
 
 def write_csv(pcd_in, csv_out):

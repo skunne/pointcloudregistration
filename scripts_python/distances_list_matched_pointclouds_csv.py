@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import csv
 import sys
 import math
@@ -60,7 +62,7 @@ def main(argv):
         print_usage()
         exit()
     list_of_d = compute_average_distance(file1, file2, matrix)
-    print_list(list_of_d)
+    #print_list(list_of_d)
     return(list_of_d)
 
 if __name__=='__main__':

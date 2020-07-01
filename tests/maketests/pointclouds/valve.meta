@@ -1,6 +1,6 @@
-filename nuclei.pcd
-voxel_resolution 0.2
-seed_resolution 1.0
+filename valve.pcd
+voxel_resolution 4.0
+seed_resolution 20
 color_importance 0.2
 spatial_importance 1.0
 normal_importance 1.0
