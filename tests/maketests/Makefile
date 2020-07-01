@@ -121,6 +121,7 @@ transforms/%_icpransac.csv: $(SOURCE_POINTCLOUD) $(DESTIN_POINTCLOUD)
 
 clean:
 	rm -f -- $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)
+	rm -f -- pointclouds/*_r*.pcd pointclouds/*_r*.csv
 	rm -f -- $(TRANSFORMDIR)/*_true.csv
 	rm -f -- source.adj dest.adj
 
