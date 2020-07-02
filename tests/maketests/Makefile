@@ -7,6 +7,7 @@ ROTATE=$(PYTHON) $(SCRIPTS)/apply_transform.py
 SHUFFLE=$(PYTHON) $(SCRIPTS)/shuffle.py
 COMPAREMATRICES=$(PYTHON) $(SCRIPTS)/normofdifference_44matrix.py
 DISTANCES=$(PYTHON) $(SCRIPTS)/distance_matched_pointclouds_csv.py
+PLOT_AVERAGE_DISTANCES=./average_distances_plot.py
 AVG_DIST_FILE=average_distances.txt
 # define COMPUTE_AVG_DISTANCES
 # echo '' > $(AVG_DIST_FILE)
@@ -52,7 +53,7 @@ COMPUTETRANSFORM=java -jar $(COMPUTETRANSFORMJAR) --source-dataset $(1) --target
 TRANSFORMDIR=transforms/
 
 
-all: $(MATRIX_DIFFERENCES) $(COMPUTED_TRANSFORMS_ICPRANSAC)
+all: $(MATRIX_DIFFERENCES) $(COMPUTED_TRANSFORMS_ICPRANSAC) average_distances.png
 
 compute_all_icpransac: $(COMPUTED_TRANSFORMS_ICPRANSAC)
 
@@ -117,6 +118,8 @@ transforms/%_icpransac.csv: $(SOURCE_POINTCLOUD) $(DESTIN_POINTCLOUD)
 %_diff: %_computed.csv
 	$(COMPAREMATRICES) $(subst _inliers,,$(subst _diff,_computed.csv,$@)) $(subst _inliers,,$(subst _diff,_true.csv,$@)) | tee $@
 
+average_distances.png: $(PLOT_AVERAGE_DISTANCES) $(COMPUTED_TRANSFORMS)
+	$(PLOT_AVERAGE_DISTANCES)
 
 
 clean:

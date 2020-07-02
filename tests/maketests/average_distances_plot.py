@@ -32,18 +32,21 @@ def calc_dists(mfile, srcfile, dstfile, offset, colour):
     return (dist, clouds_dist)
 
 dist,clouds_dist = calc_dists('transforms/valve_r{}.pcd_computed.csv', 'matched_pointclouds/valve_r{}.pcd_src.csv', 'matched_pointclouds/valve_r{}.pcd_dst.csv', -0.0075, 'orange')
-plt.plot(theta, dist, label='matched', c='orange')
+plt.plot(theta, dist, label='graph', c='orange')
 
 dist_icpransac,clouds_dist_icpransac = calc_dists('transforms/valve_r{}.pcd_inliers_computed.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_src.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_dst.csv', 0.0025, 'purple')
-plt.plot(theta, dist_icpransac, label='matched,icpransac', c='purple')
-
+plt.plot(theta, dist_icpransac, label='graph,icpransac', c='purple')
 
 dist_original, clouds_dist_original = calc_dists('transforms/valve_r{}.pcd_computed.csv', 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', -0.005, 'red')
+plt.plot(theta, dist_original, label='original', c='red')
+
 print('Nombre de points: {}'.format(len(clouds_dist_original[0])))
 
 dist_original_icpransac, clouds_dist_orig_icpr = calc_dists('transforms/valve_r{}.pcd_inliers_computed.csv', 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'blue')
+plt.plot(theta, dist_original_icpransac, label='original,icpransac', c='blue')
 
-dist_original_notransfo, clouds_dist_orig_notransfo = calc_dists(None, 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'blue')
+dist_original_notransfo, clouds_dist_orig_notransfo = calc_dists(None, 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'green')
+plt.plot(theta, dist_original_notransfo, label='no transfo', c='green')
 
 # clouds_dist = []
 # for i, angle in enumerate(theta_str):
@@ -71,11 +74,9 @@ dist_original_notransfo, clouds_dist_orig_notransfo = calc_dists(None, 'pointclo
 import matplotlib.pyplot as plt
 
 
-#plt.plot(theta, dist_notransform, label='matched', c='red')
-plt.plot(theta, dist_original, label='original', c='red')
-plt.plot(theta, dist_original_icpransac, label='original,icpransac', c='blue')
-plt.plot(theta, dist_original_notransfo, label='no transfo', c='green')
-#plt.plot(theta, clouds_dist_icpransac_notransform, label='matched,icpransac', c='blue')
+#plt.plot(theta, dist_notransform, label='graph', c='red')
+
+#plt.plot(theta, clouds_dist_icpransac_notransform, label='graph,icpransac', c='blue')
 plt.legend(loc='best')
 plt.xlabel('rotation angle')
 plt.ylabel('average distance')
