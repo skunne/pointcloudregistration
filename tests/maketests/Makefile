@@ -45,7 +45,8 @@ COMPUTED_TRANSFORMS_ICPRANSAC=$(subst _computed.csv,_icpransac.csv,$(CT_AUX))
 MATRIX_DIFFERENCES=$(subst _computed.csv,_diff,$(COMPUTED_TRANSFORMS))
 
 
-ECCLEMJAR=~/.m2/repository/fr/univ-nantes/ec_clem/2.0.0-SNAPSHOT/ec_clem-2.0.0-SNAPSHOT.jar
+ECCLEMDIR=ec-clem
+ECCLEMJAR=~/.m2/repository/fr/univ-nantes/ec_clem/2.0.1-SNAPSHOT/ec_clem-2.0.1-SNAPSHOT.jar
 CLITOOLSDIR=cli_tools
 COMPUTETRANSFORMDIR=cli_tools/compute_transformation/
 COMPUTETRANSFORMJAR=$(COMPUTETRANSFORMDIR)/target/compute_transformation-0.1.0-SNAPSHOT.jar
@@ -63,15 +64,20 @@ $(RUNTESTS):
 $(RANSAC):
 	make -C ../ransac
 
-$(ECCLEMJAR):
+$(ECCLEMDIR):
 	git clone https://github.com/anrcrocoval/ec-clem.git
-	mvn -f ecclem/ clean install
+
+$(ECCLEMJAR): $(ECCLEMDIR)
+	-ln --symbolic ~/icy ec-clem/lib/icy
+	mvn -f ec-clem/ clean
+	mvn -f ec-clem install
 
 $(CLITOOLSDIR):
 	git clone https://github.com/anrcrocoval/cli_tools.git
 
 $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
-	mvn -f $(COMPUTETRANSFORMDIR) clean install
+	mvn -f $(COMPUTETRANSFORMDIR) clean
+	mvn -f $(COMPUTETRANSFORMDIR) install
 
 # %_shuffled.pcd: %.pcd
 # 	$(SHUFFLE) $< $@
@@ -120,7 +126,6 @@ transforms/%_icpransac.csv: $(SOURCE_POINTCLOUD) $(DESTIN_POINTCLOUD)
 
 average_distances.png: $(PLOT_AVERAGE_DISTANCES) $(COMPUTED_TRANSFORMS)
 	$(PLOT_AVERAGE_DISTANCES)
-
 
 clean:
 	rm -f -- $(addprefix pointclouds/*,_shuffled.pcd _cropped.pcd _thinned.pcd _rotated.pcd)

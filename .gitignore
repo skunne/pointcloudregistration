@@ -29,6 +29,7 @@ output/
 tests/maketests/matched_pointclouds/*.csv
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
+tests/maketests/ec-clem/
 tests/maketests/transforms/
 #!tests/maketests/pointclouds/nuclei.pcd
 #tests/maketests/*.adj
@@ -48,6 +49,7 @@ tests/ransac/apply_ransac
 tests/ransac/standalone_ransac_test/a.out
 tests/ipopt/test_ipopt
 tests/icpransac/icpransac_gettransform
+tests/icpransac/compare_with_icp
 
 # ignore small learning experiments
 
