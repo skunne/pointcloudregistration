@@ -27,7 +27,7 @@ endef
 RUNTESTS=../algo/run_tests
 RANSAC=../ransac/apply_ransac
 ICPRANSAC=../icpransac/icpransac_gettransform
-NAME=pointclouds/valve
+NAME=pointclouds/nuclei
 
 PC_AUX1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)

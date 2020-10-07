@@ -27,12 +27,11 @@ pointclouds/untracked/
 
 output/
 tests/maketests/matched_pointclouds/*.csv
-tests/maketests/pointclouds/
+tests/maketests/pointclouds/*_*
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
 tests/maketests/ec-clem/
 tests/maketests/transforms/
-#!tests/maketests/pointclouds/nuclei.pcd
 #tests/maketests/*.adj
 tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
