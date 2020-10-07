@@ -31,11 +31,11 @@ def calc_dists(mfile, srcfile, dstfile, offset, colour):
     dist = [sum(c)/len(c) for c in clouds_dist]
     return (dist, clouds_dist)
 
-dist,clouds_dist = calc_dists('transforms/valve_r{}.pcd_computed.csv', 'matched_pointclouds/valve_r{}.pcd_src.csv', 'matched_pointclouds/valve_r{}.pcd_dst.csv', -0.0075, 'orange')
-plt.plot(theta, dist, label='graph', c='orange')
-
-dist_icpransac,clouds_dist_icpransac = calc_dists('transforms/valve_r{}.pcd_inliers_computed.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_src.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_dst.csv', 0.0025, 'purple')
-plt.plot(theta, dist_icpransac, label='graph,icpransac', c='purple')
+# dist,clouds_dist = calc_dists('transforms/valve_r{}.pcd_computed.csv', 'matched_pointclouds/valve_r{}.pcd_src.csv', 'matched_pointclouds/valve_r{}.pcd_dst.csv', -0.0075, 'orange')
+# plt.plot(theta, dist, label='graph', c='orange')
+#
+# dist_icpransac,clouds_dist_icpransac = calc_dists('transforms/valve_r{}.pcd_inliers_computed.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_src.csv', 'matched_pointclouds/valve_r{}.pcd_inliers_dst.csv', 0.0025, 'purple')
+# plt.plot(theta, dist_icpransac, label='graph,icpransac', c='purple')
 
 dist_original, clouds_dist_original = calc_dists('transforms/valve_r{}.pcd_computed.csv', 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', -0.005, 'red')
 plt.plot(theta, dist_original, label='original', c='red')
@@ -45,8 +45,8 @@ print('Nombre de points: {}'.format(len(clouds_dist_original[0])))
 dist_original_icpransac, clouds_dist_orig_icpr = calc_dists('transforms/valve_r{}.pcd_inliers_computed.csv', 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'blue')
 plt.plot(theta, dist_original_icpransac, label='original,icpransac', c='blue')
 
-dist_original_notransfo, clouds_dist_orig_notransfo = calc_dists(None, 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'green')
-plt.plot(theta, dist_original_notransfo, label='no transfo', c='green')
+# dist_original_notransfo, clouds_dist_orig_notransfo = calc_dists(None, 'pointclouds/valve.csv', 'pointclouds/valve_r{}.csv', 0.005, 'green')
+# plt.plot(theta, dist_original_notransfo, label='no transfo', c='green')
 
 # clouds_dist = []
 # for i, angle in enumerate(theta_str):
@@ -80,7 +80,7 @@ import matplotlib.pyplot as plt
 plt.legend(loc='best')
 plt.xlabel('rotation angle')
 plt.ylabel('average distance')
-plt.savefig('average_distances.png')
-plt.ylim(0,50)
-plt.savefig('average_distances_cropped.png')
+#plt.savefig('average_distances.png')
+plt.ylim(0,20)
+#plt.savefig('average_distances_rapport1an.png')
 plt.show()

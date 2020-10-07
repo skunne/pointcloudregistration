@@ -29,11 +29,12 @@ RANSAC=../ransac/apply_ransac
 ICPRANSAC=../icpransac/icpransac_gettransform
 NAME=pointclouds/valve
 
-#PC_AUX1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
-#PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)
+PC_AUX1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
+PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)
+POINTCLOUDS=$(PC_AUX2)
 #POINTCLOUDS=$(NAME)_shuffled.pcd $(PC_AUX2)
-PC_AUX1=valve.pcd valve_r0.0.pcd valve_r0.3141592653589793.pcd valve_r0.6283185307179586.pcd valve_r0.9424777960769379.pcd valve_r1.2566370614359172.pcd valve_r1.5707963267948966.pcd
-POINTCLOUDS=$(addprefix pointclouds/,$(PC_AUX1))
+#PC_AUX1=valve.pcd valve_r0.0.pcd valve_r0.3141592653589793.pcd valve_r0.6283185307179586.pcd valve_r0.9424777960769379.pcd valve_r1.2566370614359172.pcd valve_r1.5707963267948966.pcd
+# POINTCLOUDS=$(addprefix pointclouds/,$(PC_AUX2))
 
 MATCHED_WITNESS=matched_$(NAME)_dst.csv
 MATCHED=$(foreach pc,$(POINTCLOUDS),matched_$(pc)_dst.csv)
@@ -84,23 +85,23 @@ $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
 # 	mkdir -p $(TRANSFORMDIR)
 # 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 #
-# %_cropped.pcd: %.pcd
-# 	$(DIGHOLE) $< $@ 0 0 5 10 10 10
-# 	mkdir -p $(TRANSFORMDIR)
-# 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
-#
-# %_thinned.pcd: %.pcd
-# 	$(THINCLOUD) $< $@
-# 	mkdir -p $(TRANSFORMDIR)
-# 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
-#
-# %_rotated.pcd: %.pcd
-# 	$(ROTATE) $< $@
-# 	mkdir -p $(TRANSFORMDIR)
-# 	printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+%_cropped.pcd: %.pcd
+	$(DIGHOLE) $< $@ 0 0 5 10 10 10
+	mkdir -p $(TRANSFORMDIR)
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
-%.pcd:
-	./buildrotatedpointclouds.sh
+%_thinned.pcd: %.pcd
+	$(THINCLOUD) $< $@
+	mkdir -p $(TRANSFORMDIR)
+	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+
+%_rotated.pcd: %.pcd
+	$(ROTATE) $< $@
+	mkdir -p $(TRANSFORMDIR)
+	printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+
+# %.pcd:
+# 	./buildrotatedpointclouds.sh
 
 $(INLIERS): DST=$(subst _inliers_dst.csv,_dst.csv,$@)
 %_inliers_dst.csv: $(MATCHED_WITNESS) $(RANSAC)

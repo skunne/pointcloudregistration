@@ -66,4 +66,4 @@ def main(argv):
     return(list_of_d)
 
 if __name__=='__main__':
-    main(sys.argv)
+    print_list(main(sys.argv))

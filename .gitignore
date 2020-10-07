@@ -27,6 +27,7 @@ pointclouds/untracked/
 
 output/
 tests/maketests/matched_pointclouds/*.csv
+tests/maketests/pointclouds/
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
 tests/maketests/ec-clem/

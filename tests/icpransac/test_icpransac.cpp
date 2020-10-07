@@ -14,7 +14,7 @@ double icpransac(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_source, pcl::Poin
   /* ICP PARAMETERS*/
   //icp.setMaximumIterations(nr_iterations);  // maximum nb iterations of icp
   //icp.setTransformationEpsilon(epsilon);    // halt if transformation change by less than epsilon
-  //icp.etEuclideanFitnessEpsilon(distance);  // say a solution was found if sumofsquared errors < distance
+  //icp.setEuclideanFitnessEpsilon(distance);  // say a solution was found if sumofsquared errors < distance
 
   /* RANSAC PARAMETERS */
   //icp.setMaxCorrespondenceDistance (distance);
