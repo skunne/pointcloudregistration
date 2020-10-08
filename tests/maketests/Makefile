@@ -120,7 +120,7 @@ transforms/%_inliers_computed.csv: matched_pointclouds/%_inliers_dst.csv
 	$(call COMPUTETRANSFORM,$(SOURCE_POINTCLOUD),$(DESTIN_POINTCLOUD)) > $@; true
 
 transforms/%_icpransac.csv: $(SOURCE_POINTCLOUD) $(DESTIN_POINTCLOUD)
-	$(ICPRANSAC) pointclouds/valve.pcd $(subst transforms/,pointclouds/,$(subst _icpransac.csv,,$@)) $@
+	$(ICPRANSAC) $(NAME).pcd $(subst transforms/,pointclouds/,$(subst _icpransac.csv,,$@)) $@
 
 %_diff: %_computed.csv
 	$(COMPAREMATRICES) $(subst _inliers,,$(subst _diff,_computed.csv,$@)) $(subst _inliers,,$(subst _diff,_true.csv,$@)) | tee $@
