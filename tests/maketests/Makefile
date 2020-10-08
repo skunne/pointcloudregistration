@@ -31,7 +31,7 @@ TESTCASE=nuclei
 NAME=pointclouds/$(TESTCASE)
 
 PC_AUX1=$(NAME).pcd $(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
-PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)
+PC_AUX2=$(PC_AUX1) $(PC_AUX1:.pcd=_rotatedpi4.pcd) $(PC_AUX1:.pcd=_rotatedpi2.pcd)
 POINTCLOUDS=$(PC_AUX2)
 #POINTCLOUDS=$(NAME)_shuffled.pcd $(PC_AUX2)
 #PC_AUX1=valve.pcd valve_r0.0.pcd valve_r0.3141592653589793.pcd valve_r0.6283185307179586.pcd valve_r0.9424777960769379.pcd valve_r1.2566370614359172.pcd valve_r1.5707963267948966.pcd
@@ -46,6 +46,11 @@ COMPUTED_TRANSFORMS=$(CT_AUX) $(CT_AUX_INLIERS)
 COMPUTED_TRANSFORMS_ICPRANSAC=$(subst _computed.csv,_icpransac.csv,$(CT_AUX))
 MATRIX_DIFFERENCES=$(subst _computed.csv,_diff,$(COMPUTED_TRANSFORMS))
 
+ifeq ($(TESTCASE),nuclei)
+DIGCOORD=0 0 5 10 10 10
+else
+DIGCOORD=130 60 0 240 240 300
+endif
 
 ECCLEMDIR=ec-clem
 ECCLEMJAR=~/.m2/repository/fr/univ-nantes/ec_clem/2.0.1-SNAPSHOT/ec_clem-2.0.1-SNAPSHOT.jar
@@ -86,8 +91,9 @@ $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
 # 	mkdir -p $(TRANSFORMDIR)
 # 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 #
+
 %_cropped.pcd: %.pcd
-	$(DIGHOLE) $< $@ 0 0 5 10 10 10
+	$(DIGHOLE) $< $@ $(DIGCOORD)
 	mkdir -p $(TRANSFORMDIR)
 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' >$(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
@@ -96,10 +102,15 @@ $(COMPUTETRANSFORMJAR): $(CLITOOLSDIR) $(ECCLEMJAR)
 	mkdir -p $(TRANSFORMDIR)
 	printf '1,0,0,0\n0,1,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
-%_rotated.pcd: %.pcd
-	$(ROTATE) $< $@
+%_rotatedpi4.pcd: %.pcd
+	$(ROTATE) $< $@ 0.785 $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 	mkdir -p $(TRANSFORMDIR)
-	printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+	#printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+
+%_rotatedpi2.pcd: %.pcd
+	$(ROTATE) $< $@ 1.571 $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
+	mkdir -p $(TRANSFORMDIR)
+	#printf -- '-0.15643446504023104,-0.9876883405951377,0,0\n0.9876883405951377,-0.15643446504023104,0,0\n0,0,1,0\n0,0,0,1' > $(subst pointclouds/,$(TRANSFORMDIR),$@)_true.csv
 
 # %.pcd:
 # 	./buildrotatedpointclouds.sh

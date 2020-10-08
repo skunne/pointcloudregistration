@@ -30,7 +30,7 @@ def calc_dist(mfile, srcfile, dstfile):
 prefix = ['nuclei', 'valve']
 cropped = ['', '_cropped']
 thinned = ['', '_thinned']
-rotated = ['', '_rotated']
+rotated = ['', '_rotatedpi4', '_rotatedpi2']
 infix = '.pcd'
 srcdst = ['_src', '_dst']
 suffix = '.csv'
@@ -54,13 +54,13 @@ for p in prefix:
                 source = 'pointclouds/'+p+c+t+'.pcd'
                 dest   = 'pointclouds/'+p+c+t+r+'.pcd'
                 avg_d, rmse, cloud_d = calc_dist(matrix_computed, source, dest)
-                y_ouralgo_inliers.append(avg_d)
+                y_ouralgo_inliers.append(rmse)#avg_d)
 
                 matrix_icpransac = 'transforms/'+p+c+t+r+'.pcd_icpransac.csv'
                 source = 'pointclouds/'+p+c+t+'.pcd'
                 dest   = 'pointclouds/'+p+c+t+r+'.pcd'
                 avg_d, rmse, cloud_d = calc_dist(matrix_icpransac, source, dest)
-                y_icpransac.append(avg_d)
+                y_icpransac.append(rmse)#avg_d)
 
     # plt.scatter(x, y_ouralgo, label='our algo without ransac on {}'.format(p))
     # plt.plot(x, y_ouralgo)
@@ -71,7 +71,8 @@ for p in prefix:
 
     plt.legend(loc='best')
     plt.xlabel(p)
-    plt.ylabel('average distance')#'rmse'
+    plt.ylabel('root mean squared pointwise distance')
+    #plt.ylabel('average distance')#'rmse'
     plt.gcf().set_size_inches(16, 12)
     plt.savefig('evaluation_performances_{}.png'.format(p), dpi=100)
     #plt.ylim(0,10)
