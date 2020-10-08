@@ -27,9 +27,10 @@ endef
 RUNTESTS=../algo/run_tests
 RANSAC=../ransac/apply_ransac
 ICPRANSAC=../icpransac/icpransac_gettransform
-NAME=pointclouds/nuclei
+TESTCASE=nuclei
+NAME=pointclouds/$(TESTCASE)
 
-PC_AUX1=$(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
+PC_AUX1=$(NAME).pcd $(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
 PC_AUX2=$(PC_AUX1) $(NAME)_rotated.pcd $(PC_AUX1:.pcd=_rotated.pcd)
 POINTCLOUDS=$(PC_AUX2)
 #POINTCLOUDS=$(NAME)_shuffled.pcd $(PC_AUX2)
@@ -109,7 +110,7 @@ $(INLIERS): DST=$(subst _inliers_dst.csv,_dst.csv,$@)
 
 $(MATCHED_WITNESS): $(RUNTESTS) $(POINTCLOUDS) $(COMPUTETRANSFORMJAR)
 	mkdir -p matched_pointclouds
-	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(NAME).pcd $(POINTCLOUDS)
+	$(RUNTESTS) $(NAME).meta $(NAME).pcd $(POINTCLOUDS)
 	$(COMPUTE_AVG_DISTANCES)
 
 $(COMPUTED_TRANSFORMS): DESTIN_POINTCLOUD=$(subst $(TRANSFORMDIR),matched_pointclouds/,$(subst _computed.csv,_dst.csv,$@))
