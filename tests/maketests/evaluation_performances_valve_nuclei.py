@@ -35,45 +35,61 @@ infix = '.pcd'
 srcdst = ['_src', '_dst']
 suffix = '.csv'
 
-for p in prefix:
-    x = []
-    y_ouralgo = []
-    y_ouralgo_inliers = []
-    y_icpransac = []
-    for r in rotated:
-        for t in thinned:
+def main(criterion):
+    for p in prefix:
+        x = []
+        y_ouralgo = []
+        y_ouralgo_inliers = []
+        y_icpransac = []
+        for r in rotated:
             for c in cropped:
-                x.append(c+t+r)
-                # matrix_computed = 'transforms/'+p+c+t+r+'.pcd_computed.csv'
-                # source = 'pointclouds/'+ p + c + t +'.pcd'
-                # dest   = 'pointclouds/'+ p + c + t + r +'.pcd'
-                # avg_d, rmse, cloud_d = calc_dist(matrix_computed, source, dest)
-                # y_ouralgo.append(avg_d)
+                for t in thinned:
+                    x.append(('C ' if c else '') + ('S ' if t else '') + ('pi/4' if 'pi4' in r else 'pi/2' if r else ''))
+                    # matrix_computed = 'transforms/'+p+c+t+r+'.pcd_computed.csv'
+                    # source = 'pointclouds/'+ p + c + t +'.pcd'
+                    # dest   = 'pointclouds/'+ p + c + t + r +'.pcd'
+                    # avg_d, rmse, cloud_d = calc_dist(matrix_computed, source, dest)
+                    # y_ouralgo.append(avg_d)
 
-                matrix_computed = 'transforms/'+p+c+t+r+'.pcd_inliers_computed.csv'
-                source = 'pointclouds/'+p+c+t+'.pcd'
-                dest   = 'pointclouds/'+p+c+t+r+'.pcd'
-                avg_d, rmse, cloud_d = calc_dist(matrix_computed, source, dest)
-                y_ouralgo_inliers.append(rmse)#avg_d)
+                    matrix_computed = 'transforms/'+p+c+t+r+'.pcd_inliers_computed.csv'
+                    source = 'pointclouds/'+p+c+t+'.pcd'
+                    dest   = 'pointclouds/'+p+c+t+r+'.pcd'
+                    our_avg_d, our_rmse, our_cloud_d = calc_dist(matrix_computed, source, dest)
+                    #y_ouralgo_inliers.append(rmse)#rmse)#avg_d)
 
-                matrix_icpransac = 'transforms/'+p+c+t+r+'.pcd_icpransac.csv'
-                source = 'pointclouds/'+p+c+t+'.pcd'
-                dest   = 'pointclouds/'+p+c+t+r+'.pcd'
-                avg_d, rmse, cloud_d = calc_dist(matrix_icpransac, source, dest)
-                y_icpransac.append(rmse)#avg_d)
+                    matrix_icpransac = 'transforms/'+p+c+t+r+'.pcd_icpransac.csv'
+                    source = 'pointclouds/'+p+c+t+'.pcd'
+                    dest   = 'pointclouds/'+p+c+t+r+'.pcd'
+                    icp_avg_d, icp_rmse, icp_cloud_d = calc_dist(matrix_icpransac, source, dest)
+                    #y_icpransac.append(rmse)#rmse)#avg_d)
 
-    # plt.scatter(x, y_ouralgo, label='our algo without ransac on {}'.format(p))
-    # plt.plot(x, y_ouralgo)
-    plt.scatter(x, y_ouralgo_inliers, label='our algo on {}'.format(p))
-    plt.plot(x, y_ouralgo_inliers)
-    plt.scatter(x, y_icpransac, label='icp/ransac on {}'.format(p))
-    plt.plot(x, y_icpransac)
+                    if (criterion=='rmse'):
+                        y_ouralgo_inliers.append(our_rmse)
+                        y_icpransac.append(icp_rmse)
+                    else:
+                        y_ouralgo_inliers.append(our_avg_d)
+                        y_icpransac.append(icp_avg_d)
 
-    plt.legend(loc='best')
-    plt.xlabel(p)
-    plt.ylabel('root mean squared pointwise distance')
-    #plt.ylabel('average distance')#'rmse'
-    plt.gcf().set_size_inches(16, 12)
-    plt.savefig('evaluation_performances_{}.png'.format(p), dpi=100)
-    #plt.ylim(0,10)
-    plt.show()
+
+
+        # plt.scatter(x, y_ouralgo, label='our algo without ransac on {}'.format(p))
+        # plt.plot(x, y_ouralgo)
+        plt.scatter(x, y_ouralgo_inliers, label='our algo on {}'.format(p))
+        plt.plot(x, y_ouralgo_inliers)
+        plt.scatter(x, y_icpransac, label='icp/ransac on {}'.format(p))
+        plt.plot(x, y_icpransac)
+
+        plt.legend(loc='best')
+        plt.xlabel(p)
+        if (criterion == 'rmse'):
+            plt.ylabel('root mean squared pointwise distance')
+        else:
+            plt.ylabel('average distance')
+        plt.gcf().set_size_inches(16, 12)
+        plt.savefig('evaluation_performances_{}.png'.format(p), dpi=100)
+        #plt.ylim(0,10)
+        plt.show()
+
+if __name__=='__main__':
+    criterion = sys.argv[1] if len(sys.argv) > 1 else 'avg'
+    main(criterion)
