@@ -26,13 +26,12 @@ pointclouds/untracked/
 # ignore all output files: matrices, ESF descriptors, etc
 
 output/
-tests/maketests/matched_pointclouds/*.csv
+#tests/maketests/matched_pointclouds/*.csv
 tests/maketests/average_distances.txt
 tests/maketests/cli_tools/
-tests/maketests/transforms/
-tests/maketests/pointclouds/*.pcd
-!tests/maketests/pointclouds/nuclei.pcd
-tests/maketests/*.adj
+#tests/maketests/transforms/
+#!tests/maketests/pointclouds/nuclei.pcd
+#tests/maketests/*.adj
 tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
 tests/icpransac/*.adj
