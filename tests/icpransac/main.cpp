@@ -90,9 +90,12 @@ int
   //double icp_score = icpransac(cloud_source, cloud_dest, icp_transform);
   icpransac(cloud_source, cloud_dest, icp_transform);
 
+  const static Eigen::IOFormat CSVFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, ",", "\n");
+
   std::ofstream outf(argv[3]);
+
   std::cout << "Writing transform to " << argv[3] << std::endl;
-  outf << icp_transform << std::endl;
+  outf << icp_transform.format(CSVFormat) << std::endl;
   //
   // //std::cout << "ICP/Ransac score: " << icp_score << std::endl;
   // std::cout << "ICP/Ransac transform:" << std::endl << icp_transform << std::endl;
