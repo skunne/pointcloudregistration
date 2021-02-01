@@ -62,9 +62,12 @@ $(RUNTESTS):
 $(RANSAC):
 	make -C ../ransac
 
-$(ECCLEMJAR):
+ec-clem:
 	git clone https://github.com/anrcrocoval/ec-clem.git
-	mvn -f ecclem/ clean install
+
+$(ECCLEMJAR): ec-clem
+	mvn -f ec-clem/ clean
+	mvn -f ec-clem/ install
 
 $(CLITOOLSDIR):
 	git clone https://github.com/anrcrocoval/cli_tools.git
