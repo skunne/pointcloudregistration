@@ -11,7 +11,7 @@ import distances_list_matched_pointclouds_pcd
 import matplotlib.pyplot as plt
 import math  # sqrt to calculate rmse
 
-# valve / nuclei
+# valve / nuclei / heart
 # allpoints / thinned
 # rotation 0 / ??
 # full / cropped
@@ -27,7 +27,7 @@ def calc_dist(mfile, srcfile, dstfile):
     rmse = math.sqrt(sum(x*x for x in list_of_d) / len(list_of_d))
     return avg_d, rmse, list_of_d
 
-prefix = ['nuclei', 'valve']
+prefix = ['nuclei', 'valve', 'heart']
 cropped = ['', '_cropped']
 thinned = ['', '_thinned']
 rotated = ['', '_rotatedpi4', '_rotatedpi2']
