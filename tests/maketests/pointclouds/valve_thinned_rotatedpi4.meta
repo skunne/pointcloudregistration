@@ -1,0 +1,7 @@
+filename valve_thinned_rotatedpi4.pcd
+voxel_resolution 4.0
+seed_resolution 20
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
+adjacency_filename dest.adj
