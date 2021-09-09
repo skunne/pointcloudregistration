@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
-import csv
+import sys      # sys.argv
+import csv      # csv.reader
 
 default_header='\n'.join([
     'VERSION 0.7',
@@ -45,7 +45,7 @@ def main(argv):
                 write_pcd(csv_in, pcd_out)
     else:
         print('USAGE:')
-        print('  {} csvfile pcdfile'.format(sys.argv[0]))
+        print('  {} csvfile pcdfile'.format(argv[0]))
 
 if __name__=='__main__':
     main(sys.argv)

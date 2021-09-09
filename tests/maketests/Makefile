@@ -27,7 +27,7 @@ endef
 RUNTESTS=../algo/run_tests
 RANSAC=../ransac/apply_ransac
 ICPRANSAC=../icpransac/icpransac_gettransform
-TESTCASE=nuclei
+TESTCASE=heart
 NAME=pointclouds/$(TESTCASE)
 
 PC_AUX1=$(NAME).pcd $(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
