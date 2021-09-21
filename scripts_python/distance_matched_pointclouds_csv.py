@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import csv
 import sys
 import math
@@ -31,6 +33,7 @@ def compute_average_distance(filename1, filename2, transform=identity_matrix):
     if nbpoints > 0:
         return d / nbpoints
     else:
+        print('PAS DE POINTS DANS LE FICHIER')
         return 0
 
 def print_usage():
@@ -46,13 +49,13 @@ def print_usage():
     print('    a fourth line equal to 0,0,0,1.')
     sys.exit(1)
 
-def main():
-    if len(sys.argv) == 3:
-        print(compute_average_distance(sys.argv[1], sys.argv[2]))
-    elif (len(sys.argv) == 4):
-        print(compute_average_distance(sys.argv[2], sys.argv[3], get_matrix(sys.argv[1])))
+def main(argv):
+    if len(argv) == 3:
+        print(compute_average_distance(argv[1], argv[2]))
+    elif (len(argv) == 4):
+        print(compute_average_distance(argv[2], argv[3], get_matrix(argv[1])))
     else:
         print_usage()
 
 if __name__=='__main__':
-    main()
+    main(sys.argv)

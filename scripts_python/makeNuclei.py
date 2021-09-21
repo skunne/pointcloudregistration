@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import random               # random.seed()
 import makeSnowman as snow  # addPointsOnSphere()
 import sys                  # argv, exit()
@@ -25,13 +27,13 @@ def printToMeta(outf):
     outf.write('normal_importance 1.0\n')
     outf.write('adjacency_filename output/nuclei.adj\n')
 
-def print_usage_and_exit():
+def print_usage_and_exit(cmd):
     print('SYNOPSIS')
     print()
-    print('{} [-h | --help]'.format(sys.argv[0]))
+    print('{} [-h | --help]'.format(cmd))
     print('    Print this help message and exit')
     print()
-    print('{} [nb_nuclei [nb_points]]'.format(sys.argv[0]))
+    print('{} [nb_nuclei [nb_points]]'.format(cmd))
     print('    Generate a point cloud made of <nb_points> points randomly spread')
     print('    over the surface of <nb_nuclei> spheres with random centers')
     print('    Default parameters:')
@@ -40,23 +42,23 @@ def print_usage_and_exit():
     print()
     sys.exit()
 
-def get_args():
-    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']) or len(sys.argv) > 3:
-        print_usage_and_exit()
+def get_args(argv):
+    if (len(argv) > 1 and argv[1] in ['-h', '--help']) or len(argv) > 3:
+        print_usage_and_exit(argv[0])
     nb_nuclei = 5
-    if len(sys.argv) > 1:
-        nb_nuclei = int(sys.argv[1])
+    if len(argv) > 1:
+        nb_nuclei = int(argv[1])
     nb_points = 480 * nb_nuclei
-    if len(sys.argv) > 2:
-        nb_points = int(sys.argv[2])
+    if len(argv) > 2:
+        nb_points = int(argv[2])
     return nb_nuclei, nb_points
 
 pcdfilename = 'nuclei.pcd'
 metafilename = 'nuclei.meta'
 
-def main():
+def main(argv):
     random.seed()
-    nb_nuclei, nb_points = get_args()
+    nb_nuclei, nb_points = get_args(argv)
     centers = chooseCenters(10.0, 10.0, 10.0, nb_nuclei)
     pointcloud = drawNuclei(centers, 1.0, nb_points)
     with open(pcdfilename, 'w') as outf:
@@ -65,4 +67,4 @@ def main():
         printToMeta(outf)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
