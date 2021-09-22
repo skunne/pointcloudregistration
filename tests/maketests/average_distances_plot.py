@@ -75,7 +75,7 @@ import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 
 for imgname in ['nuclei', 'valve', 'heart']:
-    x_axis = [','.join(triplet) for triplet in itertools.product(['', 'pi/4', 'pi/2'], ['', 'C'], ['', 'S'])]
+    x_axis = [''.join(triplet) for triplet in itertools.product(['', 'pi/4', 'pi/2'], ['', 'C'], ['', 'S'])]
     transfo_combs = list(itertools.product(['', '_rotatedpi4', '_rotatedpi2'], ['', '_cropped'], ['', '_thinned']))
     srcfiles = [''.join(['pointclouds/', imgname, '.pcd']) for r,c,s in transfo_combs]
     dstfiles = [''.join(['pointclouds/', imgname ,r, '.pcd']) for r,c,s in transfo_combs]

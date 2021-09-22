@@ -38,13 +38,14 @@ def read_file(infilename):
                 pointcloud.append((x,y,z,rgba))
     return header, pointcloud
 
-def dont_kill_it(i):
-    return (
-        i % 3 == 0
-    )
+# def dont_kill_it(i):
+#     return (
+#         i % 3 == 0
+#     )
 
 def filter_pointcloud(pointcloud):
-    return [(x,y,z,rgba) for (i,(x,y,z,rgba)) in enumerate(pointcloud) if dont_kill_it(i)]
+    #return [(x,y,z,rgba) for (i,(x,y,z,rgba)) in enumerate(pointcloud) if dont_kill_it(i)]
+    return pointcloud[::3]
 
 def fix_header(header, new_nb_points):
     new_header = []
