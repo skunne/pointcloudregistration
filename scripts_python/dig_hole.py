@@ -10,7 +10,7 @@ def print_usage_and_exit(cmd):
     print()
     print('{} ifile ofile [xmin ymin zmin] xmax ymax zmax'.format(cmd))
     print('    1) read .pcd file ifile')
-    print('    2) remove points in the rectangular parallelelakkzefkopfpiped delimited by the arguments')
+    print('    2) remove points in the rectangular parallelepiped delimited by the arguments')
     print('    3) write resulting point cloud to file <ofile> in pcd format')
     print('    Parameters xmin, ymin and zmin default to 0')
     print()
