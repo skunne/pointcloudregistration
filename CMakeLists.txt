@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
+set(PCL_DIR /CONDAS/users/skunne/miniconda/share/pcl-1.12)
+set(VTK_DIR /CONDAS/users/skunne/miniconda/lib/cmake/vtk-9.1/)
 
 set(NAME register_pointclouds)
 
