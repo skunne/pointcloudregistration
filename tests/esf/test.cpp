@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 
   std::vector<Params *> params;
   std::vector<PointCloudT::Ptr> cloud;
+  //std::vector<ESFMaker::PointCloudOut::Ptr> esf_out;
   std::vector<ESFMaker::PointCloudOut::Ptr> esf_out;
   ESFMaker esf_calculator;
 
@@ -45,13 +46,13 @@ int main(int argc, char **argv)
     if (params[i]->error)
       return (params[i]->error);
 
-    cloud.push_back(boost::shared_ptr<PointCloudT>(new PointCloudT));
+    cloud.push_back(PointCloudT::Ptr(new PointCloudT));
     int error_loading_file = cpr_loadFile(params[i]->filename.c_str(), params[i], cloud[i]);
     if (error_loading_file)
       return (error_loading_file);
 
     esf_calculator.setInputCloud(cloud[i]);
-    esf_out.push_back(boost::shared_ptr<ESFMaker::PointCloudOut>(new (ESFMaker::PointCloudOut)));
+    esf_out.push_back(ESFMaker::PointCloudOut::Ptr(new (ESFMaker::PointCloudOut)));
     esf_calculator.compute(*esf_out[i]);
   }
 

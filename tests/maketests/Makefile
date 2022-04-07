@@ -27,7 +27,7 @@ endef
 RUNTESTS=../algo/run_tests
 RANSAC=../ransac/apply_ransac
 ICPRANSAC=../icpransac/icpransac_gettransform
-TESTCASE=nuclei
+TESTCASE=heart
 NAME=pointclouds/$(TESTCASE)
 
 PC_AUX1=$(NAME).pcd $(NAME)_cropped.pcd $(NAME)_thinned.pcd $(NAME)_cropped_thinned.pcd
@@ -48,8 +48,10 @@ MATRIX_DIFFERENCES=$(subst _computed.csv,_diff,$(COMPUTED_TRANSFORMS))
 
 ifeq ($(TESTCASE),nuclei)
 DIGCOORD=0 0 5 10 10 10
-else
+else ifeq ($(TESTCASE),valve)
 DIGCOORD=130 60 0 240 240 300
+else
+DIGCOORD=0 600 0 1000 1000 1000 
 endif
 
 ECCLEMDIR=ec-clem

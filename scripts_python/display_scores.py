@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt  # scatter, xlabel, ylabel, savefig, show
 import sys                       # argv for command-line arguments
 import os                        # path.splitext to substitute file extensions

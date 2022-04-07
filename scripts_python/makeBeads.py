@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import random               # random.seed()
 import makeSnowman as snow  # addPointsOnSphere()
 from math import sqrt       # square root
@@ -34,13 +36,13 @@ def minDistance(centers):
     c_cs_lst = [(centers[i], centers[i+1:]) for i in range(len(centers))]
     return sqrt(min(minDistance_helper(c, cs) for (c,cs) in c_cs_lst if cs))
 
-def print_usage_and_exit():
+def print_usage_and_exit(cmd):
     print('SYNOPSIS')
     print()
-    print('{} [-h | --help]'.format(sys.argv[0]))
+    print('{} [-h | --help]'.format(cmd))
     print('    print this help message and exit')
     print()
-    print('{} [nb_beads [nb_points]]'.format(sys.argv[0]))
+    print('{} [nb_beads [nb_points]]'.format(cmd))
     print('    Generate a point cloud made of <nb_points> points randomly spread')
     print('    over the surface of <nb_beads> spheres with random centers')
     print('    Default parameters:')
@@ -49,18 +51,18 @@ def print_usage_and_exit():
     print()
     sys.exit()
 
-def get_args():
-    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']) or len(sys.argv) > 3:
-        print_usage_and_exit()
+def get_args(argv):
+    if (len(argv) > 1 and argv[1] in ['-h', '--help']) or len(argv) > 3:
+        print_usage_and_exit(argv[0])
     nb_beads = 20
-    if len(sys.argv) > 1:
-        nb_nuclei = int(sys.argv[1])
+    if len(argv) > 1:
+        nb_nuclei = int(argv[1])
     nb_points = 10 * nb_beads
-    if len(sys.argv) > 2:
-        nb_points = int(sys.argv[2])
+    if len(argv) > 2:
+        nb_points = int(argv[2])
     return nb_nuclei, nb_points
 
-def main():
+def main(argv):
     random.seed()
     nb_beads, nb_points = get_args()
     radius = 0.05
@@ -74,4 +76,4 @@ def main():
         printToMeta(outf, min_distance)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
