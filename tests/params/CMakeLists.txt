@@ -14,7 +14,7 @@ include_directories(SYSTEM ${PCL_INCLUDE_DIRS} ${IPOPT_INCLUDE_DIR})
 link_directories(${PCL_LIBRARY_DIRS} ${IPOPT_LIBRARY_DIR})
 add_definitions(${PCL_DEFINITIONS})
 
-set(SRC main_test.cpp ../../src/cpr_debugprint.cpp ../../src/cpr_processedpointcloud.cpp ../../src/cpr_clustering.cpp ../../src/cpr_connectedcomponents.cpp ../../src/cpr_features.cpp ../../src/cpr_matrices.cpp ../../src/cpr_graphmatching.cpp ../../src/cpr_graphmatching_frankwolfe.cpp ../../src/cpr_graphmatching_nonlin.cpp ../../src/cpr_visualisation.cpp ../../src/cpr_params.cpp ../../src/cpr_loadfiles.cpp)
+set(SRC main_test.cpp ../../src/cpr_debugprint.cpp ../../src/cpr_processedpointcloud.cpp ../../src/cpr_clustering.cpp ../../src/cpr_connectedcomponents.cpp ../../src/cpr_features.cpp ../../src/cpr_matrices.cpp ../../src/cpr_graphmatching.cpp ../../src/cpr_graphmatching_frankwolfe.cpp ../../src/cpr_visualisation.cpp ../../src/cpr_params.cpp ../../src/cpr_loadfiles.cpp)
 
 include_directories("../../includes" "./includes")
 
