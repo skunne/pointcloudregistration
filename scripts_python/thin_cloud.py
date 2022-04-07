@@ -1,12 +1,14 @@
+#!/usr/bin/env python3
+
 import sys          # argv, exit()
 
-def print_usage_and_exit():
+def print_usage_and_exit(cmd):
     print('SYNOPSIS')
     print()
-    print('{} [-h | --help]'.format(sys.argv[0]))
+    print('{} [-h | --help]'.format(cmd))
     print('    print this help message and exit')
     print()
-    print('{} ifile ofile'.format(sys.argv[0]))
+    print('{} ifile ofile'.format(cmd))
     print('    1) read .pcd file <ifile>')
     print('    2) remove every 2 out of 3 points')
     print('    3) write resulting point cloud to file ofile in pcd format')
@@ -14,12 +16,12 @@ def print_usage_and_exit():
     print()
     sys.exit()
 
-def get_args():
-    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
+def get_args(argv):
+    if (len(argv) > 1 and argv[1] in ['-h', '--help']):
         print_usage_and_exit()
-    elif len(sys.argv) > 2:
-        infilename = sys.argv[1]
-        outfilename = sys.argv[2]
+    elif len(argv) > 2:
+        infilename = argv[1]
+        outfilename = argv[2]
     return (infilename, outfilename)
 
 def read_file(infilename):
@@ -36,13 +38,14 @@ def read_file(infilename):
                 pointcloud.append((x,y,z,rgba))
     return header, pointcloud
 
-def dont_kill_it(i):
-    return (
-        i % 3 == 0
-    )
+# def dont_kill_it(i):
+#     return (
+#         i % 3 == 0
+#     )
 
 def filter_pointcloud(pointcloud):
-    return [(x,y,z,rgba) for (i,(x,y,z,rgba)) in enumerate(pointcloud) if dont_kill_it(i)]
+    #return [(x,y,z,rgba) for (i,(x,y,z,rgba)) in enumerate(pointcloud) if dont_kill_it(i)]
+    return pointcloud[::3]
 
 def fix_header(header, new_nb_points):
     new_header = []
@@ -61,12 +64,12 @@ def write_file(header, pointcloud, outfilename):
         for (x,y,z,rgba) in pointcloud:
             f.write("{} {} {} {}\n".format(x, y, z, rgba))
 
-def main():
-    (infilename, outfilename) = get_args()
+def main(argv):
+    (infilename, outfilename) = get_args(argv)
     header, pointcloud = read_file(infilename)
     filtered_pointcloud = filter_pointcloud(pointcloud)
     header = fix_header(header, len(filtered_pointcloud))
     write_file(header, filtered_pointcloud, outfilename)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

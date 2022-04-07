@@ -1,13 +1,15 @@
+#!/usr/bin/env python3
+
 import sys          # argv, exit()
 import random       # seed(), shuffle()
 
-def print_usage_and_exit():
+def print_usage_and_exit(cmd):
     print('SYNOPSIS')
     print()
-    print('{} [-h | --help]'.format(sys.argv[0]))
+    print('{} [-h | --help]'.format(cmd))
     print('    print this help message and exit')
     print()
-    print('{} ifile ofile'.format(sys.argv[0]))
+    print('{} ifile ofile'.format(cmd))
     print('    1) read .pcd file <ifile>')
     print('    2) randomly permuts the order in which the points are listed, without actually changing the points')
     print('    3) write resulting point cloud to file ofile in pcd format')
@@ -15,12 +17,12 @@ def print_usage_and_exit():
     print()
     sys.exit()
 
-def get_args():
-    if (len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']):
-        print_usage_and_exit()
-    elif len(sys.argv) > 2:
-        infilename = sys.argv[1]
-        outfilename = sys.argv[2]
+def get_args(argv):
+    if (len(argv) > 1 and argv[1] in ['-h', '--help']):
+        print_usage_and_exit(argv[0])
+    elif len(argv) > 2:
+        infilename = argv[1]
+        outfilename = argv[2]
     return (infilename, outfilename)
 
 def read_file(infilename):
@@ -44,12 +46,12 @@ def write_file(header, pointcloud, outfilename):
         for (x,y,z,rgba) in pointcloud:
             f.write("{} {} {} {}\n".format(x, y, z, rgba))
 
-def main():
+def main(argv):
     random.seed()
-    (infilename, outfilename) = get_args()
+    (infilename, outfilename) = get_args(argv)
     header, pointcloud = read_file(infilename)
     random.shuffle(pointcloud)
     write_file(header, pointcloud, outfilename)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

@@ -102,15 +102,15 @@ main (int argc, char ** argv)
   if (build_error)
     return build_error;
 
-  //pcl::visualization::PCLVisualizer::Ptr viewer_source =
-  //ppc_source.visualise();
+  // pcl::visualization::PCLVisualizer::Ptr viewer_source =
+  // ppc_source.visualise();
 
   build_error = ppc_dest.build();
   if (build_error)
     return build_error;
 
-  //pcl::visualization::PCLVisualizer::Ptr viewer_dest =
-  //ppc_dest.visualise();
+  // pcl::visualization::PCLVisualizer::Ptr viewer_dest =
+  // ppc_dest.visualise();
 
   VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
   EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
@@ -119,7 +119,7 @@ main (int argc, char ** argv)
   printMatrixToFile("output/edge_similarity_matrix", esim_mat.m);
 
   // pcl::visualization::PCLVisualizer::Ptr viewer =
-  //visualisation(ppc_source, ppc_dest);
+  // visualisation(ppc_source, ppc_dest);
 
   pcl::visualization::PCLVisualizer::Ptr viewer_source =
     ppc_source.visualise();

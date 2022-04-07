@@ -1,0 +1,7 @@
+filename nuclei_rotatedpi4.pcd
+voxel_resolution 0.2
+seed_resolution 1.0
+color_importance 0.2
+spatial_importance 1.0
+normal_importance 1.0
+adjacency_filename nuclei_rotatedpi4.adj

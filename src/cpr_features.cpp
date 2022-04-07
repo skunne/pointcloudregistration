@@ -42,14 +42,15 @@ void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_
 
   //pcl::geometry::project (p2, p1, uz, p2_projected);
 
-  angle_x = pcl::getAngle3D(ux, v_projected);
-  angle_y = pcl::getAngle3D(uy, v_projected);
-  angle_z = pcl::getAngle3D(uz, v);
+  angle_x = pcl::getAngle3D(ux, v_projected);      // = acos(v.x / (length ∗ sin(angle_z)))
+  angle_y = pcl::getAngle3D(uy, v_projected);      // = acos(v.y / (length ∗ sin(angle_z)))
+  angle_z = pcl::getAngle3D(uz, v);                // = acos(v.z / length)
   length = pcl::geometry::distance(p1, p2) / voxelres; // normalized by params->voxelres
 }
 
 void printHistogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
 {
+
   pcl::visualization::PCLHistogramVisualizer visu;
 
   visu.addFeatureHistogram(pc_histo, 640);
