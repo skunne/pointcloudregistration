@@ -9,7 +9,7 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_matrices.h"
 #include "cpr_graphmatching_frankwolfe.h" // if using FrankWolfe quadratic programming algorithm
-#include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
+//#include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
 
 
 int test_printUsage(char const *cmd)
@@ -111,9 +111,9 @@ int main(int argc, char ** argv)
 
     //MatrixDouble permutation_matrix(n_source, n_dest);
     //permutation_matrix.fill(1.0 / (n_source < n_dest ? n_dest : n_source));
-    //GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
     //gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
-    GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
+    //GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
     gm.run();
 
     std::stringstream srcoutfilename;
