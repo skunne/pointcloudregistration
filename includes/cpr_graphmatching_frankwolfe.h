@@ -17,7 +17,7 @@ A graph matching algorithm based on Frank-Wolfe, inspired by Zaslavskiy and Huan
 /*
 ** cpr_graphmatching.cpp
 */
-class GraphMatchingFrankwolfe : GraphMatching
+class GraphMatchingFrankwolfe : public GraphMatching
 {
 private:
   //MatrixDouble const *vsim;    // vertex similarity matrix
