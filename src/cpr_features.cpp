@@ -1,7 +1,7 @@
 
 #include <pcl/common/geometry.h>
 #include <pcl/common/copy_point.h>
-#include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
+//#include <pcl/visualization/histogram_visualizer.h>   // only to print histogram
 #include <fstream>    // print features to csv file
 #include "cpr_main.h"
 #include "cpr_features.h"
@@ -48,15 +48,15 @@ void calculateAnglesAndLength(PointT const &p1, PointT const &p2, double &angle_
   length = pcl::geometry::distance(p1, p2) / voxelres; // normalized by params->voxelres
 }
 
-void printHistogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
-{
-
-  pcl::visualization::PCLHistogramVisualizer visu;
-
-  visu.addFeatureHistogram(pc_histo, 640);
-
-  visu.spin();
-}
+// void printHistogram(typename pcl::ESFEstimation<PointT, pcl::ESFSignature640>::PointCloudOut pc_histo)
+// {
+//
+//   pcl::visualization::PCLHistogramVisualizer visu;
+//
+//   visu.addFeatureHistogram(pc_histo, 640);
+//
+//   visu.spin();
+// }
 
 void calculateESFDescriptors(SupervoxelClusters const &sv_clusters, ESFDescriptors &esf_descriptors)
 {

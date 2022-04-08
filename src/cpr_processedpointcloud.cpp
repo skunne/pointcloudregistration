@@ -75,23 +75,23 @@ void ProcessedPointCloud::buildFeatures(void)
 }
 
 //pcl::visualization::PCLVisualizer::Ptr
-pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise(void)
-{
-  // maybe encapsulate this in Boost::Thread or call fork() ?
-  pcl::console::print_highlight ("Initialising visualisation\n");
-
-  pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-  viewer->setBackgroundColor (0, 0, 0);
-
-  addToViewer(viewer);
-  //addSomeColours(viewer);
-
-  //while (!viewer->wasStopped ())
-  //{
-  //  viewer->spinOnce (100);
-  //}
-  return viewer;
-}
+// pcl::visualization::PCLVisualizer::Ptr ProcessedPointCloud::visualise(void)
+// {
+//   // maybe encapsulate this in Boost::Thread or call fork() ?
+//   pcl::console::print_highlight ("Initialising visualisation\n");
+//
+//   pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+//   viewer->setBackgroundColor (0, 0, 0);
+//
+//   addToViewer(viewer);
+//   //addSomeColours(viewer);
+//
+//   //while (!viewer->wasStopped ())
+//   //{
+//   //  viewer->spinOnce (100);
+//   //}
+//   return viewer;
+// }
 
 int ProcessedPointCloud::getNbVertices(void) const
 {
