@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import sys    # argv, exit
 from itertools import product
 
@@ -37,7 +39,7 @@ def main(argv):
     name = get_args(argv)
     with open('computeallmatchings.sh', 'w') as outf_matchings:
         print(
-            '../test_params pointclouds/{}.meta ' + ' '.join('pointclouds/{}.pcd {} {} pointclouds/{}_rotatedpi4.pcd {} {}'.format(name, name, v,s, name, v,s) for v,s in product(voxels, seeds)),
+            '../test_params pointclouds/{}.meta '.format(name) + ' '.join('pointclouds/{}.pcd {} {} pointclouds/{}_rotatedpi4.pcd {} {}'.format(name, v,s, name, v,s) for v,s in product(voxels, seeds)),
             file=outf_matchings
         )
 
