@@ -53,6 +53,8 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
     errorLoadingFile("output", filenamedst);
 
   assert(pc_dest.size() == permutation_matrix.cols());
+  // std::cout << "Permutation matrix:" << std::endl;
+  // std::cout << permutation_matrix << std::endl;
 
   for (std::size_t i = 0; i < pc_source.size(); ++i)
   {
@@ -74,6 +76,8 @@ int main(int argc, char ** argv)
   if (argc <= 7 || argc % 6 != 2)
     return test_printUsage(argv[0]);
 
+  std::string out_folder = "/SCRATCH-BIRD/users/skunne/";
+
 //  std::vector<char const *> names;
 //  std::vector<double> results;
 
@@ -94,10 +98,10 @@ int main(int argc, char ** argv)
     assert(source_build_error == 0);
 
     /* DESTINATION */
-    params_dest.adjacency_filename = "dest.adj";
+    params_dest.adjacency_filename = "/SCRATCH-BIRD/users/skunne/dest.adj";
     params_dest.filename = argv[i+3];
-    params_source.voxel_resolution = std::stof(argv[i+4]);
-    params_source.seed_resolution = std::stof(argv[i+5]);
+    params_dest.voxel_resolution = std::stof(argv[i+4]);
+    params_dest.seed_resolution = std::stof(argv[i+5]);
     ProcessedPointCloud ppc_dest(params_dest);
     assert(ppc_dest.error() == 0);
     int dest_build_error = ppc_dest.build();
@@ -106,6 +110,16 @@ int main(int argc, char ** argv)
     VertexSimilarityMatrix vsim_mat(ppc_source.esf_descriptors, ppc_dest.esf_descriptors);
     EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
 
+    // std::cout << "VertexSimilarityMatrix: " << std::endl;
+    // for (i = 0; i < 3; i++)
+    // {
+    //   std::cout << vsim_mat.m(i,0) << ' ' << vsim_mat.m(i,1) << ' ' << vsim_mat.m(i,2) << std::endl;
+    // }
+    // std::cout << "EgeSimilarityMatrix: " << std::endl;
+    // for (i = 0; i < 3; i++)
+    // {
+    //   std::cout << esim_mat.m(i,0) << ' ' << esim_mat.m(i,1) << ' ' << esim_mat.m(i,2) << std::endl;
+    // }
     //int const n_source = ppc_source.getNbVertices();
     //int const n_dest = ppc_dest.getNbVertices();
 
@@ -117,9 +131,10 @@ int main(int argc, char ** argv)
     gm.run();
 
     std::stringstream srcoutfilename;
-    srcoutfilename << "matched_" << argv[i] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
+    srcoutfilename << out_folder << "matched_" << argv[i] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
     std::stringstream dstoutfilename;
-    dstoutfilename << "matched_" << argv[i+3] << "_dst_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
+    dstoutfilename << out_folder << "matched_" << argv[i+3] << "_dst_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
+    std::cout << "srcoutfilename: " << srcoutfilename.str().c_str() << std::endl;
     test_writeresult(ppc_source, ppc_dest, gm.matching, srcoutfilename.str().c_str(), dstoutfilename.str().c_str());
     //results.push_back(???);
   }

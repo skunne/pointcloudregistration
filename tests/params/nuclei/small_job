@@ -1,0 +1,8 @@
+#!/bin/bash
+# Script options # Optional script directives
+#$ -cwd
+
+echo 'Submitting job: nuclei_one'
+echo $JOB_ID
+
+../test_params pointclouds/nuclei.meta pointclouds/nuclei.pcd 20 90 pointclouds/nuclei_rotatedpi4.pcd 20 90
