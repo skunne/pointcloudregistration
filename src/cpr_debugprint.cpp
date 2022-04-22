@@ -150,4 +150,38 @@ namespace cprdbg
         std::cout << "    (" << i << ")    " << sample_g[i] << "    " << sample_h[i] << std::endl;
     }
   }    // namespace visualisation
+
+  namespace supervoxel
+  {
+    void print_centroids(SupervoxelClusters const &supervoxel_clusters, int verbosity)
+    {
+      if (verbosity >= 2)
+      {
+        std::cerr << "Supervoxel cluster centroids:" << std::endl;
+        for (auto const &p : supervoxel_clusters)
+        {
+          //std::cerr << p.first << ':' << supervoxel_clusters[p.first]->centroid_.x << ',' << supervoxel_clusters[p.first]->centroid_.y << ',' << supervoxel_clusters[p.first]->centroid_.z << std::endl;
+          std::cerr << p.first << ':' << p.second->centroid_.x << ',' << p.second->centroid_.y << ',' << p.second->centroid_.z << std::endl;
+        }
+        std::cerr << std::endl;
+      }
+    }
+
+    void print_pointcloud(PointCloudT::Ptr const cloud, int verbosity)
+    {
+      if (verbosity >= 2)
+      {
+        std::cerr << "Pointcloud:" << std::endl;
+        std::cerr << "Size " << cloud->size() << std::endl;
+        for (unsigned long int i = 0; i < cloud->size(); ++i)
+        {
+          std::cerr << "    " << (*cloud)[i].x << " " << (*cloud)[i].y << " " << (*cloud)[i].z << std::endl;
+
+        }
+        //for (auto const &p : *cloud)
+        //  std::cerr << "    " << p.x << " " << p.y << " " << p.z << std::endl;
+        std::cerr << std::endl;
+      }
+    }
+  }    // namespace supervoxel
 }      // namespace cprdbg

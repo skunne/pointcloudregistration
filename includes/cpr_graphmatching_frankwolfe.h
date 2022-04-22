@@ -71,6 +71,7 @@ public:
 namespace frankWolfe
 {
   double computeMu(double xDx, double xDy, double yDy);
+  void outputMatching(MatrixInt &out, MatrixDouble &in);
 }
 
 #endif /* __DEF_GRAPHMATCHING_FRANKWOLFE_H__ */

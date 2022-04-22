@@ -3,6 +3,8 @@
 #include "cpr_params.h"
 #include "cpr_clustering.h"
 
+#include "cpr_debug_supervoxel.h"
+
 void renumberVertices(SupervoxelClusters *supervoxel_clusters, SupervoxelAdjacency *supervoxel_adjacency)
 {
   SupervoxelClusters new_supervoxel_clusters;
@@ -62,6 +64,10 @@ void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT>
 {
   //if (params->disable_transform)
   super.setUseSingleCameraTransform (false);
+
+
+  //cprdbg::supervoxel::print_pointcloud(cloud, 2);
+
   super.setInputCloud (cloud);
   super.setColorImportance (params->color_importance);
   super.setSpatialImportance (params->spatial_importance);
@@ -74,13 +80,21 @@ void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT>
                           "        color %.1f, spatial %.1f, normal %.1f\n",
                           params->voxel_resolution, params->seed_resolution,
                           params->color_importance, params->spatial_importance, params->normal_importance);
+
+  //cprdbg::supervoxel::print_centroids(supervoxel_clusters, 2);
+
   super.extract (supervoxel_clusters);
   pcl::console::print_info ("    Found %d supervoxels\n", supervoxel_clusters.size ());
+  //pcl::console::print_info ("    Size of supervoxel cluster\n", supervoxel_clusters[0]->voxels_->size ());
   //super.refineSupervoxels(5, supervoxel_clusters);
   //pcl::console::print_info ("    Refined supervoxels\n", supervoxel_clusters.size ());
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");
   super.getSupervoxelAdjacency (supervoxel_adjacency);
   pcl::console::print_info ("    Found %d edges\n", supervoxel_adjacency.size() / 2);
+
+
+  //cprdbg::supervoxel::print_centroids(supervoxel_clusters, 2);
+  cprdbg::supervoxel::print_pointcloud(super.getVoxelCentroidCloud(), 2);
 
   //////////////////////////////  //////////////////////////////
   ////// Reindex vertices to remove holes introduced by SupervoxelClustering

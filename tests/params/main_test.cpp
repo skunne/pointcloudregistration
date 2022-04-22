@@ -11,6 +11,8 @@
 #include "cpr_graphmatching_frankwolfe.h" // if using FrankWolfe quadratic programming algorithm
 //#include "cpr_graphmatching_nonlin.h"     // if using Ipopt nonlinear solver
 
+#include "cpr_debug_supervoxel.h"
+
 
 int test_printUsage(char const *cmd)
 {
@@ -24,22 +26,36 @@ int test_printUsage(char const *cmd)
   return 1;
 }
 
+/*
 std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
 {
   int j;
   for (
     j = 0;
-    j < permutation_matrix.cols() && permutation_matrix(i,j) < 0.00001;
+    j < permutation_matrix.cols() && permutation_matrix(i,j) == 0;
     ++j
   );
-  assert(j == permutation_matrix.cols() || abs(1-permutation_matrix(i,j)) < 0.00001);
+  assert(j == permutation_matrix.cols() || permutation_matrix(i,j) == 1);
   return (j);
+}
+*/
+std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
+{
+  return i;
 }
 
 void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, char const *filenamesrc, char const *filenamedst)
 {
   std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
   std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
+
+  std::cout << "Source pointcloud:" << std::endl;
+  for (auto &p : pc_source)
+    std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
+
+  std::cout << "Dest pointcloud:" << std::endl;
+  for (auto &p : pc_dest)
+    std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
 
   std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
   std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
@@ -95,6 +111,10 @@ int main(int argc, char ** argv)
     ProcessedPointCloud ppc_source(params_source);
     assert(ppc_source.error() == 0);
     int source_build_error = ppc_source.build();
+
+    //std::cerr << "main: print pointcloud source" << std::endl;
+    //cprdbg::supervoxel::print_pointcloud(ppc_source.cloud, 2);
+
     assert(source_build_error == 0);
 
     /* DESTINATION */
@@ -129,6 +149,9 @@ int main(int argc, char ** argv)
     //gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
     //GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
     gm.run();
+
+    std::cout << "Permutation matrix:" << std::endl;
+    std::cout << gm.matching << std::endl;
 
     std::stringstream srcoutfilename;
     srcoutfilename << out_folder << "matched_" << argv[i] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";

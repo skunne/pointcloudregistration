@@ -6,6 +6,8 @@
 #include "cpr_visualisation.h"
 #include "cpr_processedpointcloud.h"
 
+#include "cpr_debug_supervoxel.h"
+
 ProcessedPointCloud::ProcessedPointCloud(Params const &p)
   : params(p), cloud(new PointCloudT), super (params.voxel_resolution, params.seed_resolution)
 {
@@ -26,6 +28,9 @@ int ProcessedPointCloud::build(void)
   int error_loading_file = loadFile(); //(argv[1], params.is_pcd, cloud);
   if (error_loading_file)
     return (error_loading_file);
+
+  //cprdbg::supervoxel::print_pointcloud(cloud, 2);
+
 
   buildGraph();
 
