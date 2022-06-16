@@ -94,7 +94,7 @@ void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT>
 
 
   //cprdbg::supervoxel::print_centroids(supervoxel_clusters, 2);
-  cprdbg::supervoxel::print_pointcloud(super.getVoxelCentroidCloud(), 2);
+  //cprdbg::supervoxel::print_pointcloud(super.getVoxelCentroidCloud(), 2);
 
   //////////////////////////////  //////////////////////////////
   ////// Reindex vertices to remove holes introduced by SupervoxelClustering

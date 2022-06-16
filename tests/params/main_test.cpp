@@ -150,8 +150,8 @@ int main(int argc, char ** argv)
     //GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
     gm.run();
 
-    std::cout << "Permutation matrix:" << std::endl;
-    std::cout << gm.matching << std::endl;
+    //std::cout << "Permutation matrix:" << std::endl;
+    //std::cout << gm.matching << std::endl;
 
     std::stringstream srcoutfilename;
     srcoutfilename << out_folder << "matched_" << argv[i] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
