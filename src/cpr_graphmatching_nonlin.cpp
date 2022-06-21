@@ -133,10 +133,35 @@ bool GMNonlinProblem::get_starting_point(
   assert(init_lambda == false);
   if (init_x)
   {
+    /*
+    ** set x to nontrivial, nonsymmetric permutation matrix
+    */
+    for (Ipopt::Index k = 0; k < n; ++k)
+      x[k] = 0.0;
     int min_dim = nbnodes_src < nbnodes_dst ? nbnodes_src : nbnodes_dst;
-    x[0] = 1.0 / (Ipopt::Number) min_dim;
-    for (Ipopt::Index i = 1; i < n; ++i)
-      x[i] = x[0];
+    std::cout << "n_src= " << nbnodes_src << std::endl;
+    std::cout << "n_dst= " << nbnodes_dst << std::endl;
+    std::cout << "min  = " << min_dim << std::endl;
+    Ipopt::Index i = 0;
+    for (i = 0; i + 19 < min_dim; i += 20)
+      for (Ipopt::Index j = 0; j < 20; ++j)
+        x[(i + 19 - j) * nbnodes_dst + (i + j)] = 1.0;
+    for (Ipopt::Index j = 0; j < min_dim - i; ++j)
+      x[(min_dim - j) * nbnodes_dst + (i + j)] = 1.0;
+
+    for (Ipopt::Index i_src = 0; i_src < nbnodes_src; ++i_src)
+    {
+      for (Ipopt::Index i_dst = 0; i_dst < nbnodes_dst; ++i_dst)
+        std::cout << x[i_src * nbnodes_dst + i_dst];// << ' ';
+      std::cout << std::endl;
+    }
+
+    ///*
+    //** set x to completely symmetric all coefficients = 1 / min(n_src, n_dst)
+    //*/
+    // x[0] = 1.0 / (Ipopt::Number) min_dim;
+    // for (Ipopt::Index k = 1; k < n; ++k)
+    //   x[k] = x[0];
   }
   (void) z_L;   // ignore initial values for bound multipliers for absent bounds (xLi=−inf)
   (void) z_U;   // ignore initial values for bound multipliers for absent bounds (xUi=+inf)
@@ -399,6 +424,7 @@ void GraphMatchingNonlin::run(void)
   app->Options()->SetStringValue("mu_strategy", "adaptive");
   app->Options()->SetStringValue("output_file", "ipopt.out");
   app->Options()->SetIntegerValue("print_level", 3);    // verbosity
+  app->Options()->SetStringValue("derivative_test", "second-order");
 
   Ipopt::ApplicationReturnStatus status;
   status = app->Initialize();
