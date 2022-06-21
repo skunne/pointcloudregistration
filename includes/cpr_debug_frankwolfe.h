@@ -8,7 +8,7 @@ namespace cprdbg
   namespace frankWolfe
   {
     int const verbosity = 1;
-    
+
     void print_x(char const *name, std::vector<double> const &x,
       std::size_t width, std::size_t height, int verbosity);
 

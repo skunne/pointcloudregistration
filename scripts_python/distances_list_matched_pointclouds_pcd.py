@@ -40,7 +40,8 @@ def compute_average_distance(filename1, filename2, transform=identity_matrix):
                 p1_homo = [float(xj) for xj in p1[:3]] + [1]
                 p2_homo = [float(xj) for xj in p2[:3]] + [1]
                 p1_homo_transformed = matrix_times_vector(transform, p1_homo)
-                d = math.sqrt(sum((x1 - x2)**2 for (x1,x2) in zip(p1_homo_transformed[:-1], p2_homo[:-1])))
+                d = math.dist(p1_homo_transformed[:-1], p2_homo[:-1])
+                #d = math.sqrt(sum((x1 - x2)**2 for (x1,x2) in zip(p1_homo_transformed[:-1], p2_homo[:-1])))
                 #total_d += d
                 list_of_d.append(d)
                 #nbpoints += 1

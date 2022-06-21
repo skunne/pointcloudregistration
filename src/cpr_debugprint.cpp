@@ -150,4 +150,18 @@ namespace cprdbg
         std::cout << "    (" << i << ")    " << sample_g[i] << "    " << sample_h[i] << std::endl;
     }
   }    // namespace visualisation
+
+  namespace supervoxel
+  {
+    void print_centroids(SupervoxelClusters const &supervoxel_clusters, int verbosity)
+    {
+      if (verbosity >= 2)
+      {
+        std::cerr << "Supervoxel cluster centroids:" << std::endl;
+        for (int i = 0; i < 3; ++i)
+          std::cerr << i << ". " << supervoxel_clusters[i].second->centroid_.x << ',' << supervoxel_clusters[i].second->centroid_.y << ',' << supervoxel_clusters[i].second->centroid_.z << std::endl;
+        std::cerr << std::endl;
+      }
+    }
+  }    // namespace supervoxel
 }      // namespace cprdbg

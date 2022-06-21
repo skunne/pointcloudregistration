@@ -51,6 +51,23 @@ GraphMatchingFrankwolfe::~GraphMatchingFrankwolfe()
 {
 }
 
+frankWolfe::outputMatching(MatrixInt &out, MatrixDouble &in)
+{
+  for (int i = 0; i < in.rows(); ++i)
+    for (int j = 0; j < in.cols(); ++j)
+    {
+      if (abs(in(i,j)) < 0.01)
+        out(i,j) = 0;
+      else if (abs(1 - in(i,j)) < 0.01)
+        out(i,j) = 1;
+      else
+        {
+          std::cerr << "frankWolfe::outputMatching: input matrix is not a matching" << std::endl;
+          exit(-1);
+        }
+    }
+}
+
 void GraphMatchingFrankwolfe::run()
 {
   // Initialisation
@@ -79,6 +96,7 @@ void GraphMatchingFrankwolfe::run()
       lambda = lambda_new;
     }
   }
+  outputMatching(this->matching, p);
   // Output
   // when lambda == 1, all coeffs in p must be 0.0 or 1.0
   // copy p into this->matching and convert double to int
