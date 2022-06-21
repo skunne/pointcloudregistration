@@ -52,7 +52,7 @@ def get_voxels_and_seeds_ranges(name):
 def main(argv):
     name = get_args(argv)
     voxels, seeds = get_voxels_and_seeds_ranges(name)
-    rotations = ('rotatedpi8', 'rotatedpi4')
+    rotations = ('rotatedpi8', 'rotatedpi4', 'translated10')
     with open('computeallmatchings.sh', 'w') as outf_matchings:
         print(
             '../test_params pointclouds/{}.meta '.format(name)
@@ -72,7 +72,7 @@ def main(argv):
                             os.path.join(matched_pointclouds_folder, '{}.pcd_src_v{}s{}v{}s{}.csv'.format(name, v,s,v,s)),
                             os.path.join(matched_pointclouds_folder, '{}_{}.pcd_dst_v{}s{}v{}s{}.csv'.format(name, rot, v,s,v,s))
                         ),
-                        '> transforms/v{}s{}v{}s{}.txt'.format(v,s,v,s)
+                        '> transforms/{}_v{}s{}v{}s{}.txt'.format(rot,v,s,v,s)
                     ]),
                     file=outf_transforms
                 )
@@ -80,12 +80,14 @@ def main(argv):
     transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
     with open('computealldistances.sh', 'w') as outf_distances:
         distancefilename = 'distances.txt'
+        print('echo -n "" > {}'.format(distancefilename), file=outf_distances)
         for rot, v,s in product(rotations, voxels, seeds):
             params = 'v{}s{}v{}s{}'.format(v,s,v,s)
-            print('echo -n "{} " > {}'.format(params, distancefilename), file=outf_distances)
+            rot_params = ''.join((rot, '_', params))
+            print('echo -n "{} " >> {}'.format(rot_params, distancefilename), file=outf_distances)
             print(
                 ' '.join([
-                    '../../scripts_python/distance_matched_pointclouds_csv.py {}/{}.txt {}/{}.pcd_src_{}.csv {}/{}_{}.pcd_dst_{}.csv'.format(transforms_folder, params, matched_pointclouds_folder, name, params, matched_pointclouds_folder, name, rot, params),
+                    '../../scripts_python/distance_matched_pointclouds_csv.py {}/{}.txt {}/{}.pcd_src_{}.csv {}/{}_{}.pcd_dst_{}.csv'.format(transforms_folder, rot_params, matched_pointclouds_folder, name, params, matched_pointclouds_folder, name, rot, params),
                     '>> {}'.format(distancefilename)
                 ]),
                 file=outf_distances
