@@ -81,6 +81,7 @@ void performClustering(PointCloudT::Ptr cloud, pcl::SupervoxelClustering<PointT>
   pcl::console::print_highlight ("Getting supervoxel adjacency\n");
   super.getSupervoxelAdjacency (supervoxel_adjacency);
   pcl::console::print_info ("    Found %d edges\n", supervoxel_adjacency.size() / 2);
+  
 
   //////////////////////////////  //////////////////////////////
   ////// Reindex vertices to remove holes introduced by SupervoxelClustering

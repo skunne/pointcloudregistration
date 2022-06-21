@@ -6,6 +6,8 @@
 #include "cpr_processedpointcloud.h"
 #include "cpr_loadfiles.h"
 
+#include "cpr_debug_supervoxel.h"
+
 int ProcessedPointCloud::loadFile(void) //char const *filename, bool is_pc)//, PointCloudT::Ptr cloud)
 {
   if (params.is_pcd)
@@ -75,6 +77,7 @@ int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
   pcl::console::print_highlight ("Loading point cloud from .pcd file %s\n", filename);
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))
     return errorLoadingFile(".pcd cloud", filename);
+  cprdbg::supervoxel::print_pointcloud(cloud, 2);
 
   return (0);
 }
