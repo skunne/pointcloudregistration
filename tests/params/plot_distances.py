@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from operator import itemgetter
 from itertools import groupby
 import matplotlib.pyplot as plt
