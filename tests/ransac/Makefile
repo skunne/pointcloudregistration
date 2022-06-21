@@ -3,7 +3,7 @@ NAME=apply_ransac
 SRC=main_test.cpp
 OBJ=$(SRC:.cpp=.o)
 CFLAGS=-Wall -Wextra -Werror
-INCLUDES=-isystem /usr/include/pcl-1.9/ -isystem /usr/include/eigen3/ -isystem /usr/include/vtk/
+INCLUDES=-isystem /usr/include/pcl-1.10/ -isystem /usr/include/eigen3/ -isystem /usr/include/vtk/
 LIBS=-lvtkCommonDataModel -lvtkCommonMath -lvtkCommonCore -lvtkRenderingCore -lpcl_common -lpcl_filters -lpcl_io -lpcl_sample_consensus -lpcl_visualization
 
 all: $(NAME)
