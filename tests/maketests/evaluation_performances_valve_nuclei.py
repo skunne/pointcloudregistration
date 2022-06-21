@@ -56,6 +56,7 @@ def main(criterion):
                     dest   = 'pointclouds/'+p+c+t+r+'.pcd'
                     our_avg_d, our_rmse, our_cloud_d = calc_dist(matrix_computed, source, dest)
                     #y_ouralgo_inliers.append(rmse)#rmse)#avg_d)
+                    #plt.scatter([x[-1] for _ in our_cloud_d], our_cloud_d, c='green', s=0.7)
 
                     matrix_icpransac = 'transforms/'+p+c+t+r+'.pcd_icpransac.csv'
                     source = 'pointclouds/'+p+c+t+'.pcd'
@@ -70,21 +71,19 @@ def main(criterion):
                         y_ouralgo_inliers.append(our_avg_d)
                         y_icpransac.append(icp_avg_d)
 
-
-
         # plt.scatter(x, y_ouralgo, label='our algo without ransac on {}'.format(p))
         # plt.plot(x, y_ouralgo)
-        plt.scatter(x, y_ouralgo_inliers, label='our algo on {}'.format(p))
-        plt.plot(x, y_ouralgo_inliers)
-        plt.scatter(x, y_icpransac, label='icp/ransac on {}'.format(p))
-        plt.plot(x, y_icpransac)
+        #plt.scatter(x, y_ouralgo_inliers, label='our algo on {}'.format(p))
+        plt.plot(x, y_ouralgo_inliers, label='our algo')
+        #plt.scatter(x, y_icpransac, label='icp/ransac on {}'.format(p))
+        plt.plot(x, y_icpransac, label='icp/ransac')
 
         plt.legend(loc='best')
         plt.xlabel(p)
         if (criterion == 'rmse'):
             plt.ylabel('root mean squared pointwise distance')
         else:
-            plt.ylabel('average distance')
+            plt.ylabel('average distance (um)')
         plt.gcf().set_size_inches(16, 12)
         plt.savefig('evaluation_performances_{}.png'.format(p), dpi=100)
         #plt.ylim(0,10)
