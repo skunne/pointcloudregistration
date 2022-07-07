@@ -154,7 +154,7 @@ int main(int argc, char ** argv)
     //std::cout << gm.matching << std::endl;
 
     std::stringstream srcoutfilename;
-    srcoutfilename << out_folder << "matched_" << argv[i] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
+    srcoutfilename << out_folder << "matched_" << argv[i+3] << "_src_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
     std::stringstream dstoutfilename;
     dstoutfilename << out_folder << "matched_" << argv[i+3] << "_dst_" << 'v' << argv[i+1] << 's' << argv[i+2] << 'v' << argv[i+4] << 's' << argv[i+5] << ".csv";
     std::cout << "srcoutfilename: " << srcoutfilename.str().c_str() << std::endl;
