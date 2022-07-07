@@ -115,7 +115,7 @@ def main(argv):
     (infilename, outfilename, rotation_angle, matrixoutfilename) = get_args(argv)
     header, pointcloud = read_file(infilename)
     rotation_matrix = make_rotation_matrix(rotation_angle)
-    #rotation_matrix = ((1,0,0,10),(0,1,0,10),(0,0,1,10),(0,0,0,1))
+    #rotation_matrix = ((1,0,0,10),(0,1,0,10),(0,0,1,10),(0,0,0,1))  # translation
     rotated_pointcloud = apply_affine(rotation_matrix, pointcloud)
     #header = fix_header(header, len(filtered_pointcloud))
     write_file(header, rotated_pointcloud, outfilename)

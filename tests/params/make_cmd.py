@@ -50,7 +50,7 @@ def get_voxels_and_seeds_ranges(name):
     return voxels, seeds
 
 
-def computedistances(method, distancefilename, rotations, voxels, seeds):
+def computedistances(method, distancefilename, matched_pointclouds_folder, name, rotations, voxels, seeds):
     if method == 'nodes':
         script = '../../scripts_python/distance_matched_pointclouds_csv.py'
         blank_src = '{}/{}.pcd_src_{}.csv'.format(matched_pointclouds_folder, name, '{}')
@@ -95,15 +95,15 @@ def main(argv):
             print(
                 ' '.join([
                     computetransform_cmd(
-                        os.path.join(matched_pointclouds_folder, '{}.pcd_src_v{}s{}v{}s{}.csv'.format(name, v,s,v,s)),
+                        os.path.join(matched_pointclouds_folder, '{}_{}.pcd_src_v{}s{}v{}s{}.csv'.format(name, rot, v,s,v,s)),
                         os.path.join(matched_pointclouds_folder, '{}_{}.pcd_dst_v{}s{}v{}s{}.csv'.format(name, rot, v,s,v,s))
                     ),
                     '> transforms/{}_v{}s{}v{}s{}.txt'.format(rot, v,s,v,s)
                 ]),
                 file=outf_transforms)
 
-    computedistances(method='nodes', distancefilename='distances_nodes.txt', rotations, voxels, seeds)
-    computedistances(method='points', distancefilename='distances_points.txt', rotations, voxels, seeds)
+    computedistances('nodes', 'distances_nodes.txt', matched_pointclouds_folder, name, rotations=rotations, voxels=voxels, seeds=seeds)
+    computedistances('points', 'distances_points.txt', matched_pointclouds_folder, name, rotations=rotations, voxels=voxels, seeds=seeds)
 
 if __name__=='__main__':
     main(sys.argv)
