@@ -1,4 +1,4 @@
-import csv
+import csv # used in get_matrix
 import sys
 import math
 
@@ -37,7 +37,7 @@ def compute_average_distance(filename1, filename2, transform=identity_matrix):
 def print_usage(cmd):
     print('SYNOPSIS')
     print()
-    print('{} [transform] csvfile1 csvfile2'.format(cmd))
+    print('{} csvfile1 csvfile2 [transform]'.format(cmd))
     print('      Calculate the average distance between points in <csvfile1> and <csvfile2>.')
     print('      The two files must have the same number of points. The points must be')
     print('    listed in order. Point on line i is compared with point on line i.')
@@ -51,7 +51,7 @@ def main(argv):
     if len(argv) == 3:
         print(compute_average_distance(argv[1], argv[2]))
     elif (len(argv) == 4):
-        print(compute_average_distance(argv[2], argv[3], get_matrix(argv[1])))
+        print(compute_average_distance(argv[1], argv[2], get_matrix(argv[3])))
     else:
         print_usage(argv[0])
 
