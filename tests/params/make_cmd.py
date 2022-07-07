@@ -52,11 +52,11 @@ def get_voxels_and_seeds_ranges(name):
 
 def computedistances(method, distancefilename, matched_pointclouds_folder, name, rotations, voxels, seeds):
     if method == 'nodes':
-        script = '../../scripts_python/distance_matched_pointclouds_csv.py'
+        script = '../../../scripts_python/distance_matched_pointclouds_csv.py'
         blank_src = '{}/{}.pcd_src_{}.csv'.format(matched_pointclouds_folder, name, '{}')
         blank_dst = '{}/{}_{}.pcd_dst_{}.csv'.format(matched_pointclouds_folder, name, '{}', '{}')
     elif method == 'points':
-        script = '../../scripts_python/distance_matched_pointclouds_pcd.py'
+        script = '../../../scripts_python/distance_matched_pointclouds_pcd.py'
         blank_src = 'pointclouds/{}.pcd'.format(name)
         blank_dst = 'pointclouds/{}_{}.pcd'.format(name, '{}')
     transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
