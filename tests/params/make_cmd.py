@@ -3,6 +3,7 @@
 import sys    # argv, exit
 import os     # path.join
 from itertools import product
+from numpy import linspace
 
 def print_usage_and_exit(argv):
     print('SYNOPSIS')
@@ -35,10 +36,23 @@ def computetransform_cmd(src, dst):
         '--transformation-model RIGID'
     ])
 
+def get_voxels_and_seeds_ranges(name):
+    if name == 'heart':    # 30, 150
+        voxels, seeds = range(20,41,5), range(90,300,20)
+    elif name == 'nuclei': # 0.2, 1
+        voxels, seeds = linspace(0.3, 0.4, 5), linspace(0.4, 2.5, 10)
+    elif name == 'valve':  # 4, 20
+        voxels, seeds = linspace(3, 5, 5), linspace(10, 40, 10)
+    else:
+        print_usage_and_exit(argv)
+    voxels = ['{:.2f}'.format(v).rstrip('0').rstrip('.') for v in voxels]
+    seeds = ['{:.2f}'.format(s).rstrip('0').rstrip('.') for s in seeds]
+    return voxels, seeds
+
 def main(argv):
-    voxels, seeds = range(20,41,5), range(90,300,20)
-    rotations = ('rotatedpi8', 'rotatedpi4', 'translated10')
     name = get_args(argv)
+    voxels, seeds = get_voxels_and_seeds_ranges(name)
+    rotations = ('rotatedpi8', 'rotatedpi4', 'translated10')
     with open('computeallmatchings.sh', 'w') as outf_matchings:
         print(
             '../test_params pointclouds/{}.meta '.format(name) + ' '.join('pointclouds/{}.pcd {} {} pointclouds/{}_{}.pcd {} {}'.format(name, v,s, name, rot, v,s) for rot,v,s in product(rotations, voxels, seeds)),
@@ -62,12 +76,14 @@ def main(argv):
     transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
     with open('computealldistances.sh', 'w') as outf_distances:
         distancefilename = 'distances.txt'
-        for v,s in product(voxels, seeds):
+        print('echo -n "" > {}'.format(distancefilename), file=outf_distances)
+        for rot, v,s in product(rotations, voxels, seeds):
             params = 'v{}s{}v{}s{}'.format(v,s,v,s)
-            print('echo -n "{} " >> {}'.format(params, distancefilename), file=outf_distances)
+            rot_params = ''.join((rot, '_', params))
+            print('echo -n "{} " >> {}'.format(rot_params, distancefilename), file=outf_distances)
             print(
                 ' '.join([
-                    '../../scripts_python/distance_matched_pointclouds_csv.py {}/{}.txt {}/{}.pcd_src_{}.csv {}/{}_rotatedpi4.pcd_dst_{}.csv'.format(transforms_folder, params, matched_pointclouds_folder, name, params, matched_pointclouds_folder, name, params),
+                    '../../scripts_python/distance_matched_pointclouds_csv.py {}/{}.txt {}/{}.pcd_src_{}.csv {}/{}_{}.pcd_dst_{}.csv'.format(transforms_folder, rot_params, matched_pointclouds_folder, name, params, matched_pointclouds_folder, name, rot, params),
                     '>> {}'.format(distancefilename)
                 ]),
                 file=outf_distances

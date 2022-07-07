@@ -15,6 +15,7 @@ Run all computations :
 Commands in those three .sh files have been generated using python script make_cmd.py
 
 Or smaller test run:
+
     ./test_params heart/pointclouds/heart.meta heart/pointclouds/heart.pcd 30 150 heart/pointclouds/heart.pcd 30 150
 
     java -jar ../maketests/cli_tools/compute_transformation/target/compute_transformation-0.1.0-SNAPSHOT.jar --source-dataset /SCRATCH-BIRD/users/skunne/matched_heart/pointclouds/heart.pcd_src_v30s150v30s150.csv --target-dataset /SCRATCH-BIRD/users/skunne/matched_heart/pointclouds/heart.pcd_dst_v30s150v30s150.csv --transformation-model RIGID >> /SCRATCH-BIRD/users/skunne/matched_heart/transforms/v30s150v30s150.txt
