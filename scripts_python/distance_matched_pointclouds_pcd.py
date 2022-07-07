@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import csv # used in get_matrix
 import sys
 import math
