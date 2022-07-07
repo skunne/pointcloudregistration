@@ -59,7 +59,8 @@ def computedistances(method, distancefilename, matched_pointclouds_folder, name,
         script = '../../../scripts_python/distance_matched_pointclouds_pcd.py'
         blank_src = 'pointclouds/{}.pcd'.format(name)
         blank_dst = 'pointclouds/{}_{}.pcd'.format(name, '{}')
-    transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
+    #transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
+    transforms_folder = 'transforms/'
     with open('computealldistances_{}.sh'.format(method), 'w') as outf_distances:
         #distancefilename = 'distances_nodes.txt'
         print('echo -n "" > {}'.format(distancefilename), file=outf_distances)

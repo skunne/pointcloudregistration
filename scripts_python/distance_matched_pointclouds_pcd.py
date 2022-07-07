@@ -53,7 +53,7 @@ def main(argv):
     if len(argv) == 3:
         print(compute_average_distance(argv[1], argv[2]))
     elif (len(argv) == 4):
-        print(compute_average_distance(argv[1], argv[2], get_matrix(argv[3])))
+        print(compute_average_distance(argv[2], argv[3], get_matrix(argv[1])))
     else:
         print_usage(argv[0])
 
