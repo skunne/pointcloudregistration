@@ -77,7 +77,7 @@ int loadPCDFile(char const *filename, PointCloudT::Ptr cloud)
   pcl::console::print_highlight ("Loading point cloud from .pcd file %s\n", filename);
   if (pcl::io::loadPCDFile<PointT> (filename, *cloud))
     return errorLoadingFile(".pcd cloud", filename);
-  cprdbg::supervoxel::print_pointcloud(cloud, 2);
+  //cprdbg::supervoxel::print_pointcloud(cloud, 2);
 
   //cprdbg::supervoxel::print_pointcloud(cloud, 2);
 
