@@ -22,7 +22,7 @@ def get_args(argv):
     else:
         return argv[1]
 
-computetransform_dir='../maketests/cli_tools/compute_transformation/'
+computetransform_dir='../../maketests/cli_tools/compute_transformation/'
 computetransform_jar = computetransform_dir + 'target/compute_transformation-0.1.0-SNAPSHOT.jar'
 
 def computetransform_cmd(src, dst):
@@ -48,6 +48,35 @@ def get_voxels_and_seeds_ranges(name):
     voxels = ['{:.2f}'.format(v).rstrip('0').rstrip('.') for v in voxels]
     seeds = ['{:.2f}'.format(s).rstrip('0').rstrip('.') for s in seeds]
     return voxels, seeds
+
+
+def computedistances(method, distancefilename, rotations, voxels, seeds):
+    if method == 'nodes':
+        script = '../../scripts_python/distance_matched_pointclouds_csv.py'
+        blank_src = '{}/{}.pcd_src_{}.csv'.format(matched_pointclouds_folder, name, '{}')
+        blank_dst = '{}/{}_{}.pcd_dst_{}.csv'.format(matched_pointclouds_folder, name, '{}', '{}')
+    elif method == 'points':
+        script = '../../scripts_python/distance_matched_pointclouds_pcd.py'
+        blank_src = 'pointclouds/{}.pcd'.format(name)
+        blank_dst = 'pointclouds/{}_{}.pcd'.format(name, '{}')
+    transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
+    with open('computealldistances_{}.sh'.format(method), 'w') as outf_distances:
+        #distancefilename = 'distances_nodes.txt'
+        print('echo -n "" > {}'.format(distancefilename), file=outf_distances)
+        for rot, v,s in product(rotations, voxels, seeds):
+            params = 'v{}s{}v{}s{}'.format(v,s,v,s)
+            rot_params = ''.join((rot, '_', params))
+            src = blank_src.format(params)
+            dst = blank_dst.format(rot, params)
+            print('echo -n "{} " >> {}'.format(rot_params, distancefilename), file=outf_distances)
+            print(
+                ' '.join([
+                    script,
+                    '{}/{}.txt {} {}'.format(transforms_folder, rot_params, src, dst),
+                    '>> {}'.format(distancefilename)
+                ]),
+                file=outf_distances
+            )
 
 def main(argv):
     name = get_args(argv)
@@ -77,21 +106,8 @@ def main(argv):
                     file=outf_transforms
                 )
 
-    transforms_folder = '/SCRATCH-BIRD/users/skunne/matched_heart/transforms/'
-    with open('computealldistances.sh', 'w') as outf_distances:
-        distancefilename = 'distances.txt'
-        print('echo -n "" > {}'.format(distancefilename), file=outf_distances)
-        for rot, v,s in product(rotations, voxels, seeds):
-            params = 'v{}s{}v{}s{}'.format(v,s,v,s)
-            rot_params = ''.join((rot, '_', params))
-            print('echo -n "{} " >> {}'.format(rot_params, distancefilename), file=outf_distances)
-            print(
-                ' '.join([
-                    '../../scripts_python/distance_matched_pointclouds_csv.py {}/{}.txt {}/{}.pcd_src_{}.csv {}/{}_{}.pcd_dst_{}.csv'.format(transforms_folder, rot_params, matched_pointclouds_folder, name, params, matched_pointclouds_folder, name, rot, params),
-                    '>> {}'.format(distancefilename)
-                ]),
-                file=outf_distances
-            )
+    computedistances(method='nodes', distancefilename='distances_nodes.txt', rotations, voxels, seeds)
+    computedistances(method='points', distancefilename='distances_points.txt', rotations, voxels, seeds)
 
 if __name__=='__main__':
     main(sys.argv)

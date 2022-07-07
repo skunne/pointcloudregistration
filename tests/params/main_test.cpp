@@ -49,13 +49,13 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
   std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
   std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
 
-  std::cout << "Source pointcloud:" << std::endl;
-  for (auto &p : pc_source)
-    std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
-
-  std::cout << "Dest pointcloud:" << std::endl;
-  for (auto &p : pc_dest)
-    std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
+  // std::cout << "Source pointcloud:" << std::endl;
+  // for (auto &p : pc_source)
+  //   std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
+  //
+  // std::cout << "Dest pointcloud:" << std::endl;
+  // for (auto &p : pc_dest)
+  //   std::cout << std::get<0>(p) << ',' << std::get<1>(p) << ',' << std::get<2>(p) << ',' << std::endl;
 
   std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
   std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
