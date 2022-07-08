@@ -10,3 +10,7 @@ echo $JOB_ID
 
 ./computealldistances_nodes.sh
 ./computealldistances_points.sh
+
+
+echo
+echo JOB COMPLETED

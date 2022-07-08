@@ -33,8 +33,8 @@ def compute_average_distance(filename1, filename2, transform=identity_matrix):
     if nbpoints > 0:
         return d / nbpoints
     else:
-        print('PAS DE POINTS DANS LE FICHIER')
-        return 0
+        print('distance_matched_pointclouds_csv: NO POINTS IN FILE')
+        return -1
 
 def print_usage():
     print('SYNOPSIS')
