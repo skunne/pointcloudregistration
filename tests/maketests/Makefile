@@ -51,7 +51,7 @@ DIGCOORD=0 0 5 10 10 10
 else ifeq ($(TESTCASE),valve)
 DIGCOORD=130 60 0 240 240 300
 else
-DIGCOORD=0 600 0 1000 1000 1000 
+DIGCOORD=0 600 0 1000 1000 1000
 endif
 
 ECCLEMDIR=ec-clem
@@ -73,14 +73,6 @@ $(RUNTESTS):
 $(RANSAC):
 	make -C ../ransac
 
-<<<<<<< HEAD
-ec-clem:
-	git clone https://github.com/anrcrocoval/ec-clem.git
-
-$(ECCLEMJAR): ec-clem
-	mvn -f ec-clem/ clean
-	mvn -f ec-clem/ install
-=======
 $(ECCLEMDIR):
 	git clone https://github.com/anrcrocoval/ec-clem.git
 
@@ -88,7 +80,6 @@ $(ECCLEMJAR): $(ECCLEMDIR)
 	-ln --symbolic ~/icy ec-clem/lib/icy
 	mvn -f ec-clem/ clean
 	mvn -f ec-clem install
->>>>>>> origin/valve
 
 $(CLITOOLSDIR):
 	git clone https://github.com/anrcrocoval/cli_tools.git
