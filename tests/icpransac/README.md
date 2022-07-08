@@ -1,6 +1,6 @@
 ### Usage:
 
-    /icpransac_gettransform <cloudsource.pcd> <clouddest.pcd> <transform.csv>
+    ./icpransac_gettransform <cloudsource.pcd> <clouddest.pcd> <transform.csv>
 
 Apply ICP/RanSaC to two point clouds to find the rigid transform from source to dest.
 

@@ -1,0 +1,4 @@
+pointclouds/nuclei.pcd     1.1416115831518793e-05
+pointclouds/nuclei_rotatedpi4.pcd     6.088070502061864
+pointclouds/nuclei_rotatedpi8.pcd     0.042503520109079304
+pointclouds/nuclei_translated10.pcd     6.071691345000491

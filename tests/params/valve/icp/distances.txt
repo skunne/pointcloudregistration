@@ -1,0 +1,4 @@
+pointclouds/valve.pcd     0.0002964132527202584
+pointclouds/valve_rotatedpi4.pcd     6.986722422708503
+pointclouds/valve_rotatedpi8.pcd     4.047494642535182
+pointclouds/valve_translated10.pcd     55.36837596611559

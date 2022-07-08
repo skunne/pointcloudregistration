@@ -1,0 +1,12 @@
+#!/bin/bash
+# Script options # Optional script directives
+#$ -cwd
+
+echo 'Submitting job: heart, test parameters seeds and voxels'
+echo $JOB_ID
+
+./computeallmatchings.sh
+./computealltransforms.sh
+
+./computealldistances_nodes.sh
+./computealldistances_points.sh
