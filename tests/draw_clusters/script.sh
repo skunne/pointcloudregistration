@@ -1,9 +1,7 @@
 for f in heart nuclei valve
 do
-    print_voxels ../params/$f/pointclouds/$f.meta ../params/$f/pointclouds/$f.pcd out_$f.txt
-done
-
-for f in heart nuclei valve
-do
-    python3 draw_clusters.py out_$f.txt Figure_$f.png
+    ./print_voxels ../params/"$f"/pointclouds/"$f".meta ../params/"$f"/pointclouds/"$f".pcd out.txt
+    python3 draw_clusters.py out.txt Figure_"$f".png
+    ./print_voxels ../params/"$f"/pointclouds/"$f".meta ../params/"$f"/pointclouds/"$f"_translated10.pcd out.txt
+    python3 draw_clusters.py out.txt Figure_"$f"_translated10.png
 done
