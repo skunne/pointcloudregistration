@@ -1,6 +1,7 @@
 #!/usr/bin/env/ python3
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import sys
 
 def read_pointcloud(filename):
@@ -19,9 +20,11 @@ def read_pointcloud(filename):
 
 def draw_pointcloud(pc):
     X,Y,Z,L = zip(*pc)
+    #cmap = plt.cm.get_cmap('hsv', len(set(L)))
+    cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    ax.scatter(X, Y, Z, c=L)
+    ax.scatter(X, Y, Z, c=L, cmap=cmap)
 
 def print_usage(cmd):
     print('SYNOPSIS')
@@ -38,6 +41,7 @@ def main(argv):
         print_usage(argv[0])
     pc = read_pointcloud(pc_filename)
     draw_pointcloud(pc)
+    #ax.view_axis(...)
     plt.savefig(img_filename)
     plt.show()
 
