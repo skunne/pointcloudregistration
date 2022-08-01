@@ -9,7 +9,11 @@ def read_pointcloud(filename):
         for line in f:
             xyz, label = line.strip('()\n').split(' - ')
             x,y,z = xyz.split(',')
-            x,y,z,label = map(int, (x,y,z,label))
+            try:
+                x,y,z,label = map(int, (x,y,z,label))
+            except ValueError:
+                x,y,z = map(float, (x,y,z))
+                label = int(label)
             pc.append((x,y,z,label))
     return pc
 
