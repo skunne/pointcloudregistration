@@ -13,12 +13,12 @@ class ProcessedPointCloud
 private:
   Params params;
   //PointCloudT::Ptr cloud;
-  pcl::SupervoxelClustering<PointT> super;
   int nbVertices;
   SupervoxelClusters supervoxel_clusters;
   SupervoxelAdjacency supervoxel_adjacency;
 
 public:
+  pcl::SupervoxelClustering<PointT> super;
   PointCloudT::Ptr cloud; //shouldnt be public; debug
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
