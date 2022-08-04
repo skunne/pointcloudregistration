@@ -24,6 +24,9 @@ def draw_pointcloud(pc):
     cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
     ax.scatter(X, Y, Z, c=L, cmap=cmap)
 
 def print_usage(cmd):
