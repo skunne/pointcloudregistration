@@ -13,11 +13,18 @@ def read_pointcloud(filename):
 def rate_points(pc_src, pc_dst):
     green, red = [], []
     target = {(x,y,z): l for l,x,y,z in pc_dst}
+    n_points_notfound = 0
     for (l,x,y,z) in pc_src:
-        if l == target.get((x+10, y+10, z+10), -1):
-            green.append((x,y,z))
+        if (x+10, y+10, z+10) in target:
+            if l == target.get((x+10, y+10, z+10), -1):
+                green.append((x,y,z))
+            else:
+                red.append((x,y,z))
         else:
-            red.append((x,y,z))
+            n_points_notfound += 1
+    if n_points_notfound > 0:
+        print('Number of points not found:')
+        print('    {} / {}'.format(n_points_notfound, len(target)))
     return green, [], red
 
 def draw_pointcloud(green, orange, red):
@@ -36,7 +43,7 @@ def draw_pointcloud(green, orange, red):
 def print_usage(cmd):
     print('SYNOPSIS')
     print()
-    print('{} <pc file 1> <pc file 2> [<img file>]'.format(cmd))
+    print('{} <pc file src> <pc file dst> [<img file>]'.format(cmd))
     print('      ...')
     print('      output to img file')
 
