@@ -112,3 +112,16 @@ std::vector<std::tuple<double,double,double>> ProcessedPointCloud::exportPointCl
   }
   return out;
 }
+
+//
+// std::vector<std::vector<std::tuple<double,double,double>>> ProcessedPointCloud::exportClusters(void) const
+// {
+//   std::vector<std::vector<std::tuple<double,double,double>>> out;
+//   for (auto const &p : supervoxel_clusters)
+//   {
+//     std::vector<std::tuple<double,double,double>> cluster = p.second->voxels_
+//     out.push_back(cluster);
+//     out.push_back(std::make_tuple<double,double,double>(p.second->centroid_.x, p.second->centroid_.y, p.second->centroid_.z));
+//   }
+//   return out;
+// }

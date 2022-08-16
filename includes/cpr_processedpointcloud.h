@@ -14,12 +14,13 @@ private:
   Params params;
   //PointCloudT::Ptr cloud;
   int nbVertices;
-  SupervoxelClusters supervoxel_clusters;
+  //SupervoxelClusters supervoxel_clusters;
   SupervoxelAdjacency supervoxel_adjacency;
 
 public:
-  pcl::SupervoxelClustering<PointT> super;
   PointCloudT::Ptr cloud; //shouldnt be public; debug
+  pcl::SupervoxelClustering<PointT> super;
+  SupervoxelClusters supervoxel_clusters; // public for tests/draw_matched_clusters/main_test.cpp
   ESFDescriptors esf_descriptors;
   EdgeDescriptors edge_descriptors;
   MatrixInt adjacency_matrix;
