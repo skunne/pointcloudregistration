@@ -45,7 +45,8 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
 
   for (std::size_t i = 0; i < clusters_source.size(); ++i)
   {
-    std::size_t j = test_getmatch(i, permutation_matrix);
+    //std::size_t j = test_getmatch(i, permutation_matrix);
+    std::size_t j = i;
     if (j < clusters_dest.size())
     {
       for (auto const &p : *(clusters_source.at(i)->voxels_))
