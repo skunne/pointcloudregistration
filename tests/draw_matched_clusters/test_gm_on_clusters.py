@@ -11,8 +11,8 @@ def read_pointcloud(filename):
     return pc
 
 def read_matrix(filename):
-    mat = np.loadtxt(filename)
-    return mat.round()
+    mat = np.loadtxt(filename, int)
+    return mat
 
 def is_permutation_matrix(x):
     x = np.asanyarray(x)
@@ -26,7 +26,10 @@ def build_permutation_dict(matrix):
     n = min(width, height)
     r_src = np.arange(width)
     r_dst = matrix @ r_src
-    r_dst = r_dst.astype(int)
+    # print('permutation:')
+    # print('    ', r_src)
+    # print('    ', r_dst)
+    #r_dst = r_dst.astype(int)
     return dict(zip(r_src, r_dst))
 
 def rate_points(pc_src, pc_dst, perm_dict):
@@ -35,10 +38,12 @@ def rate_points(pc_src, pc_dst, perm_dict):
     target = {}
     for l,x,y,z in pc_dst:
         target.setdefault(l, set()).add((x,y,z))
+    # print('Cluster 2 dans dst:')
+    # print('    ', target[2])
     for (l_src,x,y,z) in pc_src:
-        l_dst = perm_dict.get(l, -1)
+        l_dst = perm_dict.get(l_src, -1)
         if l_dst != -1:
-            if (x,y,z) in target:
+            if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
                 green.append((x,y,z))
             else:
                 red.append((x,y,z))
@@ -107,7 +112,7 @@ def main(argv):
         sys.exit(-1)
     pc_src = read_pointcloud(pc_src_filename)
     pc_dst = read_pointcloud(pc_dst_filename)
-    pc_src, pc_dst = pc_dst, pc_src  # check if mistake dst src
+    #pc_src, pc_dst = pc_dst, pc_src  # check if mistake dst src
     matrix = read_matrix(matrix_filename)
     if is_permutation_matrix(matrix):
         print('Matrix is a correct permutation matrix')
