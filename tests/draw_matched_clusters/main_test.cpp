@@ -25,13 +25,14 @@ std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
   return (j);
 }
 
-void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, std::string const &filenamesrc, std::string const &filenamedst)
+void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, std::string const &filenamesrc, std::string const &filenamedst, std::string const &filename_matrix)
 {
   SupervoxelClusters const &clusters_source = ppc_source.supervoxel_clusters;
   SupervoxelClusters const &clusters_dest = ppc_dest.supervoxel_clusters;
 
   std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
   std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
+  std::fstream matrix_out(filename_matrix, std::fstream::out | std::fstream::trunc);
 
   src_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
   dst_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
@@ -40,6 +41,10 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
     errorLoadingFile("output", filenamesrc.c_str());
   if (!dst_out)
     errorLoadingFile("output", filenamedst.c_str());
+  if (!matrix_out)
+    errorLoadingFile("output", filename_matrix.c_str());
+
+  matrix_out << permutation_matrix << std::endl;
 
   assert(clusters_dest.size() == permutation_matrix.cols());
 
@@ -100,7 +105,7 @@ int main(int argc, char ** argv)
   if (argc < 5)
     return test_printUsage(argv[0]);
 
-  std::string out_folder = "/SCRATCH-BIRD/users/skunne/";
+  //std::string out_folder = "/SCRATCH-BIRD/users/skunne/";
   std::string out_filename(argv[4]);
 
   Params params(argv[1]);
@@ -135,7 +140,7 @@ int main(int argc, char ** argv)
   gm.run();
 
   // print permutation_matrix gm.matching
-  test_writeresult(ppc_source, ppc_dest, gm.matching, "src_" + out_filename, "dst_" + out_filename);
+  test_writeresult(ppc_source, ppc_dest, gm.matching, "src_" + out_filename, "dst_" + out_filename, "mat.txt");
 
 
   return (0);

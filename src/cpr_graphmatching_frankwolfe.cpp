@@ -5,6 +5,7 @@
 // #include <CGAL/QP_functions.h>
 // #include <CGAL/MP_Float.h>
 // typedef CGAL::MP_Float ET;
+#include <iostream>
 
 #include <cstdlib>  // malloc, free
 #include <cstring>  // memcpy, memset
@@ -73,7 +74,7 @@ void GraphMatchingFrankwolfe::run()
   // Initialisation
   double lambda;
   double lambda_new;
-  MatrixDouble p(ng, nh);
+  MatrixDouble p = MatrixDouble::Identity(ng, nh);
   MatrixDouble p_new(ng, nh);
 
   lambda = 0;
@@ -96,6 +97,8 @@ void GraphMatchingFrankwolfe::run()
       lambda = lambda_new;
     }
   }
+  std::cout << "Matrix p:" << std::endl;
+  std::cout << p << std::endl;
   frankWolfe::outputMatching(this->matching, p);
   // Output
   // when lambda == 1, all coeffs in p must be 0.0 or 1.0

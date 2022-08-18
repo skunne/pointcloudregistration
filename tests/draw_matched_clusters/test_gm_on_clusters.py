@@ -14,13 +14,31 @@ def read_matrix(filename):
     mat = np.loadtxt(filename)
     return mat.round()
 
-def rate_points(pc_src, pc_dst):
+def is_permutation_matrix(x):
+    x = np.asanyarray(x)
+    return (x.ndim == 2 and
+            (x.sum(axis=0) <= 1).all() and
+            (x.sum(axis=1) <= 1).all() and
+            ((x == 1) | (x == 0)).all())
+
+def build_permutation_dict(matrix):
+    width, height = matrix.shape
+    n = min(width, height)
+    r_src = np.arange(width)
+    r_dst = matrix @ r_src
+    r_dst = r_dst.astype(int)
+    return dict(zip(r_src, r_dst))
+
+def rate_points(pc_src, pc_dst, perm_dict):
     green, red = [], []
-    target = {(x,y,z): l for l,x,y,z in pc_dst}
     n_points_notfound = 0
-    for (l,x,y,z) in pc_src:
-        if (x+10, y+10, z+10) in target:
-            if l == target.get((x, y, z), -1):
+    target = {}
+    for l,x,y,z in pc_dst:
+        target.setdefault(l, set()).add((x,y,z))
+    for (l_src,x,y,z) in pc_src:
+        l_dst = perm_dict.get(l, -1)
+        if l_dst != -1:
+            if (x,y,z) in target:
                 green.append((x,y,z))
             else:
                 red.append((x,y,z))
@@ -29,7 +47,28 @@ def rate_points(pc_src, pc_dst):
     if n_points_notfound > 0:
         print('Number of points not found:')
         print('    {} / {}'.format(n_points_notfound, len(target)))
-    return green, [], red
+    orange = []
+    print('Green points:  ', len(green))
+    print('Orange points: ', len(orange))
+    print('Red points:    ', len(red))
+    return green, orange, red
+
+# def rate_points(pc_src, pc_dst):
+#     green, red = [], []
+#     target = {(x,y,z): l for l,x,y,z in pc_dst}
+#     n_points_notfound = 0
+#     for (l,x,y,z) in pc_src:
+#         if (x, y, z) in target:
+#             if l == target.get((x, y, z), -1):
+#                 green.append((x,y,z))
+#             else:
+#                 red.append((x,y,z))
+#         else:
+#             n_points_notfound += 1
+#     if n_points_notfound > 0:
+#         print('Number of points not found:')
+#         print('    {} / {}'.format(n_points_notfound, len(target)))
+#     return green, [], red
 
 def draw_pointcloud(green, orange, red):
     #cmap = plt.cm.get_cmap('hsv', len(set(L)))
@@ -41,7 +80,10 @@ def draw_pointcloud(green, orange, red):
     ax.set_zlabel('z')
     #for pc, colour in zip((green, orange, red), ('green', 'orange', 'red')):
     for pc, colour in zip((green, red), ('green', 'red')):
-        X,Y,Z = zip(*pc)
+        #X,Y,Z = zip(*pc)
+        X = [x for x,_,_ in pc]
+        Y = [y for _,y,_ in pc]
+        Z = [z for _,_,z in pc]
         ax.scatter(X, Y, Z, c=colour)
 
 def print_usage(cmd):
@@ -65,8 +107,15 @@ def main(argv):
         sys.exit(-1)
     pc_src = read_pointcloud(pc_src_filename)
     pc_dst = read_pointcloud(pc_dst_filename)
+    pc_src, pc_dst = pc_dst, pc_src  # check if mistake dst src
     matrix = read_matrix(matrix_filename)
-    green, orange, red = rate_points(pc_src, pc_dst, matrix)
+    if is_permutation_matrix(matrix):
+        print('Matrix is a correct permutation matrix')
+    else:
+        print('Matrix is not a correct permutation matrix!!')
+        print(matrix)
+    perm_dict = build_permutation_dict(matrix)
+    green, orange, red = rate_points(pc_src, pc_dst, perm_dict)
     draw_pointcloud(green, orange, red)
     plt.savefig(output_filename)
     plt.show()
