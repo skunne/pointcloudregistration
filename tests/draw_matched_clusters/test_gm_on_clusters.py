@@ -10,6 +10,10 @@ def read_pointcloud(filename):
     #L, X, Y, Z = array[:,0], array[:,1], array[:,2], array[:,3]
     return pc
 
+def read_matrix(filename):
+    mat = np.loadtxt(filename)
+    return mat.round()
+
 def rate_points(pc_src, pc_dst):
     green, red = [], []
     target = {(x,y,z): l for l,x,y,z in pc_dst}
@@ -36,16 +40,17 @@ def draw_pointcloud(green, orange, red):
 def print_usage(cmd):
     print('SYNOPSIS')
     print()
-    print('{} <pc file 1> <pc file 2> [<img file>]'.format(cmd))
+    print('{} <pc file 1> <pc file 2> <matrix file> [<img file>]'.format(cmd))
     print('      ...')
     print('      output to img file')
 
 def main(argv):
-    if len(argv) >= 3:
+    if len(argv) >= 4:
         pc_src_filename = argv[1]
         pc_dst_filename = argv[2]
-        if len(argv) >= 4:
-            output_filename = argv[3]
+        matrix_filename = argv[3]
+        if len(argv) >= 5:
+            output_filename = argv[4]
         else:
             output_filename = 'out.png'
     else:
@@ -53,7 +58,8 @@ def main(argv):
         sys.exit(-1)
     pc_src = read_pointcloud(pc_src_filename)
     pc_dst = read_pointcloud(pc_dst_filename)
-    green, orange, red = rate_points(pc_src, pc_dst)
+    matrix = read_matrix(matrix_filename)
+    green, orange, red = rate_points(pc_src, pc_dst, matrix)
     draw_pointcloud(green, orange, red)
     plt.savefig(output_filename)
     plt.show()
