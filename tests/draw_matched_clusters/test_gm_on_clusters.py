@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import sys
 import numpy as np   # loadtxt
+import math # hypot, isclose
 
 def read_pointcloud(filename):
     pc = np.loadtxt(filename, delimiter=',', skiprows=1)
@@ -32,7 +33,12 @@ def build_permutation_dict(matrix):
     #r_dst = r_dst.astype(int)
     return dict(zip(r_src, r_dst))
 
-def rate_points(pc_src, pc_dst, perm_dict):
+def isclose3d(p, q, rel_tol=10e-9):
+    length = max(math.hypot(*p), math.hypot(*q))
+    abs_tol = rel_tol * length
+    return all(math.isclose(x1, x2, rel_tol=0, abs_tol=abs_tol) for x1,x2 in zip(p,q))
+
+def rate_points(pc_src, pc_dst, perm_dict, transform):
     green, red = [], []
     n_points_notfound = 0
     target = {}
@@ -40,10 +46,12 @@ def rate_points(pc_src, pc_dst, perm_dict):
         target.setdefault(l, set()).add((x,y,z))
     # print('Cluster 2 dans dst:')
     # print('    ', target[2])
-    for (l_src,x,y,z) in pc_src:
+    for (l_src,xs,ys,zs) in pc_src:
         l_dst = perm_dict.get(l_src, -1)
         if l_dst != -1:
-            if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
+            #if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
+            p = transform @ (xs,ys,zs)
+            if any(isclose3d(p, q) for q in target[l_dst]):
                 green.append((x,y,z))
             else:
                 red.append((x,y,z))
@@ -102,25 +110,28 @@ def main(argv):
     if len(argv) >= 4:
         pc_src_filename = argv[1]
         pc_dst_filename = argv[2]
-        matrix_filename = argv[3]
+        permutation_matrix_filename = argv[3]
+        transform_filename = None
+        output_filename = 'out.png'
         if len(argv) >= 5:
-            output_filename = argv[4]
-        else:
-            output_filename = 'out.png'
+            transform_filename = argv[4]
+            if len(argv) >= 6:
+                output_filename = argv[5]
     else:
         print_usage(argv[0])
         sys.exit(-1)
     pc_src = read_pointcloud(pc_src_filename)
     pc_dst = read_pointcloud(pc_dst_filename)
     #pc_src, pc_dst = pc_dst, pc_src  # check if mistake dst src
-    matrix = read_matrix(matrix_filename)
-    if is_permutation_matrix(matrix):
+    permutation_matrix = read_matrix(permutation_matrix_filename)
+    transform = read_matrix(transform_filename) if transform_filename else np.eye(4) 
+    if is_permutation_matrix(permutation_matrix):
         print('Matrix is a correct permutation matrix')
     else:
         print('Matrix is not a correct permutation matrix!!')
-        print(matrix)
-    perm_dict = build_permutation_dict(matrix)
-    green, orange, red = rate_points(pc_src, pc_dst, perm_dict)
+        print(permutation_matrix)
+    perm_dict = build_permutation_dict(permutation_matrix)
+    green, orange, red = rate_points(pc_src, pc_dst, perm_dict, transform)
     draw_pointcloud(green, orange, red)
     plt.savefig(output_filename)
     plt.show()
