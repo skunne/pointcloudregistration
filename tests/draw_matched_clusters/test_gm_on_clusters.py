@@ -16,7 +16,7 @@ def rate_points(pc_src, pc_dst):
     n_points_notfound = 0
     for (l,x,y,z) in pc_src:
         if (x+10, y+10, z+10) in target:
-            if l == target.get((x+10, y+10, z+10), -1):
+            if l == target.get((x, y, z), -1):
                 green.append((x,y,z))
             else:
                 red.append((x,y,z))

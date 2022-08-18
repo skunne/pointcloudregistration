@@ -67,7 +67,6 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
   }
 }
 
-
 int test_printUsage(char const *cmd)
 {
   std::cout << "SYNOPSIS" << std::endl << std::endl;
@@ -83,17 +82,17 @@ int test_printUsage(char const *cmd)
   return 1;
 }
 
-void test_printVoxels(ProcessedPointCloud const &ppc, std::string const &filename)
-{
-  pcl::PointCloud<pcl::PointXYZL>::Ptr cloud = ppc.super.getLabeledCloud();
-  std::ofstream outfile;
-  outfile.open(filename);
-  for (auto point = cloud->begin (); point != cloud->end (); ++point)
-  {
-    outfile << *point << std::endl;
-  }
-  outfile.close();
-}
+// void test_printVoxels(ProcessedPointCloud const &ppc, std::string const &filename)
+// {
+//   pcl::PointCloud<pcl::PointXYZL>::Ptr cloud = ppc.super.getLabeledCloud();
+//   std::ofstream outfile;
+//   outfile.open(filename);
+//   for (auto point = cloud->begin (); point != cloud->end (); ++point)
+//   {
+//     outfile << *point << std::endl;
+//   }
+//   outfile.close();
+// }
 
 int main(int argc, char ** argv)
 {
@@ -111,7 +110,6 @@ int main(int argc, char ** argv)
 
   if (ppc_source.error() || ppc_dest.error())
     return 1;
-
 
   //test_printVoxels(ppc_source, "src_" + out_filename);
   //test_printVoxels(ppc_dest, "dst_" + out_filename);
@@ -135,6 +133,7 @@ int main(int argc, char ** argv)
   // GraphMatchingNonlin gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
   gm.run();
 
+  // print permutation_matrix gm.matching
   test_writeresult(ppc_source, ppc_dest, gm.matching, "src_" + out_filename, "dst_" + out_filename);
 
 
