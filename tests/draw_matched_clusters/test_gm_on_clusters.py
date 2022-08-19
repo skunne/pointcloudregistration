@@ -56,9 +56,9 @@ def rate_points(pc_src, pc_dst, perm_dict, transform):
             #if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
             p = (transform @ [xs,ys,zs, 1])[:-1] # transform matrix is written in homogeneous coordinates
             if any(isclose3d(p, q) for q in target[l_dst]):
-                green.append((x,y,z))
+                green.append((xs,ys,zs))
             else:
-                red.append((x,y,z))
+                red.append((xs,ys,zs))
         else:
             n_points_notfound += 1
     if n_points_notfound > 0:
@@ -134,6 +134,8 @@ def main(argv):
     else:
         print('Matrix is not a correct permutation matrix!!')
         print(permutation_matrix)
+    print('Transformation used:')
+    print(transform)
     perm_dict = build_permutation_dict(permutation_matrix)
     green, orange, red = rate_points(pc_src, pc_dst, perm_dict, transform)
     draw_pointcloud(green, orange, red)
