@@ -11,8 +11,12 @@ def read_pointcloud(filename):
     #L, X, Y, Z = array[:,0], array[:,1], array[:,2], array[:,3]
     return pc
 
-def read_matrix(filename):
+def read_perm_matrix(filename):
     mat = np.loadtxt(filename, int)
+    return mat
+
+def read_transform_matrix(filename):
+    mat = np.loadtxt(filename,delimiter=',')
     return mat
 
 def is_permutation_matrix(x):
@@ -26,7 +30,7 @@ def build_permutation_dict(matrix):
     width, height = matrix.shape
     n = min(width, height)
     r_src = np.arange(width)
-    r_dst = matrix @ r_src
+    r_dst = r_src @ matrix
     # print('permutation:')
     # print('    ', r_src)
     # print('    ', r_dst)
@@ -50,7 +54,7 @@ def rate_points(pc_src, pc_dst, perm_dict, transform):
         l_dst = perm_dict.get(l_src, -1)
         if l_dst != -1:
             #if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
-            p = transform @ (xs,ys,zs)
+            p = (transform @ [xs,ys,zs, 1])[:-1] # transform matrix is written in homogeneous coordinates
             if any(isclose3d(p, q) for q in target[l_dst]):
                 green.append((x,y,z))
             else:
@@ -123,8 +127,8 @@ def main(argv):
     pc_src = read_pointcloud(pc_src_filename)
     pc_dst = read_pointcloud(pc_dst_filename)
     #pc_src, pc_dst = pc_dst, pc_src  # check if mistake dst src
-    permutation_matrix = read_matrix(permutation_matrix_filename)
-    transform = read_matrix(transform_filename) if transform_filename else np.eye(4) 
+    permutation_matrix = read_perm_matrix(permutation_matrix_filename)
+    transform = read_transform_matrix(transform_filename) if transform_filename else np.eye(4)
     if is_permutation_matrix(permutation_matrix):
         print('Matrix is a correct permutation matrix')
     else:
