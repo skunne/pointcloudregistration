@@ -1,4 +1,4 @@
-for f in heart #nuclei valve
+for f in heart nuclei valve
 do
     for r in id translated10 rotatedpi8 rotatedpi4
     do
