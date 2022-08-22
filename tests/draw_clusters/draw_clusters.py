@@ -18,6 +18,15 @@ def read_pointcloud(filename):
             pc.append((x,y,z,label))
     return pc
 
+def set_axes_equal(ax):
+    #ax.set_aspect('equal')
+    x_lim, y_lim, z_lim = ax.get_xlim3d(), ax.get_ylim3d(), ax.get_zlim3d()
+    radius = 0.5 * max(abs(lim[1]-lim[0]) for lim in (x_lim, y_lim, z_lim))
+    x_mid, y_mid, z_mid = (sum(lim)/2 for lim in (x_lim, y_lim, z_lim))
+    ax.set_xlim3d([x_mid - radius, x_mid + radius])
+    ax.set_ylim3d([y_mid - radius, y_mid + radius])
+    ax.set_zlim3d([z_mid - radius, z_mid + radius])
+
 def draw_pointcloud(pc):
     X,Y,Z,L = zip(*pc)
     #cmap = plt.cm.get_cmap('hsv', len(set(L)))
@@ -28,6 +37,7 @@ def draw_pointcloud(pc):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
     ax.scatter(X, Y, Z, c=L, cmap=cmap)
+    set_axes_equal(ax)
 
 def print_usage(cmd):
     print('SYNOPSIS')
