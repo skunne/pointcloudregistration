@@ -1,6 +1,6 @@
-filename pointclouds/Armadillo.ply
-voxel_resolution 3.0
-seed_resolution 15
+filename pointclouds/armadillo.pcd
+voxel_resolution 0.5
+seed_resolution 3.0
 color_importance 0.2
 spatial_importance 1.0
 normal_importance 1.0
