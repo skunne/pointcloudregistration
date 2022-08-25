@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import sys
+import numpy as np
 
 def read_pointcloud(filename):
     pc = []
@@ -30,14 +31,25 @@ def set_axes_equal(ax):
 def draw_pointcloud(pc):
     X,Y,Z,L = zip(*pc)
     #cmap = plt.cm.get_cmap('hsv', len(set(L)))
-    cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
+    #cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
+    vals = np.linspace(0,1,len(L))
+    np.random.seed(987654321)
+    np.random.shuffle(vals)
+    cmap = plt.cm.colors.ListedColormap(plt.cm.jet(vals))
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
+    ax = fig.add_subplot(1, 2, 1, projection='3d')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
-    ax.scatter(X, Y, Z, c=L, cmap=cmap)
+    ax.scatter(X, Y, Z, s=0.4, c=L, cmap=cmap)
     set_axes_equal(ax)
+    ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+    ax2.set_xlabel('x')
+    ax2.set_ylabel('y')
+    ax2.set_zlabel('z')
+    ax2.scatter(X, Y, Z, s=0.4, c=L, cmap=cmap)
+    ax2.view_init(elev=330, azim = 180)
+    set_axes_equal(ax2)
 
 def print_usage(cmd):
     print('SYNOPSIS')

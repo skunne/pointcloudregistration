@@ -27,15 +27,11 @@ def is_permutation_matrix(x):
             ((x == 1) | (x == 0)).all())
 
 def build_permutation_dict(matrix):
-    width, height = matrix.shape
-    n = min(width, height)
-    r_src = np.arange(width)
-    r_dst = r_src @ matrix
-    # print('permutation:')
-    # print('    ', r_src)
-    # print('    ', r_dst)
-    #r_dst = r_dst.astype(int)
-    return dict(zip(r_src, r_dst))
+    height,width = matrix.shape
+    n = min(height, width)
+    r_src = np.arange(height)
+    r_dst = (r_src+1) @ matrix - 1
+    return {j: i for i,j in enumerate(r_dst)}  #dict(zip(r_src, r_dst))
 
 def isclose3d(p, q, rel_tol=10e-9):
     length = max(math.hypot(*p), math.hypot(*q))
@@ -50,6 +46,7 @@ def rate_points(pc_src, pc_dst, perm_dict, transform):
         target.setdefault(l, set()).add((x,y,z))
     # print('Cluster 2 dans dst:')
     # print('    ', target[2])
+    #pc_transformed = transform @ (pc_src add column 1)
     for (l_src,xs,ys,zs) in pc_src:
         l_dst = perm_dict.get(l_src, -1)
         if l_dst != -1:
@@ -91,17 +88,19 @@ def draw_pointcloud(green, orange, red):
     #cmap = plt.cm.get_cmap('hsv', len(set(L)))
     # cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-    #for pc, colour in zip((green, orange, red), ('green', 'orange', 'red')):
-    for pc, colour in zip((green, red), ('green', 'red')):
-        #X,Y,Z = zip(*pc)
-        X = [x for x,_,_ in pc]
-        Y = [y for _,y,_ in pc]
-        Z = [z for _,_,z in pc]
-        ax.scatter(X, Y, Z, c=colour)
+    for ax_num in (1,2):
+        ax = fig.add_subplot(1,2,ax_num,projection='3d')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        #for pc, colour in zip((green, orange, red), ('green', 'orange', 'red')):
+        for pc, colour in zip((green, red), ('green', 'red')):
+            #X,Y,Z = zip(*pc)
+            X = [x for x,_,_ in pc]
+            Y = [y for _,y,_ in pc]
+            Z = [z for _,_,z in pc]
+            ax.scatter(X, Y, Z, s=0.4, c=colour)
+        ax.view_init(elev = 390 - 30 * ax_num, azim = 180 * (ax_num-1))
 
 def print_usage(cmd):
     print('SYNOPSIS')

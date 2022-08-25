@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
   // EdgeSimilarityMatrix esim_mat(ppc_source.edge_descriptors, ppc_dest.edge_descriptors);
   //
   // printMatrixToFile("output/esf_similarity_matrix", vsim_mat.m);
-  // printMatrixToFile("output/edge_similarity_matrix", esim_mat.m);
+  // //printMatrixToFile("output/edge_similarity_matrix", esim_mat.m);
 
   //GraphMatchingFrankwolfe gm(&vsim_mat.m, &esim_mat, &ppc_source.adjacency_matrix, &ppc_dest.adjacency_matrix);
   //gm.frankWolfe(0.0, &permutation_matrix, &permutation_matrix);
