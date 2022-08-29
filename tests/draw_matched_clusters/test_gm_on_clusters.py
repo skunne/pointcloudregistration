@@ -6,6 +6,8 @@ import sys
 import numpy as np   # loadtxt
 import math # hypot, isclose
 
+from scipy.spatial import KDTree
+
 def read_pointcloud(filename):
     pc = np.loadtxt(filename, delimiter=',', skiprows=1)
     #L, X, Y, Z = array[:,0], array[:,1], array[:,2], array[:,3]
@@ -37,25 +39,24 @@ def build_permutation_dict(matrix):
     #r_dst = r_dst.astype(int)
     return dict(zip(r_src, r_dst))
 
-def isclose3d(p, q, rel_tol=10e-9):
-    length = max(math.hypot(*p), math.hypot(*q))
-    abs_tol = rel_tol * length
-    return all(math.isclose(x1, x2, rel_tol=0, abs_tol=abs_tol) for x1,x2 in zip(p,q))
+# def isclose3d(p, q, rel_tol=10e-9):
+#     length = max(math.hypot(*p), math.hypot(*q))
+#     abs_tol = rel_tol * length
+#     return all(math.isclose(x1, x2, rel_tol=0, abs_tol=abs_tol) for x1,x2 in zip(p,q))
 
 def rate_points(pc_src, pc_dst, perm_dict, transform):
     green, red = [], []
     n_points_notfound = 0
-    target = {}
-    for l,x,y,z in pc_dst:
-        target.setdefault(l, set()).add((x,y,z))
-    # print('Cluster 2 dans dst:')
-    # print('    ', target[2])
+    dst_tree = KDTree(pc_dst[:,1:])
+    print('Successfully built KDTree.')
     for (l_src,xs,ys,zs) in pc_src:
         l_dst = perm_dict.get(l_src, -1)
         if l_dst != -1:
             #if (x,y,z) in target[l_dst]:   # TODO apply transform and check for rounding errors
             p = (transform @ [xs,ys,zs, 1])[:-1] # transform matrix is written in homogeneous coordinates
-            if any(isclose3d(p, q) for q in target[l_dst]):
+            _,i = dst_tree.query(p)
+            lbl = pc_dst[i][0]
+            if lbl == l_dst:
                 green.append((xs,ys,zs))
             else:
                 red.append((xs,ys,zs))
@@ -91,17 +92,19 @@ def draw_pointcloud(green, orange, red):
     #cmap = plt.cm.get_cmap('hsv', len(set(L)))
     # cmap = mcolors.ListedColormap(mcolors.TABLEAU_COLORS.values())
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-    #for pc, colour in zip((green, orange, red), ('green', 'orange', 'red')):
-    for pc, colour in zip((green, red), ('green', 'red')):
-        #X,Y,Z = zip(*pc)
-        X = [x for x,_,_ in pc]
-        Y = [y for _,y,_ in pc]
-        Z = [z for _,_,z in pc]
-        ax.scatter(X, Y, Z, c=colour)
+    for ax_num in (1,2):
+        ax = fig.add_subplot(1,2,ax_num,projection='3d')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        #for pc, colour in zip((green, orange, red), ('green', 'orange', 'red')):
+        for pc, colour in zip((red, green), ('red', 'green')):
+            #X,Y,Z = zip(*pc)
+            X = [x for x,_,_ in pc]
+            Y = [y for _,y,_ in pc]
+            Z = [z for _,_,z in pc]
+            ax.scatter(X, Y, Z, s=0.2, c=colour)
+        ax.view_init(elev = 390 - 30 * ax_num, azim = 180 * (ax_num-1))
 
 def print_usage(cmd):
     print('SYNOPSIS')

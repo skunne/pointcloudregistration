@@ -8,10 +8,11 @@ def print_usage_and_exit(cmd):
     print('{} [-h | --help]'.format(cmd))
     print('    print this help message and exit')
     print()
-    print('{} ifile ofile'.format(cmd))
+    print('{} <ifile> <ofile> [<n>]'.format(cmd))
     print('    1) read .pcd file <ifile>')
-    print('    2) remove every 2 out of 3 points')
+    print('    2) remove every n-1 out of n points')
     print('    3) write resulting point cloud to file ofile in pcd format')
+    print('    default value: n=3')
     #print('    Parameters xmin, ymin and zmin default to 0')
     print()
     sys.exit()
@@ -22,7 +23,10 @@ def get_args(argv):
     elif len(argv) > 2:
         infilename = argv[1]
         outfilename = argv[2]
-    return (infilename, outfilename)
+        if len(argv) > 3:
+            n = int(argv[3])
+            return (infilename, outfilename, n)
+    return (infilename, outfilename, None)
 
 def read_file(infilename):
     header = []
@@ -43,9 +47,11 @@ def read_file(infilename):
 #         i % 3 == 0
 #     )
 
-def filter_pointcloud(pointcloud):
+def filter_pointcloud(pointcloud, n=3):
+    if n==None:
+        n = 3
     #return [(x,y,z,rgba) for (i,(x,y,z,rgba)) in enumerate(pointcloud) if dont_kill_it(i)]
-    return pointcloud[::3]
+    return pointcloud[::n]
 
 def fix_header(header, new_nb_points):
     new_header = []
@@ -65,9 +71,9 @@ def write_file(header, pointcloud, outfilename):
             f.write("{} {} {} {}\n".format(x, y, z, rgba))
 
 def main(argv):
-    (infilename, outfilename) = get_args(argv)
+    (infilename, outfilename, n) = get_args(argv)
     header, pointcloud = read_file(infilename)
-    filtered_pointcloud = filter_pointcloud(pointcloud)
+    filtered_pointcloud = filter_pointcloud(pointcloud, n)
     header = fix_header(header, len(filtered_pointcloud))
     write_file(header, filtered_pointcloud, outfilename)
 

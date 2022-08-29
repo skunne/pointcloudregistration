@@ -27,7 +27,7 @@ def plotplot(X,Y,Z):
     # ax.set_ylim(bottom=-10, top=10)
     # ax.set_zlim(bottom=-10, top=10)
     #ax.axis('equal')
-    ax.scatter(X,Y,Z, s=0.7)
+    ax.scatter(X,Y,Z, s=0.4)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
