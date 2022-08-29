@@ -1,0 +1,14 @@
+#!/bin/bash
+# Script options # Optional script directives
+#$ -cwd
+
+# module restore
+# conda activate
+
+echo 'Submitting job: show clusters on heart,valve,nuclei,armadillo'
+echo $JOB_ID
+
+sh script.sh
+
+echo 'Job completed.'
+echo $JOB_ID

@@ -29,15 +29,11 @@ def is_permutation_matrix(x):
             ((x == 1) | (x == 0)).all())
 
 def build_permutation_dict(matrix):
-    width, height = matrix.shape
-    n = min(width, height)
-    r_src = np.arange(width)
-    r_dst = r_src @ matrix
-    # print('permutation:')
-    # print('    ', r_src)
-    # print('    ', r_dst)
-    #r_dst = r_dst.astype(int)
-    return dict(zip(r_src, r_dst))
+    height,width = matrix.shape
+    n = min(height, width)
+    r_src = np.arange(height)
+    r_dst = (r_src+1) @ matrix - 1
+    return {j: i for i,j in enumerate(r_dst)}  #dict(zip(r_src, r_dst))
 
 # def isclose3d(p, q, rel_tol=10e-9):
 #     length = max(math.hypot(*p), math.hypot(*q))

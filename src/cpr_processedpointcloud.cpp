@@ -68,7 +68,7 @@ void ProcessedPointCloud::buildGraph(void)
   nbVertices = supervoxel_clusters.size();
   adjacency_matrix.resize(nbVertices,nbVertices);
   buildAdjacencyMatrix(supervoxel_adjacency, adjacency_matrix);
-  printMatrixToFile(params.adjacency_filename.c_str(), adjacency_matrix);
+  //printMatrixToFile(params.adjacency_filename.c_str(), adjacency_matrix);
 }
 
 void ProcessedPointCloud::buildFeatures(void)
