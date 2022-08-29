@@ -60,7 +60,7 @@ def rate_points(pc_src, pc_dst, perm_dict, transform):
             n_points_notfound += 1
     if n_points_notfound > 0:
         print('Number of points not found:')
-        print('    {} / {}'.format(n_points_notfound, len(target)))
+        print('    {} / {}'.format(n_points_notfound, pc_src.shape[0])
     orange = []
     print('Green points:  ', len(green))
     print('Orange points: ', len(orange))
