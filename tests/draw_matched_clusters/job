@@ -1,11 +1,9 @@
 #!/bin/bash
 # Script options # Optional script directives
+#$ -V
 #$ -cwd
 
-# module restore
-# conda activate
-
-echo 'Submitting job: graph-matching on heart,valve,nuclei,armadillo'
+echo 'Submitting job: graph-matching NO ANGLES on armadillo' # heart,valve,nuclei,
 echo $JOB_ID
 
 sh script.sh

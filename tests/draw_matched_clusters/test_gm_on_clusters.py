@@ -8,10 +8,24 @@ import math # hypot, isclose
 
 from scipy.spatial import KDTree
 
+# def read_pointcloud(filename):
+#     pc = np.loadtxt(filename, delimiter=',', skiprows=1)
+#     #L, X, Y, Z = array[:,0], array[:,1], array[:,2], array[:,3]
+#     return pc
+
 def read_pointcloud(filename):
-    pc = np.loadtxt(filename, delimiter=',', skiprows=1)
-    #L, X, Y, Z = array[:,0], array[:,1], array[:,2], array[:,3]
-    return pc
+    pc = []
+    with open(filename, 'r') as f:
+        for line in f:
+            xyz, label = line.strip('()\n').split(' - ')
+            x,y,z = xyz.split(',')
+            try:
+                x,y,z,label = map(int, (x,y,z,label))
+            except ValueError:
+                x,y,z = map(float, (x,y,z))
+                label = int(label)
+            pc.append((label,x,y,z))
+    return np.array(pc)
 
 def read_perm_matrix(filename):
     mat = np.loadtxt(filename, int)
@@ -60,7 +74,7 @@ def rate_points(pc_src, pc_dst, perm_dict, transform):
             n_points_notfound += 1
     if n_points_notfound > 0:
         print('Number of points not found:')
-        print('    {} / {}'.format(n_points_notfound, pc_src.shape[0])
+        print('    {} / {}'.format(n_points_notfound, pc_src.shape[0]))
     orange = []
     print('Green points:  ', len(green))
     print('Orange points: ', len(orange))

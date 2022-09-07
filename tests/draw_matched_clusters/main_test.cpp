@@ -25,14 +25,26 @@ std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
   return (j);
 }
 
+void test_printVoxels(ProcessedPointCloud const &ppc, std::string const &filename)
+{
+  pcl::PointCloud<pcl::PointXYZL>::Ptr cloud = ppc.super.getLabeledCloud();
+  std::ofstream outfile;
+  outfile.open(filename);
+  for (auto point = cloud->begin (); point != cloud->end (); ++point)
+  {
+    outfile << *point << std::endl;
+  }
+  outfile.close();
+}
+
 void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, std::string const &filenamesrc, std::string const &filenamedst, std::string const &filename_matrix)
 {
-  SupervoxelClusters const &clusters_source = ppc_source.supervoxel_clusters;
-  SupervoxelClusters const &clusters_dest = ppc_dest.supervoxel_clusters;
-
-  std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
-  std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
-  std::fstream matrix_out(filename_matrix, std::fstream::out | std::fstream::trunc);
+  // SupervoxelClusters const &clusters_source = ppc_source.supervoxel_clusters;
+  // SupervoxelClusters const &clusters_dest = ppc_dest.supervoxel_clusters;
+  //
+  // std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
+  // std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
+  // std::fstream matrix_out(filename_matrix, std::fstream::out | std::fstream::trunc);
 
   src_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
   dst_out << "id,dimension_1,dimension_2,dimension_3" << std::endl;
@@ -48,29 +60,8 @@ void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud
 
   assert(clusters_dest.size() == permutation_matrix.cols());
 
-  for (std::size_t i = 0; i < clusters_source.size(); ++i)
-  {
-    //std::size_t j = test_getmatch(i, permutation_matrix);
-    std::size_t j = i;
-    if (j < clusters_dest.size())
-    {
-      for (auto const &p : *(clusters_source.at(i)->voxels_))
-      {
-        src_out << i << ',' << p.x << ',' << p.y << ',' << p.z << std::endl;
-      }
-
-      for (auto const &p : *(clusters_dest.at(j)->voxels_))
-      {
-        dst_out << i << ',' << p.x << ',' << p.y << ',' << p.z << std::endl;
-      }
-      // src_out << i << ',' << std::get<0>(pc_source[i])
-      //              << ',' << std::get<1>(pc_source[i])
-      //              << ',' << std::get<2>(pc_source[i]) << std::endl;
-      // dst_out << i << ',' << std::get<0>(pc_dest[j])
-      //              << ',' << std::get<1>(pc_dest[j])
-      //              << ',' << std::get<2>(pc_dest[j]) << std::endl;
-    }
-  }
+  test_printVoxels(ppc_source, filenamesrc);
+  test_printVoxels(ppc_dest, filenamedst);
 }
 
 int test_printUsage(char const *cmd)
