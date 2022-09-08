@@ -20,6 +20,7 @@ Makefile
 # ignore some pointclouds
 
 pointclouds/Armadillo.ply
+pointclouds/armadillo*.pcd
 pointclouds/dragon_vrip_res2.ply
 pointclouds/untracked/
 
@@ -36,6 +37,14 @@ tests/ransac/out*
 tests/ransac/standalone_ransac_test/*.csv
 tests/icpransac/*.adj
 ipopt.out
+esf_similarity_matrix*
+esf_matrix*
+edge_similarity_matrix*
+Figure*.png
+tests/draw_matched_clusters/*_out_*.txt
+tests/draw_matched_clusters/mat_*.txt
+job.o*
+job.e*
 
 # ignore all executables
 
@@ -49,6 +58,7 @@ tests/ransac/standalone_ransac_test/a.out
 tests/ipopt/test_ipopt
 tests/icpransac/icpransac_gettransform
 tests/icpransac/compare_with_icp
+tests/draw_*clusters/print_voxels*
 
 # ignore small learning experiments
 

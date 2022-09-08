@@ -3,7 +3,7 @@
 #$ -V
 #$ -cwd
 
-echo 'Submitting job: graph-matching NO ANGLES on armadillo' # heart,valve,nuclei,
+echo 'Submitting job: graph-matching NO ANGLES on heart,valve,nuclei,armadillo'
 echo $JOB_ID
 
 sh script.sh
