@@ -59,7 +59,7 @@ def rad_to_pifrac(rad, max_denominator=8000):
     return 'pi'.join((num, denom))
 
 def test_pi(max_denominator=100):
-    testcases = ['0', '1', '0.39', '3', 'pi/8', 'pi/4', '-pi/4', '3*pi/4', '-3*pi/4', '-pi', 'pi', '2*pi', '6.28']
+    testcases = ['0', '1', '22/7', '0.39', '0.393', '3', '3.14', 'pi/8', 'pi/4', '-pi/4', '3*pi/4', '-3*pi/4', '-pi', 'pi', '2*pi', '6.28']
     for s in testcases:
         print('{:10s} ----> {}'.format(s, rad_to_pifrac(eval(s), max_denominator)))
 
@@ -73,8 +73,8 @@ def main(argv):
     #(theta_x, theta_y, theta_z) = euler_angles(diff_matrix[:3,:3])
     fst_transl = fst_matrix[:3, 3]
     snd_transl = snd_matrix[:3, 3]
-    diff = array([*fst_transl, *fst_theta]) - array([*snd_transl, *snd_theta])
-    print('translation (x,y,z), rotation Euler angles (ax,ay,az): ', *diff)
+    diff = array([*snd_transl, *snd_theta]) - array([*fst_transl, *fst_theta])
+    print('translation (x,y,z), rotation Euler angles (ax,ay,az): ', *diff[:3],', ', *(rad_to_pifrac(theta) for theta in diff[-3:]))
 
 if __name__ == '__main__':
     main(sys.argv)
