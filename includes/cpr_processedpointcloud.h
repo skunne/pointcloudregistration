@@ -42,8 +42,8 @@ public:
   void addSomeColours(pcl::visualization::PCLVisualizer::Ptr viewer, std::vector<KeyT> nodes);
 
   int getNbVertices() const;
-  std::vector<std::tuple<double,double,double>> exportCentroidPointCloud(void) const;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr exportCentroidPointCloud(void) const;
+  std::vector<std::tuple<double,double,double>> exportCentroidPointCloud_as_vector(void) const;
+  pcl::PointCloud<pcl::PointXYZ>::Ptr exportCentroidPointCloud_as_pcl(void) const;
 
   float get_seed_resolution(void) const;
   float get_voxel_resolution(void) const;

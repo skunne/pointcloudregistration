@@ -103,7 +103,7 @@ int ProcessedPointCloud::getNbVertices(void) const
   return nbVertices;
 }
 
-std::vector<std::tuple<double,double,double>> ProcessedPointCloud::exportCentroidPointCloud(void) const
+std::vector<std::tuple<double,double,double>> ProcessedPointCloud::exportCentroidPointCloud_as_vector(void) const
 {
   std::vector<std::tuple<double,double,double>> out;
   for (auto const &p : supervoxel_clusters)
@@ -113,7 +113,7 @@ std::vector<std::tuple<double,double,double>> ProcessedPointCloud::exportCentroi
   return out;
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr ProcessedPointCloud::exportCentroidPointCloud(void) const
+pcl::PointCloud<pcl::PointXYZ>::Ptr ProcessedPointCloud::exportCentroidPointCloud_as_pcl(void) const
 {
   pcl::PointCloud<pcl::PointXYZ>::Ptr out(new pcl::PointCloud<pcl::PointXYZ>);
   for (auto const &p : supervoxel_clusters)
