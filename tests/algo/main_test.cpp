@@ -35,8 +35,8 @@ std::size_t test_getmatch(std::size_t i, MatrixInt const &permutation_matrix)
 
 void test_writeresult(ProcessedPointCloud const &ppc_source, ProcessedPointCloud const &ppc_dest, MatrixInt const &permutation_matrix, char const *filenamesrc, char const *filenamedst)
 {
-  std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportPointCloud();
-  std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportPointCloud();
+  std::vector<std::tuple<double,double,double>> pc_source = ppc_source.exportCentroidPointCloud();
+  std::vector<std::tuple<double,double,double>> pc_dest = ppc_dest.exportCentroidPointCloud();
 
   std::fstream src_out(filenamesrc, std::fstream::out | std::fstream::trunc);
   std::fstream dst_out(filenamedst, std::fstream::out | std::fstream::trunc);
