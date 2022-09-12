@@ -118,7 +118,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ProcessedPointCloud::exportCentroidPointClou
   pcl::PointCloud<pcl::PointXYZ>::Ptr out(new pcl::PointCloud<pcl::PointXYZ>);
   for (auto const &p : supervoxel_clusters)
   {
-    out.push_back(pcl::PointXYZ(p.second->centroid_.x, p.second->centroid_.y, p.second->centroid_.z));
+    out->push_back(pcl::PointXYZ(p.second->centroid_.x, p.second->centroid_.y, p.second->centroid_.z));
   }
   return out;
 }

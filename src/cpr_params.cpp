@@ -128,11 +128,11 @@ int setParams(int argc, char const *const *argv, struct Params *params)
 
 
 
-float Params::ProcessedPointCloud::get_seed_resolution(void) const
+float Params::get_seed_resolution(void) const
 {
   return seed_resolution;
 }
-float Params::ProcessedPointCloud::get_voxel_resolution(void) const
+float Params::get_voxel_resolution(void) const
 {
   return voxel_resolution;
 }
