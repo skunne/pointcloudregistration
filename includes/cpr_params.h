@@ -30,6 +30,9 @@ public:
 public:
   Params(char const *metadata_filename);
   Params(Params const &params) = default;
+
+  float get_seed_resolution(void) const;
+  float get_voxel_resolution(void) const;
 };
 
 bool endsWith(const std::string& a, const std::string& b);

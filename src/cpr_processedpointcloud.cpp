@@ -113,6 +113,15 @@ std::vector<std::tuple<double,double,double>> ProcessedPointCloud::exportPointCl
   return out;
 }
 
+
+float ProcessedPointCloud::get_seed_resolution(void) const
+{
+  return params.get_seed_resolution();
+}
+float ProcessedPointCloud::get_voxel_resolution(void) const
+{
+  return params.get_voxel_resolution();
+}
 //
 // std::vector<std::vector<std::tuple<double,double,double>>> ProcessedPointCloud::exportClusters(void) const
 // {

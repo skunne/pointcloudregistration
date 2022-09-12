@@ -43,6 +43,9 @@ public:
 
   int getNbVertices() const;
   std::vector<std::tuple<double,double,double>> exportPointCloud(void) const;
+
+  float get_seed_resolution(void) const;
+  float get_voxel_resolution(void) const;
 };
 
 #endif /* __DEF_CPR_PROCESSEDPOINTCLOUD_H__ */
