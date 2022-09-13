@@ -12,6 +12,10 @@ def get_matrix(filename):
         m = [[float(x) for x in row] for row in r]
     return m
 
+# def get_matrix(filename):
+#     m = np.loadtxt(filename, delimiter=',')
+#     return m
+
 def matrix_times_vector(m, x):
     return [sum(m_ij * x_j for m_ij, x_j in zip(m_i, x)) for m_i in m]
 

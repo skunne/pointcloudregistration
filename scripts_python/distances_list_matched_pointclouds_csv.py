@@ -15,7 +15,7 @@ def get_matrix(filename):
 def matrix_times_vector(m, x):
     return [sum(m_ij * x_j for m_ij, x_j in zip(m_i, x)) for m_i in m]
 
-def compute_average_distance(filename1, filename2, transform=identity_matrix):
+def compute_listof_distances(filename1, filename2, transform=identity_matrix):
     #total_d = 0
     list_of_d = []
     with open(filename1, 'r') as f1:
@@ -44,7 +44,7 @@ def print_usage():
     print('SYNOPSIS')
     print()
     print('{} [transform] csvfile1 csvfile2'.format(sys.argv[0]))
-    print('      Calculate the average distance between points in <csvfile1> and <csvfile2>.')
+    print('      Calculate the list of pairwise distances between points in <csvfile1> and <csvfile2>.')
     print('      The two files must have the same number of points. The points must be')
     print('    listed in order. Point on line i is compared with point on line i.')
     print('      If a transform is specified, it must be in the form of a csv file with')
@@ -61,7 +61,7 @@ def main(argv):
     else:
         print_usage()
         exit()
-    list_of_d = compute_average_distance(file1, file2, matrix)
+    list_of_d = compute_listof_distances(file1, file2, matrix)
     #print_list(list_of_d)
     return(list_of_d)
 
