@@ -41,8 +41,8 @@ def get_args(argv):
 
 def main(argv):
     src_filename, dst_filename, transform_matrix_filename = get_args(argv)
-    pc_src = np.loadtxt(src_filename, delimiter=',')
-    pc_dst = np.loadtxt(dst_filename, delimiter=',')
+    pc_src = np.loadtxt(src_filename, delimiter=',', skiprows=1, usecols=(1,2,3))
+    pc_dst = np.loadtxt(dst_filename, delimiter=',', skiprows=1, usecols=(1,2,3))
     transform_matrix =  np.loadtxt(transform_matrix_filename, delimiter=',') if transform_matrix_filename else None
     rmse = compute_rmse(pc_src, pc_dst, transform_matrix)
     print('{} {} {} --> RMSE = {}'.format(transform_matrix_filename, src_filename, dst_filename, rmse))
